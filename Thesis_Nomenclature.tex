@@ -1,0 +1,48 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                      %
+%     File: Thesis_Nomenclature.tex                                    %
+%     Tex Master: Thesis.tex                                           %
+%                                                                      %
+%     Author: Andre C. Marta                                           %
+%     Last modified : 27 Feb 2024                                      %
+%                                                                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% The definitions can be placed anywhere in the document body
+% and their order is sorted by <symbol> automatically when
+% calling makeindex in the makefile
+%
+% The \glossary command has the following syntax:
+%
+% \glossary{entry}
+%
+% The \nomenclature command has the following syntax:
+%
+% \nomenclature[<prefix>]{<symbol>}{<description>}
+%
+% where <prefix> is used for fine tuning the sort order,
+% <symbol> is the symbol to be described, and <description> is
+% the actual description.
+% The first letter in <prefix> indicates the group, while the next
+% (if included) help sorting if the <symbol> is not a plain character
+%
+% ----------------------------------------------------------------------
+% Roman symbols [r]
+\nomenclature[ru]{$S_n$}{$n$-dimensional unit sphere}
+\nomenclature[ru]{$\boldsymbol{X},\boldsymbol{Y},\boldsymbol{Z}$}{Pauli matrices (alternative notation)}
+\nomenclature[ru]{$R_x(\theta),R_y(\theta),R_z(\theta)$}{Rotation (of angle $\theta$) gates around the $x$, $y$ and $z$ axes, on the Bloch sphere.}
+% ----------------------------------------------------------------------
+% Greek symbols [g]
+\nomenclature[g]{$\rho$}{Density matrix or performance guarantee}
+\nomenclature[g]{$\sigma_x$, $\sigma_y$, $\sigma_z$}{Pauli matrices}
+\nomenclature[g]{$\ket{\psi}$}{Arbitrary pure state}
+
+% ----------------------------------------------------------------------
+% Subscripts [s]
+\nomenclature[sx]{$x,y,z$}{Cartesian components}
+
+% ----------------------------------------------------------------------
+% Supercripts [t]
+\nomenclature[t]{T}{Transpose}
+\nomenclature[t]{$\dagger$}{Hermitian adjoint}
+

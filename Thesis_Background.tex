@@ -1,0 +1,469 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\raggedbottom
+%                                                                      %
+%     File: Thesis_Background.tex                                      %
+%     Tex Master: Thesis.tex                                           %
+%                                                                      %
+%     Author: Andre C. Marta                                           %
+%     Last modified :  4 Mar 2024                                      %
+%                                                                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Theoretical background}
+\label{chapter:Background}
+
+This chapter covers the key concepts and theoretical background necessary to understand the work presented in this thesis. It begins by describing the MaxCut problem and discussing elements of computational complexity, reinforcing the rationale behind this research. The state-of-the-art algorithms for solving the MaxCut problem, both classical and quantum, are then examined. After a brief introduction to quantum computing, the chapter explores hybrid quantum-classical computing and variational quantum algorithms in greater depth. Specifically, the Quantum Approximate Optimization Algorithm (\acrshort{qaoa}) and the Qubit-Efficient MaxCut Heuristic (\acrshort{qemc}) are analyzed, as they play a pivotal role in this study.
+
+% Include state-of-the-art somewhere?! - Maybe in the "State-of-the-Art" section. I've tried to include this in the "The Maximum Cut Problem & Computational Complexity" section.
+
+% Insert your chapter material here.
+
+% Some overview of the underlying theory about the topic... - Here, I should describe mathematical preliminaries, quantum computing, variational quantum algorithms, and the MaxCut problem. I should also mention the importance of hybrid quantum-classical computing and the potential of combining QAOA and QEMC. Could also make sense to mention computational complexity.
+
+% Remember to define an acronym the first time it is used.
+
+% The full acronym can be \acrfull{mdo}, that includes both its long definition~\acrlong{mdo} and short definition~\acrshort{mdo}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Maximum Cut Problem \& Computational Complexity}
+\label{section:MaxCut_Comp._Complexity}
+
+The MaxCut problem, a fundamental problem in graph theory and combinatorial optimization, involves partitioning a graph \( G = (V, E) \) into two disjoint subsets, \( S_1 \) and \( S_2 \), such that the number of edges connecting vertices from different subsets is maximized. Formally, the objective is to find a partition \( (S_1, S_2) \) that maximizes:
+
+\begin{equation}\label{eq:Cut}
+\text{Cut}(S_1, S_2) = \sum_{(u, v) \in E} \chi(u, v),
+\end{equation}
+where \( \chi(u, v) = 1 \) if \( u \) and \( v \) belong to different subsets, and \( \chi(u, v) = 0 \) if they belong to the same subset. This quantity is referred to as the "cut" of the partition $(S_1, S_2)$. Pictorially, this can be represented as cutting the edges of the graph (Figure \ref{fig:MaxCut}), hence the name MaxCut. What we describe here is the un-directed, un-weighted MaxCut problem. A more general formulation would involve the specific graph's adjacency matrix, $W_{ij}$.
+
+Since the MaxCut problem is NP-hard, finding an optimal solution efficiently is a significant computational challenge, especially as the graph size grows. However, researchers have developed various approximation algorithms and heuristics to approach near-optimal solutions in a reasonable time, including both classical and quantum approaches (cf. subsections \ref{section:Classical-State-of-the-Art} and \ref{section:Hybrid-Quantum-Classical-State-of-the-Art}). These methods are designed to tackle the intrinsic complexity of the problem, providing practical solutions that have real-world applications. As mentioned earlier, the MaxCut problem finds use in a variety of fields, including machine learning \cite{937505}, statistical physics \cite{Barahona_Grötschel_Jünger_Reinelt_1988}, circuit design \cite{Barahona_Grötschel_Jünger_Reinelt_1988}, and data clustering \cite{10.1007/11893318_21}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{Figures/Diagrams/MaxCut.png}
+  \caption{An example of a graph with a partition that maximizes the number of cut edges (red). Note that the MaxCut partition might not be unique.}
+  \label{fig:MaxCut}
+\end{figure}
+
+% Discussion on Computational Complexity
+We previously mentioned that the MaxCut problem is well-known to be NP-hard. (Indeed, it [decision version] even appears on Karp's original list of NP-complete problems, from 1972 \cite{Karp2010}.) Let's explore what this means in more detail. The computational complexity class of a problem is defined by the computational resources required to solve it, such as time or memory. Although there are many complexity classes (see the \href{https://complexityzoo.net/Complexity_Zoo}{Complexity Zoo}), the following four are key to our discussion:
+
+\begin{enumerate}
+  \item \textbf{P (Polynomial time)}: Problems that can be solved in polynomial time by a deterministic Turing machine, indicating they are computationally efficient.
+  \item \textbf{NP (Non-deterministic Polynomial time)}: Problems that can be verified in polynomial time if given a solution, but finding the solution may not be as straightforward. Therefore, if you guess a solution, you can confirm its correctness quickly.
+  \item \textbf{NP-hard (Non-deterministic Polynomial time hard)}: Problems that are at least as challenging as the most difficult problems in NP. If you could solve an NP-hard problem in polynomial time, you would be able to solve all problems in NP efficiently.
+  \item \textbf{NP-complete (Non-deterministic Polynomial time complete)}: Problems that belong to NP but are also NP-hard. If you can solve one NP-complete problem efficiently, all problems in NP would become efficiently solvable.
+\end{enumerate}
+
+The MaxCut problem in its \textbf{optimization form} – "Given a graph $G$, find the maximum cut" – is NP-hard. This implies that if you could find an efficient solution to MaxCut, you could also solve all other NP problems reliably. That would include, e.g., the boolean SATisfiability problem (\acrshort{sat}), knapsack problem, decision version of the traveling salesman problem, clique problem, and more \cite{NP-problems}. This potential for broad application drives interest in developing high-performance algorithms for MaxCut. Alternatively, the MaxCut problem can be formulated as a \textbf{decision problem} – "Given a graph $G$ and an integer $k$, determine if there is a cut of size at least $k$ in $G$." This formulation is NP-complete. NP-complete status indicates that a problem is both in NP, allowing polynomial-time verification, and at least as hard as any other problem in NP, making it central to computational theory and offering crucial insights into the boundary between efficiently solvable and intractable problems. Although our focus is on the NP-hard version of the problem, it's important to understand the significance of the NP-complete formulation.
+
+% The MaxCut problem, in particular, has a wide range of applications, such as in machine learning \cite{937505}, statistical physics \cite{Barahona_Grötschel_Jünger_Reinelt_1988}, circuit design \cite{Barahona_Grötschel_Jünger_Reinelt_1988}, and data clustering \cite{10.1007/11893318_21}.
+
+% Describe the MaxCut problem, that we intend to solve, in an approximate manner. - Explain its importance and potential applications. Also, briefly mention computational complexity and the NP-hardness of the problem.
+
+% MaxCut is actually NP-Hard, not NP-Complete. (Actually, depends on how you phrase it. For it to be NP-Complete, it'd have to be the decision version of the problem: "Is this the MaxCut partition?: Yes/No." I think so, but re-check this.)
+
+% NP-Complete = NP and NP-Hard. (Instead of NP + NP-Hard.) Notation! I think I should write it like this.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Classical State-of-the-Art Algorithms for MaxCut}
+\label{section:Classical-State-of-the-Art}
+
+% I need to define, e.g., the concept of approximation ratio (AR). And, put it in the Glossary too!
+
+Over the years, a variety of algorithms have been proposed to solve the MaxCut problem, ranging from exact solutions to various approximations, including heuristics and other techniques. In this work, we focus on scaling these algorithms to handle bigger graphs, which is why exact algorithms are not discussed – they quickly become impractical for large instances. Instead, our attention is on approximation algorithms, which are more suitable for larger scales\footnote{In this work, "larger/bigger graphs" will often refer to graphs with many hundreds to a few thousand nodes.}.
+
+Approximation algorithms aim to find solutions that are close to optimal, often with a guaranteed Approximation Ratio (\acrshort{ar}). This is a measure of the performance of an approximation algorithm, representing the worst-case deviation between the algorithm's solution and the optimal solution. Formally, this can be expressed as: (For the Goemans-Williamson (\acrshort{gw}) Algorithm \cite{GW-Algorithm}, e.g.)\footnote{The actual value is $\alpha=\operatorname*{min}_{0\,\leq\,\theta\leq\pi}\,\frac{2}{\pi}\,\frac{\theta}{1\,-\,\cos\,\theta} > \,0.878$.}$$r_A^{GW} = \frac{\text{MaxCut}_{\text{GW}}}{\text{MaxCut}_{\text{Opt.}}} \approx 0.87856,$$
+where $\text{MaxCut}_{\text{GW}}$ is the worst-case MaxCut value obtained by the Goemans-Williamson Algorithm, and $\text{MaxCut}_{\text{Opt.}}$ is the optimal MaxCut value. The \acrshort{ar} is a crucial metric for evaluating the quality of an approximation algorithm, providing insight into its effectiveness. The closer the \acrshort{ar} is to 1, the better the algorithm's performance. In literature, this worst-case approximation ratio might also be referred to as the \textit{performance guarantee} $\rho$, often appearing alongside designations such as $\rho$-approximation algorithms. Using this nomenclature, the Goemans-Williamson Algorithm is a $0.87856$-approximation algorithm for MaxCut (i.e., $\rho = 0.87856$).
+
+Building on this, two commonly used \textbf{approximation algorithms} are:
+
+\begin{itemize}
+  \item \textbf{Goemans-Williamson Algorithm} \cite{GW-Algorithm}: This popular approximation algorithm achieves a performance guarantee of approximately $0.87856$, leveraging semidefinite programming and a randomized rounding technique. (This will be further developed below, in subsubsection \nameref{subsubsection:GW_Algorithm}.)
+  \item \textbf{Spectral Methods} \cite{Spectral-MaxCut}: These techniques employ eigenvalues and eigenvectors of the adjacency matrix to identify effective cuts. While spectral methods may offer quicker computational speeds compared to other approximation strategies (e.g. \acrshort{gw}), they may not consistently provide the optimal approximation ratios. Performance-wise, the leading spectral algorithm, Trevisan's algorithm, using Soto's refined analysis \cite{Soto-MaxCut}, features a worst-case approximation ratio of $0.614$.
+\end{itemize}
+
+\textbf{Heuristic} and \textbf{metaheuristic algorithms} offer another approach, focusing on finding solutions more quickly, albeit without guaranteed approximation ratios. They are typically employed when computational efficiency is prioritized over achieving the best possible approximation ratio. These algorithms include:
+\begin{itemize}
+  \item \textbf{Greedy Algorithms} (Described in \cite{Spectral-MaxCut}): These build solutions incrementally, following a greedy approach. Mathematically, we start with $S_1, S_2 = \emptyset$. In each step of the algorithm, we choose a vertex $v \in V$ yet to be assigned to $S_1$ or $S_2$. Then, we add $v$ to $S_1$ or $S_2$ by choosing the larger of the two cuts $(S_1 \cup \{v\}, S_2)$ and $(S_1, S_2 \cup \{v\})$ at this step. Repeat until all vertices are assigned to a set.
+  \item \textbf{Simulated Annealing} \cite{SA_MaxCut}: Employs a probabilistic optimization approach, inspired by metallurgical annealing, to iteratively explore the solution space, gradually reducing the acceptance of worse solutions ("temperature") over time to converge towards near-optimal solutions.
+  \item \textbf{Genetic Algorithms} \cite{GA_MaxCut}: These algorithms, rooted in evolutionary principles, employ selection, crossover, and mutation techniques to iteratively generate solutions for the MaxCut problem, evolving from an initial population of diverse partitions towards improved solutions.
+\end{itemize}
+
+Reiterating, these approximation and heuristic methods offer scalable solutions for the MaxCut problem, making them more suitable for larger graphs where exact methods are not feasible.
+
+Of all the mentioned approaches, we will now elaborate on the Goemans-Williamson algorithm, which currently stands as the most effective approximation method for MaxCut, boasting the best-known performance guarantee to date ($0.87856$). Its detailed explanation is particularly relevant as we plan to utilize it extensively in benchmarking our proposed algorithms later on. We opt for \acrshort{gw} over other options for one obvious reason: Our aim is to push the boundaries of MaxCut algorithms, thus it is logical to compare against the top-performing method. (We do not use any of the heuristic/metaheuristic algorithms, as they do not provide performance guarantees, and we are interested in having a benchmark to compare against.)
+
+\subsubsection{Goemans-Williamson Algorithm}
+\label{subsubsection:GW_Algorithm}
+
+In this subsubsection, we shall present the Goemans-Williamson Algorithm in greater detail. This approximation algorithm, developed by Michel X. Goemans and David P. Williamson in 1995 \cite{GW-Algorithm}, is a cornerstone in the field of combinatorial optimization, particularly for the MaxCut problem. The algorithm leverages semidefinite programming to construct a solution that is then rounded to provide a near-optimal cut. Semidefinite programming involves optimizing a linear function of a symmetric matrix while adhering to linear equality constraints and the requirement that the matrix be positive semidefinite. This programming paradigm finds utility across diverse fields such as control theory, nonlinear programming, geometry, and combinatorial optimization, showcasing its versatility and applicability. (These applications are detailed in \cite{GW-Algorithm} and references therein.)
+
+Formally, the Goemans-Williamson Algorithm can be described as follows. (We will use the original formulation, from \cite{GW-Algorithm}, presenting a distilled version of the most important aspects of their description.) Given a graph, with vertex set $V = \{1,..., n\}$ and non-negative weights $w_{ij} = w_{ji}$ for each pair of vertices $i$ and $j$, the weight of the maximum cut $w(S_1, S_2)$ is given by the following integer quadratic program\footnote{Note that we use the general formulation here, contemplating the possibility of weighted graphs, i.e., we do not restrict ourselves to un-weighted graphs.}:
+
+\begin{equation}\label{eq:Graph_Cut}
+  \begin{split}
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{i<j}w_{i j}(1-y_{i}y_{j}) \\
+  (Q)\qquad\qquad\qquad&\operatorname{Subject\;to:}y_{i}\in\{-1,1\}\qquad\qquad\forall i\in V.
+  \end{split}
+\end{equation}
+
+\sloppy
+\noindent It is clear that the sets $S_1 = \{i|y_i=1\}$ and $S_2 = \{i|y_i=-1\}$ correspond to a cut of weight $w(S_1, S_2) = \frac{1}{2}\sum_{i<j}w_{ij}\left(1-y_{i}y_{j}\right)$. This  represents the same quantity as the aforementioned $\text{Cut}(S_1, S_2) = \sum_{(u, v) \in E} \chi(u, v)$ (Eq. \ref{eq:Cut}), in the un-weighted case. Explicitly, in words, the sum in Eq. \ref{eq:Graph_Cut} is to be taken over all the graph's edges $(i, j)$, with $y_{i}$ representing node-$i$'s associated set: $y_{i}=+1$, if node-$i$ $\in S_1$, or $y_{i}=-1$, when node-$i$ $\in S_2, \forall i \in V$.
+
+Given that solving this integer quadratic program is NP-complete \cite{GW-Algorithm}, we explore relaxations of $(Q)$. These are obtained by relaxing some of the constraints of $(Q)$, and extending the objective function to the larger space. Consequently, all solutions of $(Q)$ are feasible for the relaxation, and the optimal value of the relaxation serves as an upper bound for $(Q)$'s optimal value. We interpret $(Q)$ as constraining $y_i$ to be a $1$-dimensional unit vector. A number of possible relaxations involve allowing $y_i$ to be a multidimensional vector $v_i$ of unit Euclidean norm. As the linear space spaned by the vectors $v_i$ has dimension at most $n$ (number of graph nodes), we can assume that these vectors belong to $\mathbb{R}^{n}$. More precisely, they belong to the $n$-dimensional unit sphere, $S_n$. At this point, so as to make sure that the resulting optimization problem is, indeed, a relaxation, we must define the cost function such that it reduces to $\frac{1}{2}\sum_{i<j}w_{i j}(1-y_{i}y_{j})$ for vectors lying in a $1$-dimensional space. One way to do this is to replace $y_{i}y_{j}$ with the inner product $v_{i} \cdot v_{j}$ in the expression for $w(S_1, S_2)$. The resulting relaxation, $(P)$, reads:
+
+\begin{equation}
+  \begin{split}
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{i<j}w_{i j}(1-v_{i} \cdot v_{j}) \\
+  (P)\qquad\qquad\qquad&\operatorname{Subject\;to:}v_{i}\in S_n \qquad\qquad\forall i\in V.
+  \end{split}
+\end{equation}
+In the context of this semidefinite programming relaxation, the \acrshort{gw} algorithm follows these steps:
+\begin{enumerate}
+  \item Solve $(P)$, thus obtaining an optimal set of vectors $v_{i}$;
+  \item Let $r$ be a vector uniformly distributed on the unit sphere, $S_n$;
+  \item Set $S_1 = \{i|v_{i} \cdot r \geq 0\}$ and $S_2 = \{i|v_{i} \cdot r < 0\}$.
+\end{enumerate}
+In other words, we choose a random hyperplane in $n$ dimensions, crossing through the origin, and partition the vertices according to whether the vectors $v_{i}$ lie "above" ($v_{i} \cdot r \geq 0$) or "below" ($v_{i} \cdot r < 0$) this hyperplane. Those above the hyperplane are assigned to $S_1$, and those below to $S_2$.
+
+Furthermore, it can be shown that the \acrshort{gw} algorithm has a performance guarantee of:
+\begin{equation}
+  \alpha=\operatorname*{min}_{0\,\leq\,\theta\leq\pi}\,\frac{2}{\pi}\,\frac{\theta}{1\,-\,\cos\,\theta} > \,0.878.
+\end{equation}
+A detailed proof elucidating the appearance of this $0.878$ value is present in section $3$ of \cite{GW-Algorithm}.
+
+Computationally, one defines the positive semidefinite matrix $X \in \mathbb{R}^{n \times n}$, with $X_{ii} = 1$ and $X_{ij} = v_{i} \cdot v_{j} = v_{i}^{T} v_j$, $\forall i, j \in V$. Then, we can solve the following semidefinite program:
+\begin{equation}
+  \begin{split}
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{\text{Edges}}w_{i j}(1-X_{ij}) \\
+  (N)\qquad\qquad\qquad&\operatorname{Subject\;to:}X_{ii} = 1, X \succeq 0.
+  \end{split}
+\end{equation}
+We do possess effective tools and techniques for solving semidefinite programs, enabling the efficient determination of the optimal $X$ matrix. From there, we can extract the vectors $v_{i}$, by performing the square root operation on the matrix $X$. The resulting matrix's columns, or lines – $X$ is symmetric – will correspond to the desired vectors $v_{i}$. This outlines the process for solving $(P)$ as listed earlier.
+
+% Re-read all of this and potentially re-write some things. I'm also not sure if I should just cite the GW paper, for defining semidefinite programming.
+
+% Describe the state-of-the-art algorithms for the MaxCut problem. - Mention classical algorithms, such as the Goemans-Williamson algorithm, and quantum algorithms, such as the Quantum Approximate Optimization Algorithm (QAOA) and the Qubit-Efficient MaxCut Heuristic (QEMC) algorithm.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Hybrid Quantum-Classical State-of-the-Art Algorithms for MaxCut}
+\label{section:Hybrid-Quantum-Classical-State-of-the-Art}
+
+A number of different hybrid quantum-classical algorithms have been proposed to solve the MaxCut problem, leveraging the unique properties of quantum computing to potentially outperform purely classical algorithms. They are designed to exploit quantum superposition and entanglement to explore the solution space more efficiently. In this section, we will briefly mention the state-of-the-art hybrid quantum-classical algorithms for MaxCut, focusing on the Quantum Approximate Optimization Algorithm (\acrshort{qaoa}) and the Qubit-Efficient MaxCut Heuristic Algorithm (\acrshort{qemc}). Due to their variational nature, these algorithms do not have a theoretical performance guarantee, but they have shown promising results in practice.
+
+Presently, the Quantum Approximate Optimization Algorithm (\acrshort{qaoa}), initially introduced in \cite{farhi2014quantum}, is one of the top candidates for achieving meaningful quantum advantage with near-term quantum devices. Although, MaxCut-wise, it has a substantial limitation: it requires a number of qubits equal to the number of graph nodes. This is a significant drawback, as it severely limits the algorithm's scalability to bigger graphs. Hence, why it is believed that "QAOA for Max-Cut requires hundreds of qubits for quantum speed-up" \cite{Guerreschi2019}. After all, our classical algorithms work just fine for small graphs, which is why we do not present performance metrics for basic \acrshort{qaoa}. Alternatively, different \acrshort{qaoa} variations have been proposed to address the issue of high qubit requirements, such as QAOA-in-QAOA \cite{zhou2022qaoainqaoa}, which partitions a large graph into many smaller subgraphs, each of which is easily solved using a separate \acrshort{qaoa} instance. Afterwards, these results are joined together by working through another, this time \textbf{weighted}, MaxCut problem. This approach in particular has proven to yield competitive or even better performance over the best known classical algorithms, i.e. \acrshort{gw}, for graphs up to $2000$ nodes.
+
+A separate problem one might face when implementing \acrshort{qaoa}, that also hinders its application to larger graphs, has to do with qubit connectivity\footnote{Qubit connectivity refers to the pattern or arrangement of connections between qubits in a quantum computing system, determining which qubits can interact directly with each other.}, as \acrshort{qaoa} might require specific connectivity patterns that are not natively available in present-day \acrshort{nisq} devices. To implement these, we are often required to utilize a number of $2$-qubit SWAP gates, which degrade the algorithm's performance by introducing extra noise in the system, and hence errors in our results. Therefore, a parallel line of work has been to develop \acrshort{qaoa} variations that have lesser connectivity requirements, in the sense that they do not depend on arbitrary qubit connectivity. For example, Parity-QAOA \cite{ender2022modular,Ender2023parityquantum} was designed for quantum chips with planar lattice geometry (Figure \ref{fig:Planar_lattice_geometry}), requiring only nearest-neighbour connectivity. Although it necessitates more qubits, it entirely solves this problem.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{Figures/Diagrams/Planar_lattice_geometry.png}
+  \caption{Planar lattice geometry illustration: the circular nodes represent the physical qubits, each of which can interact directly with its nearest neighbours. The lines represent terms of the driver Hamiltonian, from Parity-QAOA \cite{ender2022modular}. The numbers refer to edges in the original graph. Image reproduced from \cite{ender2022modular}.}
+  \label{fig:Planar_lattice_geometry}
+\end{figure}
+
+Furthermore, the Qubit-Efficient MaxCut Heuristic Algorithm (\acrshort{qemc}), introduced in \cite{tenecohen2023variational}, is a quantum-classical hybrid algorithm that aims to solve the MaxCut problem using fewer qubits than \acrshort{qaoa}, therefore extending its applicability to larger graphs. It has shown cutting-edge performance in practice, surpassing the classical state-of-the-art, i.e. \acrshort{gw}, for graphs up to $2048$ nodes. The novelty of this algorithm is that it opens up the door for quantum devices to be used for large MaxCut instances, previously unfeaseble due to qubit number limitations, which rendered \acrshort{qaoa} computations for such large graphs impossible. As was already mentioned, \acrshort{qemc} allows for an exponential compression in the number of needed qubits, enabling its utilization on today's quantum hardware for considerably larger graphs than what would be possible with traditional \acrshort{qaoa}. However, this exponential compression also makes it efficiently simulable classically, which effectively defeats its purpose as a quantum algorithm. For this reason, \acrshort{qemc} is termed a quantum-inspired classical algorithm and, by definition, will not produce any quantum advantage. Either way, we include it in this subsection, since it can always be implemented as a \acrshort{vqa} on current-day \acrshort{nisq} devices.
+
+More recently, different algorithms have been proposed in an attempt to reduce the number of qubits required for larger graphs, without falling into the trap of efficient classical simulability. (After all, we are looking for quantum advantage.) Polynomial compression-based algorithms, such as that proposed in \cite{sciorilli2024largescale}, have too shown promising results. This one in specific \cite{sciorilli2024largescale} is, to the best of our knowledge, boasting the highest quality attained experimentally on sizes up to $7000$ graph nodes, competitive with state-of-the-art classical solvers. Not only that, but their specific qubit-efficient encoding brings in a super-polynomial mitigation of barren plateaus\footnote{In \acrshort{vqa} analysis, barren plateaus are characterized by a vanishing expectation value of $\nabla{\mathcal{L}}$ over random parameter initializations and an exponential decay (in $n$) of its variance. Note that $\mathcal{L}$ refers to the loss function. These are, thus, flat regions of the parameter space, impeding optimization.} as a built-in feature, which constitutes a significant advantage over other \acrshort{vqa}\textcolor{gray}{s}. Curiously enough, our initial idea for the \acrshort{iqaqe} algorithm is quite similar to what is explored in \cite{sciorilli2024largescale}. However, we believe our algorithm to be somewhat more general, by not assuming \textit{a priori} a polynomial compression in the number of qubits.
+
+% I believe this part is okay, now. Maybe re-read it one more time, and ask Carolina to do the same. Add the Parity-QAOA figure, illustrating planar lattice geometry?
+
+% Find papers showing that QAOA has been used/employed for solving MaxCut in x graphs.
+
+% Describe, albeit briefly, the state-of-the-art quantum algorithms for the MaxCut problem. - Mention the Quantum Approximate Optimization Algorithm (QAOA) and the Qubit-Efficient MaxCut Heuristic (QEMC) algorithm. No need to explain them, as they will be further developed in the next sections.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum Computing Primer}
+\label{section:QC_Primer}
+
+In this section, we present a brief introduction to quantum computing, focusing on its fundamental ideas and principles. We begin with an overview of the general concepts, followed by a discussion of quantum gates and circuits, crucial for understanding quantum algorithms. This groundwork will prepare us to delve into the specifics of variational quantum algorithms and their application to the MaxCut problem.
+
+% I feel like I should add some more mathematics to this. Refer to Bence's master thesis as a reference, e.g. Done!
+
+% Remember to go over the papers in the 'papers' folder! Add those that aren't there yet! Maybe re-check whether to include some of the 'misc' references (IonQ/Google qubit-types, e.g. Isn't there a paper where this is refered?) I should try to replace these with actual papers. The Pennylane tutorials are fine though, I think. They even provide their references, which can be cross-checked any time. For the Google, i.e., can utilize the Sycamore paper, for quantum advantage. There's probably something similar for IonQ, and others (maybe not quantum advantage, but still). Update: this is done!
+
+% Change all the important people's names to italics? I've removed italics from everyone's names now. Done!
+
+% Remember that we have an 80 page maximum limit! This can be extended to 100 in appendices, and the like.
+
+\subsection*{General concepts and mathematical formalism}
+\vspace*{-5mm}{\scriptsize \noindent (This description is inspired by \cite{nielsen2010quantum}.)}
+
+Quantum computing makes use of the foundational principles of quantum mechanics in an attempt to extract some sort of quantum advantage from them. Instead of using classical binary digits, quantum computers use their quantum analog, qubits. In practice, qubits can be any two-state quantum system. Said states are, unequivocally, associated with the states $\ket{0}$ and $\ket{1}$, conventionally, very much like in classical computing when one uses bits. The primary distinction lies in the fact that a qubit, being a quantum system, can exist in a superposition of both states generally denoted as:
+\begin{equation}
+  \mathcal{H}^2 \ni \ket{\psi} = \alpha \ket{0} + \beta \ket{1},
+\end{equation}
+where $\alpha, \beta \in \mathbb{C}$, with $\abs{\alpha}^2 + \abs{\beta}^2 = 1$. This ensures probability normalization to $1$, as, according to the famous Born rule, the probability of measuring the qubit in state $\ket{0}$ is $\abs{\bra{0}\ket{\psi}}^2 = \abs{\alpha}^2$, and in state $\ket{1}$ is $\abs{\bra{1}\ket{\psi}}^2 = \abs{\beta}^2$.
+
+In the same vein, one can compose (represented by the tensor product) $n$ qubits to obtain an $n$-qubit state:
+\begin{equation}\label{eq:n_qubit_state}
+  \ket{\psi}=\bigotimes_{i=0}^{n-1}(\alpha_{i}\ket{0}\ +\beta_{i}\ket{1}).
+\end{equation}
+More generally, we can express an arbitrary pure state $\ket{\psi}$ by a normalized linear combination of the computational basis states $\ket{b_0 b_1 ... b_{n-1} b_n} \coloneq \ket{b_0} \otimes \ket{b_1} \otimes ... \otimes \ket{b_{n-1}} \otimes \ket{b_n}$:
+\begin{equation}\label{eq:general_n_qubit_state}
+  \ket{\psi} = \sum_{\boldsymbol{b} \in \{0, 1\}^{\otimes n}} \alpha_{\boldsymbol{b}} \ket{b_0 b_1 ... b_{n-1} b_n},
+\end{equation}
+where $\sum_{\boldsymbol{b} \in \{0, 1\}^{\otimes n}} \abs{\alpha_{\boldsymbol{b}}}^2 = 1$. This superposition phenomenon (mathematically characterized by the linear combination of basis states), utterly impossible in classical physics, brings unprecedented computational power under certain scenarios, as it introduces a kind of built-in parallelism in quantum computing, a highly desirable feature for any computational scheme.
+
+In addition to this, quantum computing also exploits entanglement as a resource. Entanglement allows for intricate correlations between qubits, which have no classical counterpart and are believed to offer computational speed-ups, although it is yet unclear exactly how. An entangled state, by definition, is one that cannot be expressed as the tensor product of individual qubit states, i.e., it cannot be represented in the form of Eq. \ref{eq:n_qubit_state}. The most famous example of entangled states are the Bell states, representing what are known as two-qubit (or bipartite) maximally entangled states. Such Bell states are reproduced below:
+\begin{equation} % Check if these are correct!
+  \begin{aligned}
+  \ket{\Phi^+} &= \frac{1}{\sqrt{2}}(\ket{00} + \ket{11}), \quad
+  \ket{\Phi^-} = \frac{1}{\sqrt{2}}(\ket{00} - \ket{11}), \\
+  \ket{\Psi^+} &= \frac{1}{\sqrt{2}}(\ket{01} + \ket{10}), \quad
+  \ket{\Psi^-} = \frac{1}{\sqrt{2}}(\ket{01} - \ket{10}).
+  \end{aligned}
+\end{equation}
+Clearly, these states cannot be expressed as a tensor product of two individual qubit states. From a practical standpoint, Bell states frequently serve as foundational elements in advanced techniques like quantum teleportation and quantum cryptography. Quantum Key Distribution (\acrshort{qkd}) protocols, for example, frequently rely on entangled Bell pairs to distribute secure keys for encrypting and decrypting messages.
+
+Another key topic in quantum information theory is the distinction between pure and mixed states. So far, we have only been treating pure states, which are represented by a single ket vector in some Hilbert space. Mixed states, on the other hand, are represented by density matrices, which are positive semidefinite matrices with unit trace. These matrices are used to describe a statistical ensemble of quantum states. The density matrix $\rho$ of a quantum state $\ket{\psi}$ is defined as:
+\begin{equation}
+  \rho = \dyad{\psi}{\psi}
+\end{equation}
+In the more general case of a statistical ensemble of states $\ket{\psi_i}$, each with probability $p_i$, the density matrix $\rho$ is given by:
+\begin{equation}
+  \rho = \sum_i p_i \dyad{\psi_i}{\psi_i}.
+\end{equation}
+It's crucial to avoid confusing this with superposition, as a mixed state comprises a statistical ensemble of pure states, while superposition pertains to a single state that is a linear combination of other states. For instance, the state $\ket{\psi_S} = \frac{1}{\sqrt{2}}\left(\ket{0} + \ket{1}\right)$ represents a superposition of $\ket{0}$ and $\ket{1}$, whereas the state $\rho_M = \frac{1}{2}\left(\dyad{0}{0} + \dyad{1}{1}\right)$ denotes a mixed state, signifying that half the states in the ensemble are in state $\ket{0}$ and the other half in state $\ket{1}$. Unlike the probabilistic mixture ($\rho_M$), the superposition ($\psi_S$) can exhibit quantum interference, hence why it is important to distinguish between the two. If desired, this distinction can also be observed in the off-diagonal terms of the density matrix, referred to as coherences, which are responsible for quantum interference effects: the off-diagonal terms of $\rho_{M}$ are zero, whereas those of $\rho_{S} = \ket{\psi_S}\bra{\psi_S} = \frac{1}{4}\left(\dyad{0}{0} + \dyad{0}{1} + \dyad{1}{0} + \dyad{1}{1}\right)$ are not.
+
+Currently, numerous quantum computing architectures are in competition and the ultimate victor remains uncertain. Nevertheless, the most prominent architectures have qubits composed of either photons \cite{slussarenko2019photonic, Xanadu_Photonics}, neutral atoms (using Rydberg states) \cite{Henriet2020quantumcomputing, Wu_2021}, trapped ions \cite{bruzewicz2019trapped}, semiconductors (still in their infancy), or, most notably, superconducting circuits \cite{Huang_2020, SC_Qubits} – employed by giants like IBM and Google in their quantum processors. Looping back to the definition of a qubit, considering a photonic quantum computer, it becomes rather straightforward and natural to map the photons' vertical and horizontal polarizations to the $\ket{0}$ and $\ket{1}$ states, respectively. Once again, this mapping is analogous to how classical computing maps the current/no current states to 1 and 0.
+
+The next step is to understand how these so-called quantum circuits act on our qubits, and how they can be used to perform quantum computations. This is where quantum gates come into play.
+
+% Things that are yet to be done in regards to this section:
+% Mention the Hadamard gate somewhere! It's a fundamental gate in quantum computing. Done!
+
+% Present proof? Using only R_x and R_z, I know this is possible. Done!
+
+% Wikipedia link? Find something else, maybe? Probably. Done!
+
+\subsection*{Quantum gates and circuits}
+Presently, quantum computers are being designed predominantly with a circuit-based architecture. These circuits serve as the quantum equivalent of classical logic circuits, however, instead of the typical AND, OR, and NOT gates, quantum circuits feature quantum gates. These gates apply specific transformations to qubits, based on their definitions, taking an initial state $\ket{\psi}$ to an output state $\ket{\phi} = U\ket{\psi}$, for some gate $U$, \textbf{designed to be unitary}, i.e., $U^{\dagger}U = UU^{\dagger} = I$, where $I$ is the identity matrix. Unitary transformations preserve the normalization of quantum states and the inner product between states, which are essential properties in quantum mechanics. Additionally, they ensure that quantum operations are reversible, meaning that information is not lost during computation. This [unitary gates] can also be seen as a natural consequence of the Schrödinger equation, governing the time evolution of quantum systems, requiring said evolution to be described by a unitary operator.
+
+The most frequently used quantum gates consist of rotations around each of the three Cartesian axes, represented as complex exponentials of the Pauli $x$, $y$ and $z$ matrices ($\sigma_x$, $\sigma_y$ and $\sigma_z$). The Pauli matrices are defined as: (Note the alternative notation, $\boldsymbol{X}$, $\boldsymbol{Y}$ and $\boldsymbol{Z}$, for the sake of clarity.)
+\begin{equation}
+  \boldsymbol{X} \coloneq \sigma_x =
+  \begin{pmatrix}
+    0 & 1 \\
+    1 & 0
+  \end{pmatrix},
+  \quad
+  \boldsymbol{Y} \coloneq \sigma_y =
+  \begin{pmatrix}
+    0 & -i \\
+    i & 0
+  \end{pmatrix},
+  \quad
+  \boldsymbol{Z} \coloneq \sigma_z =
+  \begin{pmatrix}
+    1 & 0 \\
+    0 & -1
+  \end{pmatrix}.
+\end{equation}
+Furthermore, when we mention rotations, these are to be seen in the Bloch sphere, which is a geometrical representation of the pure state space of a two-level quantum system, an illustration of which can be seen in Figure \ref{fig:Bloch_sphere}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Figures/Diagrams/Bloch_sphere.png}
+    \caption{Bloch sphere representation. The sphere's north  and south poles correspond to states $\ket{0}$ and $\ket{1}$, respectively. Reproduced from \cite{Bloch_Sphere_Ref}.}
+    \label{fig:Bloch_sphere}
+\end{figure}
+\noindent The aforementioned rotation gates can be written as: $R_x(\theta) = e^{-i\theta\sigma_x/2}$, $R_y(\theta) = e^{-i\theta\sigma_y/2}$, and $R_z(\theta) = e^{-i\theta\sigma_z/2}$. In matrix form, this reads:
+\begin{equation}
+  \resizebox{0.90\hsize}{!}
+  {$
+  % X rotation matrix
+  R_x(\theta) =
+  \begin{pmatrix}
+    \cos\left(\frac{\theta}{2}\right) & -i\sin\left(\frac{\theta}{2}\right) \\
+    -i\sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right)
+  \end{pmatrix},
+  \quad
+  % Y rotation matrix
+  R_y(\theta) =
+  \begin{pmatrix}
+    \cos\left(\frac{\theta}{2}\right) & -\sin\left(\frac{\theta}{2}\right) \\
+    \sin\left(\frac{\theta}{2}\right) & \cos\left(\frac{\theta}{2}\right)
+  \end{pmatrix},
+  \quad
+  % Z rotation matrix
+  R_z(\theta) =
+  \begin{pmatrix}
+    e^{-i\frac{\theta}{2}} & 0 \\
+    0 & e^{i\frac{\theta}{2}}
+  \end{pmatrix},
+  $}
+\end{equation}
+These will frequently appear in quantum circuits, as they are the most basic quantum gates, in the sense that all other single-qubit gates can be re-constructed from them. I.e., for any unitary single-qubit gate $U$, one can always find a decomposition $U=e^{i\phi}R_{Z}(\gamma)R_{X}(\beta)R_{Z}(\alpha)$. (Proven in \cite{Barenco_1995}.)
+% Present proof? Using only R_x and R_z, I know this is possible. I should present a reference for this, though. Done!
+
+For illustrative purposes, to elucidate how single-qubit gates act on qubits, it is quite simple to verify that the $\sigma_x$ matrix (alternative symbol, $\boldsymbol{X}$) behaves exactly like a NOT gate. This correspondence is established through a $180^{\circ}$ rotation around the $x-$axis. Mathematically,
+% X|0> = |1> 
+\begin{equation}
+\boldsymbol{X} = 
+\begin{pmatrix}
+0 & 1 \\
+1 & 0
+\end{pmatrix},
+\end{equation}
+such that:
+\begin{equation}
+\boldsymbol{X}\ket{0}
+=
+\begin{pmatrix}
+0 & 1 \\
+1 & 0
+\end{pmatrix}
+\begin{pmatrix}
+1 \\
+0
+\end{pmatrix}
+=
+\begin{pmatrix}
+0 \\
+1
+\end{pmatrix}
+=
+\ket{1}.
+\end{equation}
+Another essential gate found in most quantum algorithms is the Hadamard gate. It can be represented as the following linear combination of $\boldsymbol{X}$ and $\boldsymbol{Z}$ matrices: $H = \frac{1}{\sqrt{2}}\left(\boldsymbol{X} + \boldsymbol{Z}\right)$, and is particularly useful for creating superpositions, as it maps the state $\ket{0}$ to $\frac{1}{\sqrt{2}}(\ket{0} + \ket{1}) \coloneq \ket{+}$, and $\ket{1}$ to $\frac{1}{\sqrt{2}}(\ket{0} - \ket{1}) \coloneq \ket{-}$.
+% Re-read this bit on the Hadamard gate.
+
+In addition to these simple one-qubit quantum gates, there are also gates designed for multiple qubits. For instance, consider the controlled-NOT gate (CNOT), which does exactly what its name suggests: if the control qubit is in state $\ket{1}$, it applies NOT to the test qubit, whereas if it is in state $\ket{0}$ instead, nothing happens. The CNOT gate is also quite prevalent in quantum circuits, playing a vital role in creating entanglement between qubits, which is a crucial resource in quantum computing. The circuit representation and equivalent matrix form of the CNOT gate are presented below, in Figure \ref{fig:CNOT}.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}[t]{0.45\textwidth}
+      \centering
+      \includegraphics[width=.75\textwidth]{Figures/Diagrams/CNOT_Gate.png}
+      \caption{CNOT gate – Circuit representation. The black circle identifies the control qubit. The other qubit is the test qubit.}
+      \label{fig:CNOT_Gate}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.45\textwidth}
+      \centering
+      \includegraphics[width=.50\textwidth]{Figures/Diagrams/CNOT_Matrix.png}
+      \caption{CNOT gate – Equivalent matrix form.}
+      \label{fig:CNOT_Matrix}
+  \end{minipage}
+  \caption{Two-qubit gate example – The controlled-NOT gate.}
+  \label{fig:CNOT}
+\end{figure}
+
+More generally, within a quantum circuit, an intricate network of interconnected qubits and gates collaborates to execute a specific algorithm. For example, the circuit depicted in Figure \ref{fig:QCircuit}, below, is designed for the implementation of the renowned Grover's search algorithm \cite{Grover}.
+
+% Taken from Wikipedia. Should, then, include everything in my references!
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Figures/Diagrams/Grover_Circuit.png}
+    \caption{Quantum circuit utilized in the famous Grover's search algorithm \cite{Grover}. Integraly reproduced from \cite{e26030216}.}
+    \label{fig:QCircuit}
+\end{figure}
+This is a purely quantum algorithm, different from what we intend to explore in this work. Nevertheless, it serves as a good example of how quantum circuits can be used to implement complex quantum algorithms.
+
+An additional point of interest is the potential for classical simulation of quantum circuits. Quantum gates, being akin to mathematical operators, can always be expressed in matrix form. Consequently, analyzing the impact of a series of quantum gates, i.e., a quantum circuit, on a specific quantum state is achievable by sequentially applying the relevant operators, as they appear in the circuit. At the end of this process, we arrive at a quantum state typically distinct from the initial state. This entire simulation can be executed classically. However, its scalability is severely limited, as the number of states, constituting our computational basis, representable with $n$ qubits grows exponentially, at a rate of $2^n$. As one might anticipate, this very quickly becomes unmanageable. Eventually, either memory constraints impede the storage of such extensive states, or the computations slow down to a point where the endeavor loses practicality. Effectively, simulating quantum computers becomes challenging beyond a few dozen qubits. Some tabletop calculations suggest that simulating $28$ qubits would necessitate approximately $13$ GB of memory, reaching the theoretical maximum capacity of a modern standard $16$ GB personal computer. It's important to note that for each additional qubit, memory requirements double. For instance, simulating $50$ qubits would demand about $54$ Petabytes of memory, and for $51$ qubits, approximately $108$ PB, and so forth. These estimations are based on the assumption that a complex number is stored as two Python floats, each requiring $24$ bytes of memory, thus a complex amplitude requires $48$ bytes of memory to be stored. Then, one such amplitude is required for each of the $2^{n}$ basis states, for $n$ qubits.
+
+% This could be "Quantum Computing".
+
+% The research should be supported with a comprehensive list of references.
+% These should appear whenever necessary, in the limit, from the first to the last chapter.
+
+% Regarding the exponential scaling: maybe it'd be interesting to provide some numbers. In other words, try to find the "greatest" number of qubits one can classically simulate, at the moment, and connect this to a number of bytes (memory-wise): Some Exabytes?
+
+% I feel like if I am going to be including some text from my PIC2 report, I should further explain some of these things better.
+
+% A reference can be cited in any of the following ways:
+% %
+% \begin{itemize}
+%   \item Citation mode \#1 - \quad \cite{Marta:AeroBest2021}
+%   \item Citation mode \#2 - \quad \citet{Marta:AeroBest2021}
+%   \item Citation mode \#3 - \quad \citep{Marta:AeroBest2021}
+%   \item Citation mode \#4 - \quad \citet*{Marta:AeroBest2021}
+%   \item Citation mode \#5 - \quad \citep*{Marta:AeroBest2021}
+%   \item Citation mode \#6 - \quad \citealt{Marta:AeroBest2021}
+%   \item Citation mode \#7 - \quad \citealp{Marta:AeroBest2021}
+%   \item Citation mode \#8 - \quad \citeauthor{Marta:AeroBest2021}
+%   \item Citation mode \#9 - \quad \citeyear{Marta:AeroBest2021}
+%   \item Citation mode \#10 - \quad \citeyearpar{Marta:AeroBest2021}
+% \end{itemize}
+
+% The references may include books~\cite{Marta:AeroBest2021}, articles in journals~\cite{Morgado:2022:SAMO}, part of a collection of books~\cite{jameson:adjointns}, articles in conferences~\cite{Alves:ICUAS:2022}, master theses~\cite{Pacheco:MSc} and PhD theses~\cite{Rodrigues:PhD}.
+
+% Several citations can be made simultaneously as \cite{Campos:2021:QJMAM,Alexandre:2020:PLOS}.
+
+% This is often the default bibliography style adopted (numbers following the citation order), according to the options:
+
+% {\tt \textbackslash usepackage\{natbib\}} in file {\tt Thesis\_Preamble.tex},\\
+% {\tt \textbackslash bibliographystyle\{abbrvnat\}} in file {\tt Thesis.tex}.\\
+
+% Notice however that this style can be changed from numerical citation order to authors' last name with the options:
+
+% {\tt \textbackslash usepackage[numbers]\{natbib\}} in file {\tt Thesis\_Preamble.tex},\\
+% {\tt \textbackslash bibliographystyle\{abbrvunsrtnat\}} in file {\tt Thesis.tex}. \\
+
+% Multiple citations are compressed when using the {\tt sort\&compress} option when loading the {\tt natbib} package as {\tt \textbackslash usepackage[numbers,sort\&compress]\{natbib\}} in file {\tt Thesis\_Preamble.tex}, resulting in citations like \cite{Pacheco:2024:JAUTO,Portugal:2024:MODELLING,Matos:2022:AEROSPACE,Rodrigues:2020:SAMO,Rodrigues:2019:RENE,Campos:2018:JSV,Rodrigues:2018:CAF,Campos:2015:GAFD,Marta:2014:JPP,Rodrigues:2014:SMO,Campos:2014:IJMS,Marta:2013:AIAAJ,Marta:2013:CAF,Marta:2010:CAF,Marta:2007:IJCFD}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Hybrid Quantum-Classical Computing}
+\label{section:HQCC}
+
+% Other models. - Variational quantum algorithms, Parameterized quantum circuits, etc.
+
+Hybrid quantum-classical computing refers to a computational approach that combines elements of both classical and quantum computing paradigms to leverage the strengths of each. In this model, classical processors and quantum processors work in tandem to solve complex problems more efficiently than either could achieve alone. This collaborative strategy aims to harness quantum computing's unique capabilities while mitigating the challenges and limitations associated with quantum systems, such as error correction and decoherence. As of today, the synergy between classical and quantum elements holds promise for addressing complex real-world problems in areas like optimization, machine learning, and cryptography.
+
+\subsection{Variational Quantum Algorithms}
+\label{subsection:VQA}
+
+% I've only just copied things from my PIC2 report. I still need to re-read everything and add more information, if I so deem important. Even this copy-paste'ing isn't done yet. Put this in a private GitHub repo., I think. [Good, for security reasons, in case somethings happens, I have a backup.]
+
+% In describing ansatzë, I should mention that, in general, it is always better to use problem-inspired ansatzë. If they're well designed/implemented, they should always yield better results. Also, when presenting examples of ansatzë, I can show some images of those.
+
+% I should fact check some of what I say in the PIC2 report regarding problem-agnostic and -inspired ansatzë. I feel like I might have said something wrong there. [About parameter number and depth, mostly, and, thus trainability.]
+
+The hallmark of HQCC is what are called variational quantum algorithms (VQAs), which correspond to hybrid-quantum algorithms, typically realized through a parameterized quantum circuit. Additionally, as part of their implementation, the parameters are subjected to training, in order to achieve the desired outcomes (By minimizing the value of a cost function). As such, VQAs can be thought of as the quantum analogue of highly successful machine-learning methods, such as neural networks. Moreover, since they outsource the circuit parameters' optimization to a classical optimizer, exterior to the quantum processor, VQAs leverage the full toolbox of classical optimization. As a whole, this approach has the added advantage of keeping the quantum circuit depth shallow, which, ultimately, helps in mitigating the overall noise level. This is crucial, since it allows for these algorithms to be implemented in the current NISQ (Noisy Intermediate Scale Quantum) era, not requiring complete fault-tolerance to produce reasonable results. A wide array of possible applications has been examined for VQAs, essentially covering all the use cases envisioned by researchers for quantum computers (See Figure \ref{fig:VQAs_Applications}). Despite all this, it is important to note that VQAs are not without fault. There is still a lot of work to be done regarding their trainability, accuracy and efficiency. Either way, they are undoubtedly the most promising candidates for achieving useful quantum advantage in the near future, which is exactly why they have come under the spotlight, drawing the attention of numerous scientists over the past few years.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{Figures/Diagrams/VQAs_Applications.png}
+  \caption{Applications of variational quantum algorithms. Sourced from Ref. \cite{Cerezo_2021}, in its entirety.}
+  \label{fig:VQAs_Applications}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Quantum Approximate Optimization Algorithm (QAOA) Review}
+\label{subsubsection:QAOA}
+
+% Include/remove "Review"?
+
+Describe QAOA - Explain how it works, its advantages and disadvantages, and its potential applications.
+
+There's a mistake in eq. (5), in the PIC2 report, that I should correct, once I include it here. (It's the coefficients $\gamma$ and $\beta$!)
+
+I should also change the labels of the problem and mixer Hamiltonians, so they always match the figures. (Sometimes, it's $H_P$ and $H_M$, sometimes it's $H_C$ and $H_B$.)
+
+Also, mention that $\ket{\psi_0}$ is the uniform superposition state, and that it's the initial state entering the ansatz.
+
+Specify that $U_{H_{P_l}} = \exp{-iH_P\gamma_l}$. Or something like that.
+
+I also feel like I don't mention that we use a number of qubits equal to the number of nodes. I should do that. And, then, explain how to interpret the results. (0 - One partition; 1 - The other partition.)
+
+I should present an explicit (with the actual CNOTs) QAOA ansatz, maybe for the usual $8$-node graph. Or, for the smaller, trivial $4$-node graph. This elucidates the idea of the ansatz. This would also require me to explain how $\exp{-i\gamma Z_i Z_j}$ is transpiled/represented as a quantum circuit. (Look at Bence's TeX file: there's an example there, for $\exp{-i\gamma Z_i Z_j Z_k Z_l}$, I believe.)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Variational Qubit-Efficient MaxCut Heuristic Algorithm (QEMC) Review}
+\label{subsubsection:QEMC}
+
+% Include/remove "Review"?
+
+Describe QEMC - Explain how it works, its advantages and disadvantages, and its potential applications.
+
+The reason why we can efficiently iterate through the values of $B$ is that we have a reduced number of qubits (exponential compression). [I think so, at least.] We always say the set with $B$ blue nodes is the smallest. Aka., $B \leq N/2$, where $N$ is the graph's number of nodes.
+
+Is there any reason for this, though? What would happen if we said $B > N/2$? (Aka., the blue set is the one with the most nodes.)
+
+Mention that the problem-agnostic "Strongly-Entangling-Layers" ansatz might result in "too much entanglement", thus hindering the results.
+
+Go over the last paragraph of the QEMC section again. Something about the discussion on "shot number" is bugging me.

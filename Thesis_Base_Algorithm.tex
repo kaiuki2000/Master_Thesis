@@ -1,0 +1,28 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                      %
+%     File: Base_Algorithm.tex                                      %
+%     Tex Master: Thesis.tex                                           %
+%                                                                      %
+%     Author: Andre C. Marta                                           %
+%     Last modified :  4 Mar 2024                                      %
+%                                                                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Base iQAQE Algorithm}
+\label{chapter:Base Algorithm}
+
+In this chapter, we shall describe the base hybrid quantum-classical algorithm that we're proposing in this work. This algorithm is based on the Quantum Approximate Optimization Algorithm (QAOA) and the Qubit-Efficient MaxCut Heuristic (QEMC) algorithm.  It is called: Interpolated QAOA/QEMC Hybrid Algorithm (iQAQE).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Interpolated QAOA/QEMC Hybrid Algorithm (iQAQE)}
+\label{section:iQAQE}
+
+Describe iQAQE - Explain how it works, its advantages and disadvantages, and its potential applications. Also, mention how iQAQE has many degrees of freedom that can be tunes, which led to the development of many variations of iQAQE, springing from the original idea. These will be described in the \nameref{chapter:Schemes_and_Results} chapter.
+
+In the PIC2 report, I sort of contradict myself in the end when I mention that "[...] it is somewhat inefficient to iterate over the possible $B$ values [...]". I should correct this (just remove this sentence).
+
+Sub-lists' cardinalities interval: $[1, 2^N -1]$. In the PIC2 report, it states $[1, 2^{N -1}]$, which is, indeed, what I used for the simulations. However, there's no reason why we shouldn't be allowed to consider $2^N -1$ maximum number of basis states per list. I should put this disclaimer somewhere in here (Thesis).
+
+In the "Motivation behind this work" section in the PIC2 report, there's a number of things that need to be re-written, before being included here! Remember to do this! (Inefficient $B$ iterations, better trainability - fewer parameters?, etc.)
+
+There's also a bit of redundancy in this chapter.
