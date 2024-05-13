@@ -61,14 +61,16 @@ Lastly, all simulations were performed using the Adam classical optimizer \cite{
 
 % Description of the numerical implementation of the QAOA model.
 
+Below, we present the pseudo-code representation of the Quantum Approximate Optimization Algorithm (QAOA) implementation, as described in section \ref{subsubsection:QAOA}.
+
 \begin{algorithm}[H]
    \caption{Quantum Approximate Optimization Algorithm}\label{alg:QAOA}
    \begin{algorithmic}
-   \Require $\texttt{(n\_layers not None) and (init_parameters not None)}$
+   \Require $\texttt{(n\_layers not None) and (init\_parameters not None)}$
    \Ensure $\texttt{n\_qubits = self.n\_nodes}$
-   \State 1. Define $U_C$ and $U_M$ as for usual \acrshort{qoao}
-   \State 2. Create the variational quantum circuit, using a \texttt{@qml.qnode}, based on the \acrshort{qoao} ansatz (Layering $U_C$ and $U_M$ $p$ times, for $p = \texttt{n\_layers}$ layers). Note that we start with \texttt{qml.Hadamard} on all wires
-   \State 3. The objective function is defined as the expectation value of the problem Hamiltonian, obtained from the previously defined \texttt{@qml.qnode}, through \texttt{qml.expval(H_C)}
+   \State 1. Define $U_C$ and $U_M$ as for usual \acrshort{qaoa}
+   \State 2. Create the variational quantum circuit, using a \texttt{@qml.qnode}, based on the \acrshort{qaoa} ansatz (Layering $U_C$ and $U_M$ $p$ times, for $p = \texttt{n\_layers}$ layers). Note that we start with \texttt{qml.Hadamard} on all wires
+   \State 3. The objective function is defined as the expectation value of the problem Hamiltonian, obtained from the previously defined \texttt{@qml.qnode}, through \texttt{qml.expval(H\_C)}
    \State 4. Initialize the Adam optimizer, using its default parameters
    \State 5. Start timer \& training:
    \While{Stopping criteria \texttt{not True}}
@@ -81,6 +83,8 @@ Lastly, all simulations were performed using the Adam classical optimizer \cite{
    \State 8. Use that to obtain the computed partition \& respective cut value
    \end{algorithmic}
 \end{algorithm}
+
+All of the developed code has been compiled in a GitHub repository, available at \url{https://github.com/kaiuki2000/HQCC_Code_Implementations/tree/main}. For access to the code, please contact the author.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Qubit-Efficient MaxCut Heuristic (QEMC)}
