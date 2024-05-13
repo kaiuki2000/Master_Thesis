@@ -412,25 +412,77 @@ An additional point of interest is the potential for classical simulation of qua
 
 % Other models. - Variational quantum algorithms, Parameterized quantum circuits, etc.
 
-Hybrid quantum-classical computing refers to a computational approach that combines elements of both classical and quantum computing paradigms to leverage the strengths of each. In this model, classical processors and quantum processors work in tandem to solve complex problems more efficiently than either could achieve alone. This collaborative strategy aims to harness quantum computing's unique capabilities while mitigating the challenges and limitations associated with quantum systems, such as error correction and decoherence. As of today, the synergy between classical and quantum elements holds promise for addressing complex real-world problems in areas like optimization, machine learning, and cryptography.
+Hybrid quantum-classical computing refers to a computational approach that combines elements of both classical and quantum computing paradigms to leverage the strengths of each. In this model, classical processors and quantum processors work in tandem to solve complex problems more efficiently than either could achieve alone. This collaborative strategy aims to harness quantum computing's unique capabilities while mitigating the challenges and limitations associated with quantum systems, such as error correction and decoherence. As of today, the synergy between classical and quantum elements holds promise for addressing complex real-world problems in areas like optimization, machine learning, and cryptography (cf. Figure \ref{fig:VQAs_Applications}).
 
 \subsection{Variational Quantum Algorithms}
 \label{subsection:VQA}
 
-% I've only just copied things from my PIC2 report. I still need to re-read everything and add more information, if I so deem important. Even this copy-paste'ing isn't done yet. Put this in a private GitHub repo., I think. [Good, for security reasons, in case somethings happens, I have a backup.]
+% I've only just copied things from my PIC2 report. I still need to re-read everything and add more information, if I so deem important. Even this copy-paste'ing isn't done yet. Put this in a private GitHub repo., I think. [Good, for security reasons, in case somethings happens, I have a backup.] Done!
 
-% In describing ansatzë, I should mention that, in general, it is always better to use problem-inspired ansatzë. If they're well designed/implemented, they should always yield better results. Also, when presenting examples of ansatzë, I can show some images of those.
+% In describing ansatzë, I should mention that, in general, it is always better to use problem-inspired ansatzë. If they're well designed/implemented, they should always yield better results. Also, when presenting examples of ansatzë, I can show some images of those. Done!
 
 % I should fact check some of what I say in the PIC2 report regarding problem-agnostic and -inspired ansatzë. I feel like I might have said something wrong there. [About parameter number and depth, mostly, and, thus trainability.]
 
-The hallmark of HQCC is what are called variational quantum algorithms (VQAs), which correspond to hybrid-quantum algorithms, typically realized through a parameterized quantum circuit. Additionally, as part of their implementation, the parameters are subjected to training, in order to achieve the desired outcomes (By minimizing the value of a cost function). As such, VQAs can be thought of as the quantum analogue of highly successful machine-learning methods, such as neural networks. Moreover, since they outsource the circuit parameters' optimization to a classical optimizer, exterior to the quantum processor, VQAs leverage the full toolbox of classical optimization. As a whole, this approach has the added advantage of keeping the quantum circuit depth shallow, which, ultimately, helps in mitigating the overall noise level. This is crucial, since it allows for these algorithms to be implemented in the current NISQ (Noisy Intermediate Scale Quantum) era, not requiring complete fault-tolerance to produce reasonable results. A wide array of possible applications has been examined for VQAs, essentially covering all the use cases envisioned by researchers for quantum computers (See Figure \ref{fig:VQAs_Applications}). Despite all this, it is important to note that VQAs are not without fault. There is still a lot of work to be done regarding their trainability, accuracy and efficiency. Either way, they are undoubtedly the most promising candidates for achieving useful quantum advantage in the near future, which is exactly why they have come under the spotlight, drawing the attention of numerous scientists over the past few years.
+The hallmark of \acrshort{hqcc} is what are called variational quantum algorithms (\acrshort{vqa}\textcolor{gray}{s}), which correspond to hybrid quantum-classical algorithms, typically realized through a parameterized quantum circuit (\acrshort{pqc}). Additionally, as part of their implementation, the parameters are subjected to training in order to achieve the desired outcomes, by minimizing the value of a cost function. As such, \acrshort{vqa}\textcolor{gray}{s} can be thought of as the quantum analogue of highly successful machine-learning methods, such as neural networks. Moreover, since they outsource the circuit parameters' optimization to a classical optimizer, exterior to the quantum processor, \acrshort{vqa}\textcolor{gray}{s} leverage the full toolbox of classical optimization. As a whole, this approach has the added advantage of keeping the quantum circuit depth shallow, which, ultimately, helps in mitigating the overall noise level. This is crucial, since it allows for these algorithms to be implemented in the current \acrshort{nisq} (Noisy Intermediate Scale Quantum) era, not requiring complete fault-tolerance to produce reasonable results. A wide array of possible applications has been examined for \acrshort{vqa}\textcolor{gray}{s}, essentially covering all the use cases envisioned by researchers for quantum computers (See Figure \ref{fig:VQAs_Applications}). Despite all this, it is important to note that \acrshort{vqa}\textcolor{gray}{s} are not without fault. There is still a lot of work to be done regarding their trainability, accuracy and efficiency. Either way, they are undoubtedly the most promising candidates for achieving useful quantum advantage in the near future, which is exactly why they have come under the spotlight, drawing the attention of numerous scientists over the past few years.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{Figures/Diagrams/VQAs_Applications.png}
-  \caption{Applications of variational quantum algorithms. Sourced from Ref. \cite{Cerezo_2021}, in its entirety.}
+  \includegraphics[width=0.65\textwidth]{Figures/Diagrams/VQAs_Applications.png}
+  \caption{Applications of variational quantum algorithms. Sourced from \cite{Cerezo_2021}, in its entirety.}
   \label{fig:VQAs_Applications}
 \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{Figures/Diagrams/VQA_Schematic.png}
+  \caption{Schematic diagram of a variational quantum algorithm. Adapted from \cite{Cerezo_2021}.}
+  \label{fig:VQA_Schematic}
+\end{figure}
+
+% I should re-read EVERYTHING to see if there aren't many repetitions from previously mentioned things.
+
+\subsubsection{Basic structure of a VQA}
+\vspace*{-5mm}{\scriptsize \noindent (This description is heavily inspired by \cite{Cerezo_2021}.)}
+
+This section provides an overview of the essential components of \acrshort{vqa}\textcolor{gray}{s}. Kicking off the development of a \acrshort{vqa} involves defining a cost (or loss) function, $C$, that encodes the solution to the problem. Following this, an ansatz is suggested, that is, a quantum operation that relies on a set of continuous or discrete parameters, $\boldsymbol{\theta}$, subject to optimization. In other words, we propose the functional form/structure of the parameterized quantum circuit. Afterwards, the suggested ansatz undergoes training, within a hybrid quantum-classical loop (cf. Figure \ref{fig:VQA_Schematic}), to address the following optimization task:
+\begin{equation}\label{eq:Optimization}
+  \boldsymbol{\theta}^{\star} = \arg \min_{\boldsymbol{\theta}} C(\boldsymbol{\theta}),
+\end{equation}
+corresponding to the minimization of the selected cost function. The distinctive feature of \acrshort{vqa}\textcolor{gray}{s} is their application of a quantum computer to estimate the cost function, $C(\boldsymbol{\theta})$, and its gradient, while relying on classical routines for the optimization of the parameters' values, $\boldsymbol{\theta}$. Next, we provide supplementary information for each step of the \acrshort{vqa} framework.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Cost function}
+An essential aspect of \acrshort{vqa} involves encoding the problem into an adequate cost function. Similar to classical machine learning, this function associates values of the trainable parameters, $\boldsymbol{\theta}$, with real numbers. At a more abstract level, the cost function defines a hypersurface, often termed the cost landscape (cf. Figure \ref{fig:VQA_Schematic}), in a way such that the optimizer's task is to then navigate across this landscape and discover its global minimum, as this would correspond to the sought-after solution. In many instances, it is beneficial and feasible to express the cost in the form:
+\begin{equation}\label{eq:Cost}
+    C(\boldsymbol{\theta}) = \sum_k f_k\left( Tr\left[O_k U(\boldsymbol{\theta}) \rho_k U^{\dagger}(\boldsymbol{\theta})\right] \right),
+\end{equation}
+for some set of functions $\{f_k\}$, where $U(\boldsymbol{\theta})$ is a parameterized unitary, $\boldsymbol{\theta}$ is composed of discrete and continuous parameters, $\rho_k$ are input states from a training set and $O_k$ are a set of observables. Note how the argument of $f_k$, $Tr\left[O_k U(\boldsymbol{\theta}) \rho_k U^{\dagger}(\boldsymbol{\theta})\right]$, corresponds to the expectation value of observable $O_k$, in state $\rho_k' = U(\boldsymbol{\theta}) \rho_k U^{\dagger}(\boldsymbol{\theta})$. Oftentimes, it is convenient to design the cost function to be given by the expectation value of a Hamiltonian (e.g., the problem Hamiltonian in \acrshort{qaoa}), which is why we mention that it is beneficial for it to have this specific form. Then, the minimization of the cost corresponds, unambiguously, to the determination of the ground-state energy. Additionally, one frequently uses Pauli operators, whose expectation values are rather easy to compute in practice.
+
+Furthermore, when designing a cost function, we want it to be as faithful as possible, in the sense that its minimum should closely correspond to the desired solution. Likewise, it is imperative that we can efficiently estimate $C(\boldsymbol{\theta})$, as this is integral to the functionality of this method. So far, we have been taking this for granted. However, one must guarantee that this is indeed verified experimentally, otherwise we are not able to proceed.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Ansatzë}
+Another crucial element of a \acrshort{vqa} is the ansatz. In broad terms, the ansatz's structure determines the nature of the parameters $\boldsymbol{\theta}$ and, consequently, how they can be optimized to minimize the cost. The design of an ansatz often relies on the specific requirements of the task, allowing for the creation of problem-inspired ansätze. However, certain ansatz architectures are generic and problem-agnostic, making them applicable even in scenarios where relevant information is lacking. As one might expect, problem-agnostic ansätze, being more general, will also, usually, require a greater number of parameters, which unsurprisingly hinders the optimization task. However, this also grants them more flexibility. On the other hand, problem-oriented ansätze are capable of assimilating problem-specific information into the structure of quantum circuits. This custom-fit approach can result in a reduction of the parameter space, making optimization more efficient, and lead to solutions that are more meaningful and interpretable. Furthermore, adopting such an approach might (at times, not always!) enable the use of shallower quantum circuits, thereby aiding in the reduction of overall noise levels. (Greater circuit depths require more quantum gates, which results in more noise.) When it all comes down to it, one should weigh the trade-off between accuracy and generality, and carefully assess resource utilization in the choice of ansatz. (Yet, for achieving optimal results tailored to a specific problem, it's always recommended to utilize problem-inspired ansätze. The challenge lies in their design. While it's tempting to opt for a problem-agnostic ansatz and consider the task done, problem-inspired designs consistently yield superior performance.) For illustration purposes, here are a few examples of commonly considered ansätze types: hardware-efficient ansätze (aimed at reducing circuit depth), unitary coupled clustered ansätze (for quantum chemistry simulations), quantum alternating operator ansätze (used in \acrshort{qaoa}), \textit{et cetera}.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Gradients}
+After specifying the cost function and ansatz, the next step involves training the parameters, $\boldsymbol{\theta}$, and tackling the optimization problem described in Eq. (\ref{eq:Optimization}). It is known that, for numerous optimization tasks, leveraging information from the gradient or higher-order derivatives of the cost function can enhance the speed and ensure the convergence of the optimizer. A notable benefit of various \acrshort{vqa}\textcolor{gray}{s} is the ability to analytically compute the gradient of the cost function. This can be done using the parameter-shift rule. If the cost function has the form of Eq. (\ref{eq:Cost}), with $f_k(x) = x$, and $\theta_l$ is the $l^{th}$ element in $\boldsymbol{\theta}$, which parameterizes a unitary $e^{i\theta_l \sigma_l}$, with $\sigma_l$ a Pauli operator, then the parameter-shift rule states that the equality
+\begin{equation}
+    \frac{\partial C}{\partial \theta_l} = \sum_k \frac{1}{2\sin{\alpha}}\left(Tr\left[O_k U(\boldsymbol{\theta_+}) \rho_k U^{\dagger}(\boldsymbol{\theta_+})\right] - Tr\left[O_k U(\boldsymbol{\theta_-}) \rho_k U^{\dagger}(\boldsymbol{\theta_-})\right]\right),
+\end{equation}
+with $\boldsymbol{\theta_{\pm}} = \boldsymbol{\theta} \pm \alpha \boldsymbol{e_l}$, holds for any real number $\alpha$. In practice, one uses $\alpha = \pi/4$, since this maximizes the accuracy of the result \cite{Cerezo_2021}. Note that, although the expression is analytically exact, we can only ever obtain approximate results (hence the discussion about accuracy), since we are required to compute expectation values of $O_k$, necessitating the quantum circuit to be sampled. This section was simply meant to shed some light on how one can experimentally compute these gradients, required for the optimization procedure.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Applications \& Examples}
+In what follows, I will merely outline some of the most promising applications of \acrshort{vqa}\textcolor{gray}{s} for solving real world problems. These are: (Specific algorithms for these tasks are indicated in parenthesis.)
+\begin{enumerate}
+    \item \textbf{Finding ground states and excited states} (Variational Quantum Eigensolver \cite{Peruzzo_2014}, \acrshort{vqe}, and variations thereof);
+    \item  \textbf{Dynamical quantum simulations} - Based on iterative variational algorithms, they allow, e.g., for the simulation of open quantum systems \cite{Cerezo_2021};
+    \item \textbf{Optimization tasks} (Quantum Approximate Optimization Algorithm \cite{farhi2014quantum}, \acrshort{qaoa}, and Qubit Efficient MaxCut Heuristic Algorithm \cite{tenecohen2023variational}, \acrshort{qemc}, both of which we shall analyse in further detail later);
+    \item \textbf{Mathematical applications} \cite{Cerezo_2021} - Linear systems, matrix-vector multiplication, non-linear equations, factoring, \textit{et cetera};
+    \item \textbf{Error correction} (Variational Quantum Error Corrector \cite{johnson2017qvector}, QVECTOR);
+    \item \textbf{Machine learning and data science} - Quantum Machine Learning (\acrshort{qml}) \cite{Cerezo2022_QML}, classifiers, generative models, \textit{et cetera}.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Quantum Approximate Optimization Algorithm (QAOA) Review}
