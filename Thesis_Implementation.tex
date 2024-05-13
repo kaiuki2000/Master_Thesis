@@ -11,46 +11,103 @@
 \chapter{Implementation details}
 \label{chapter:implementation}
 
-Insert your chapter material here. - In this chapter, we should describe numerical aspects of the algorithms' implementations. This goes for all three of QAOA, QEMC and iQAQE. Mention Pennylane, the developed code/models, the GitHub repository, and any other relevant information. Mention, also, that we're always doing numerical simulations of quantum systems, on a classical computer!
+In this chapter, we outline the numerical implementation of the models discussed in Chapters~\ref{chapter:Background} and \ref{chapter:Base Algorithm}, focusing on pseudo-code representations. Furthermore, we highlight the Python libraries employed and provide specific code details, accompanied by a brief discussion on the benchmarks developed to evaluate the algorithms' performance.
+
+% Pseudo-codes, numerical methods, and benchmarking of the implemented models. Also, put here the basic examples of QAOA and QEMC, I think.
+
+% Insert your chapter material here. - In this chapter, we should describe numerical aspects of the algorithms' implementations. This goes for all three of QAOA, QEMC and iQAQE. Mention Pennylane, the developed code/models, the GitHub repository, and any other relevant information. Mention, also, that we're always doing numerical simulations of quantum systems, on a classical computer!
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Individual Algorithms}
 \label{section:Individual_Algorithms}
 
-Description of the numerical implementation of the models explained in Chapter~\ref{chapter:Background}.
+For numerical implementation of the previously described algorithms, we employ PennyLane \cite{Pennylane}, a versatile Python library designed for differentiable programming of quantum computers. PennyLane facilitates the execution of variational quantum circuits and their simultaneous training, akin to training a classical neural network, within the same Python environment, which is highly convenient. It offers numerous features, including automatic differentiation, crucial for optimizing variational quantum circuits.
 
-If needed, pseudo-codes can be included as exemplified in Algorithm~\ref{euclid}.
-%
-% See package 'algorithmicx' for more information
-% https://ctan.org/pkg/algorithmicx
-%
-\begin{algorithm}
-\caption{Euclid’s algorithm}\label{euclid}
-\begin{algorithmic}[1]
-\Procedure{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
-   \State $r\gets a\bmod b$
-   \While{$r\not=0$}\Comment{We have the answer if r is 0}
-      \State $a\gets b$
-      \State $b\gets r$
-      \State $r\gets a\bmod b$
-   \EndWhile\label{euclidendwhile}
-   \State \textbf{return} $b$\Comment{The gcd is b}
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
+In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C++ backend. Recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices; the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for numerical simulations of larger quantum circuits, especially when multiple shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they may lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
+
+Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valuable tool for creating, manipulating, and analyzing complex networks. NetworkX aids in generating the graphs utilized in the MaxCut problem, offering useful visualization tools for graph representation and partitioning visualization, essential for interpreting algorithm results.
+
+Additionally, we utilize the CVXPY \cite{cvxpy} Python library, specifically designed for convex optimization tasks. CVXPY facilitates solving the semidefinite programming (SDP) relaxation of the MaxCut problem within the \acrshort{gw} algorithm framework, which inherently constitutes a convex optimization problem.
+
+Regrettably, we lack access to a genuine quantum computer, which would have been invaluable for assessing the performance of these algorithms on real hardware. Furthermore, the absence of access to any High-Performance Computing (HPC) cluster significantly restricted our ability to conduct large-scale simulations and grid-searches, such as those required for hyperparameter tuning. These limitations occasionally posed a bottleneck in our research, particularly concerning our inability to evaluate the algorithms on larger graphs, which would have been crucial for comprehensive testing. All simulations presented herein were conducted using my personal computer – a system equipped with an 8-core AMD Ryzen 7 5800H CPU, integrated Radeon graphics, and 16GB of RAM.
+
+Lastly, all simulations were performed using the Adam classical optimizer \cite{kingma2017adam}, with default parameters except for the learning rate, which was treated as a hyperparameter and fine-tuned accordingly. The Adam optimizer is a popular optimization algorithm for variational quantum algorithms, utilizing stochastic gradient descent with adaptive learning rates and momentum.
+
+% Description of the numerical implementation of the models explained in Chapter~\ref{chapter:Background}.
+
+% If needed, pseudo-codes can be included as exemplified in Algorithm~\ref{euclid}.
+% %
+% % See package 'algorithmicx' for more information
+% % https://ctan.org/pkg/algorithmicx
+% %
+% \begin{algorithm}
+% \caption{Euclid’s algorithm}\label{euclid}
+% \begin{algorithmic}[1]
+% \Procedure{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
+%    \State $r\gets a\bmod b$
+%    \While{$r\not=0$}\Comment{We have the answer if r is 0}
+%       \State $a\gets b$
+%       \State $b\gets r$
+%       \State $r\gets a\bmod b$
+%    \EndWhile\label{euclidendwhile}
+%    \State \textbf{return} $b$\Comment{The gcd is b}
+% \EndProcedure
+% \end{algorithmic}
+% \end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quantum Approximate Optimization Algorithm (QAOA)}
 \label{subsection:QAOA_Implementation}
 
-Description of the numerical implementation of the QAOA model.
+% Description of the numerical implementation of the QAOA model.
 
+\begin{algorithm}[H]
+   \caption{Quantum Approximate Optimization Algorithm}\label{alg:QAOA}
+   \begin{algorithmic}
+   \Require $\texttt{(n\_layers not None) and (init_parameters not None)}$
+   \Ensure $\texttt{n\_qubits = self.n\_nodes}$
+   \State 1. Define $U_C$ and $U_M$ as for usual \acrshort{qoao}
+   \State 2. Create the variational quantum circuit, using a \texttt{@qml.qnode}, based on the \acrshort{qoao} ansatz (Layering $U_C$ and $U_M$ $p$ times, for $p = \texttt{n\_layers}$ layers). Note that we start with \texttt{qml.Hadamard} on all wires
+   \State 3. The objective function is defined as the expectation value of the problem Hamiltonian, obtained from the previously defined \texttt{@qml.qnode}, through \texttt{qml.expval(H_C)}
+   \State 4. Initialize the Adam optimizer, using its default parameters
+   \State 5. Start timer \& training:
+   \While{Stopping criteria \texttt{not True}}
+   \State 5.1 Adapt the value of \texttt{parameters}, using stochastic gradient descent (Adam)
+   \State 5.2 Store the cut and cost function values, alongside the approximation ratio, for each iteration
+   \State 5.3 Break if \texttt{max\_iter} \texttt{or} \texttt{abs\_tol} \texttt{or} \texttt{rel\_tol} is reached, depending on which are specified explicitly
+   \EndWhile
+   \State 6. Stop timer: training time estimate
+   \State 7. Sample the circuit, so as to obtain the most frequently sampled bitstring
+   \State 8. Use that to obtain the computed partition \& respective cut value
+   \end{algorithmic}
+\end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Qubit-Efficient MaxCut Heuristic (QEMC)}
 \label{subsection:QEMC_Implementation}
 
-Description of the numerical implementation of the QEMC model.
+% Description of the numerical implementation of the QEMC model.
+
+\begin{algorithm}[H]
+   \caption{Qubit Efficient MaxCut Heuristic Algorithm}\label{alg:QEMC}
+   \begin{algorithmic}
+   \Require $\texttt{(n\_layers not None) and (parameters not None) and (B is not None)}$ \Comment{\texttt{B} is a parameter of the cost function}
+   \Ensure $\texttt{n\_qubits = self.n\_nodes}$
+   \State 1. Define the QEMC ansatz layer (Strongly Entangling Layers)
+   \State 2. Create the variational quantum circuit, using a \texttt{@qml.qnode}, based on the QEMC ansatz. Note that we start with \texttt{qml.Hadamard} on all wires
+   \State 3. The objective function is defined according to the probability threshold encoding scheme (more information below)
+   \State 4. Initialize the Adam optimizer, using its default parameters
+   \State 5. Start timer \& training:
+   \While{Stopping criteria \texttt{not True}}
+   \State 5.1 Optimize the value of \texttt{parameters}, using stochastic gradient descent (Adam)
+   \State 5.2 Store the cut and cost function values, alongside the approximation ratio, for each iteration
+   \State 5.3 Break if \texttt{max\_iter} \texttt{or} \texttt{abs\_tol} \texttt{or} \texttt{rel\_tol} is reached, depending on which are specified explicitly
+   \EndWhile
+   \State 6. Stop timer: training time estimate
+   \State 7. Sample the circuit, so as to obtain the output's probability distribution
+   \State 8. Use that to obtain the computed partition (using the probability threshold encoding scheme) \& respective cut value
+   \end{algorithmic}
+\end{algorithm}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,8 +116,13 @@ Description of the numerical implementation of the QEMC model.
 
 Description of the numerical implementation of the iQAQE model.
 
+\subsection{Goemans-Williamson Algorithm}
+\label{subsection:Goemans_Williamson_Implementation}
+
+Description of the numerical implementation of the Goemans-Williamson model.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Benchmarking and Testing methods}
+\section{Benchmarking and Testing Methods}
 \label{section:Benchmarking_Testing}
 
 \textbf{How do we benchmark our models?} This should be described here: mention the Avg. BSF metric, and how it was "wrong", initially, and how it was "fixed". Also mention any other possible metrics that could be used to compare the models: Grid-searches, etc.

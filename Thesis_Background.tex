@@ -79,7 +79,7 @@ where $\text{MaxCut}_{\text{GW}}$ is the worst-case MaxCut value obtained by the
 Building on this, two commonly used \textbf{approximation algorithms} are:
 
 \begin{itemize}
-  \item \textbf{Goemans-Williamson Algorithm} \cite{GW-Algorithm}: This popular approximation algorithm achieves a performance guarantee of approximately $0.87856$, leveraging semidefinite programming and a randomized rounding technique. (This will be further developed below, in subsubsection \nameref{subsubsection:GW_Algorithm}.)
+  \item \textbf{Goemans-Williamson Algorithm} \cite{GW-Algorithm}: This popular approximation algorithm achieves a performance guarantee of approximately $0.87856$, leveraging Semidefinite Programming (\acrshort{sdp}) and a randomized rounding technique. (This will be further developed below, in subsubsection \nameref{subsubsection:GW_Algorithm}.)
   \item \textbf{Spectral Methods} \cite{Spectral-MaxCut}: These techniques employ eigenvalues and eigenvectors of the adjacency matrix to identify effective cuts. While spectral methods may offer quicker computational speeds compared to other approximation strategies (e.g. \acrshort{gw}), they may not consistently provide the optimal approximation ratios. Performance-wise, the leading spectral algorithm, Trevisan's algorithm, using Soto's refined analysis \cite{Soto-MaxCut}, features a worst-case approximation ratio of $0.614$.
 \end{itemize}
 
@@ -296,7 +296,7 @@ Furthermore, when we mention rotations, these are to be seen in the Bloch sphere
   \end{pmatrix},
   $}
 \end{equation}
-These will frequently appear in quantum circuits, as they are the most basic quantum gates, in the sense that all other single-qubit gates can be re-constructed from them. I.e., for any unitary single-qubit gate $U$, one can always find a decomposition $U=e^{i\phi}R_{Z}(\gamma)R_{X}(\beta)R_{Z}(\alpha)$. (Proven in \cite{Barenco_1995}.)
+These will frequently appear in quantum circuits, as they are the most basic quantum gates, in the sense that all other single-qubit gates can be re-constructed from them. I.e., for any unitary single-qubit gate $U$, one can always find a decomposition $U=e^{i\phi}R_{Z}(\gamma)R_{X}(\beta)R_{Z}(\alpha)$ (proven in \cite{Barenco_1995}).
 % Present proof? Using only R_x and R_z, I know this is possible. I should present a reference for this, though. Done!
 
 For illustrative purposes, to elucidate how single-qubit gates act on qubits, it is quite simple to verify that the $\sigma_x$ matrix (alternative symbol, $\boldsymbol{X}$) behaves exactly like a NOT gate. This correspondence is established through a $180^{\circ}$ rotation around the $x-$axis. Mathematically,
@@ -355,7 +355,7 @@ In addition to these simple one-qubit quantum gates, there are also gates design
 More generally, within a quantum circuit, an intricate network of interconnected qubits and gates collaborates to execute a specific algorithm. For example, the circuit depicted in Figure \ref{fig:QCircuit}, below, is designed for the implementation of the renowned Grover's search algorithm \cite{Grover}.
 
 % Taken from Wikipedia. Should, then, include everything in my references!
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Figures/Diagrams/Grover_Circuit.png}
     \caption{Quantum circuit utilized in the famous Grover's search algorithm \cite{Grover}. Integraly reproduced from \cite{e26030216}.}
@@ -428,7 +428,7 @@ The hallmark of \acrshort{hqcc} is what are called variational quantum algorithm
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.65\textwidth]{Figures/Diagrams/VQAs_Applications.png}
-  \caption{Applications of variational quantum algorithms. Sourced from \cite{Cerezo_2021}, in its entirety.}
+  \caption{Applications of variational quantum algorithms. Sourced from \cite{Cerezo_2021} in its entirety.}
   \label{fig:VQAs_Applications}
 \end{figure}
 
@@ -444,7 +444,7 @@ The hallmark of \acrshort{hqcc} is what are called variational quantum algorithm
 \subsubsection{Basic structure of a VQA}
 \vspace*{-5mm}{\scriptsize \noindent (This description is heavily inspired by \cite{Cerezo_2021}.)}
 
-This section provides an overview of the essential components of \acrshort{vqa}\textcolor{gray}{s}. Kicking off the development of a \acrshort{vqa} involves defining a cost (or loss) function, $C$, that encodes the solution to the problem. Following this, an ansatz is suggested, that is, a quantum operation that relies on a set of continuous or discrete parameters, $\boldsymbol{\theta}$, subject to optimization. In other words, we propose the functional form/structure of the parameterized quantum circuit. Afterwards, the suggested ansatz undergoes training, within a hybrid quantum-classical loop (cf. Figure \ref{fig:VQA_Schematic}), to address the following optimization task:
+This section provides an overview of the essential components of \acrshort{vqa}\textcolor{gray}{s}. Kicking off the development of a \acrshort{vqa} involves defining a cost (or loss) function, $C$, that encodes the solution to the problem. Following this, an ansatz is suggested, that is a quantum operation that relies on a set of continuous or discrete parameters, $\boldsymbol{\theta}$, subject to optimization. In other words, we propose the functional form/structure of the parameterized quantum circuit. Afterwards, the suggested ansatz undergoes training, within a hybrid quantum-classical loop (cf. Figure \ref{fig:VQA_Schematic}), to address the following optimization task
 \begin{equation}\label{eq:Optimization}
   \boldsymbol{\theta}^{\star} = \arg \min_{\boldsymbol{\theta}} C(\boldsymbol{\theta}),
 \end{equation}
@@ -473,8 +473,12 @@ After specifying the cost function and ansatz, the next step involves training t
 with $\boldsymbol{\theta_{\pm}} = \boldsymbol{\theta} \pm \alpha \boldsymbol{e_l}$, holds for any real number $\alpha$. In practice, one uses $\alpha = \pi/4$, since this maximizes the accuracy of the result \cite{Cerezo_2021}. Note that, although the expression is analytically exact, we can only ever obtain approximate results (hence the discussion about accuracy), since we are required to compute expectation values of $O_k$, necessitating the quantum circuit to be sampled. This section was simply meant to shed some light on how one can experimentally compute these gradients, required for the optimization procedure.
 
 % Kind of a subsubsubsection.
+\subsubsection*{\small Workflow}
+The \acrshort{vqa} workflow is incredibly similar to a traditional machine learning pipeline. We have some input quantum state entering our ansatz, which is then processed by the quantum circuit, parameterized by $\boldsymbol{\theta}$. Afterwards, the output of this circuit is measured and the results are used to compute the cost function, $C(\boldsymbol{\theta})$. Following this, said cost is fed into a classical optimizer, which updates the parameters, $\boldsymbol{\theta}$, in order to minimize the cost\footnote{It's a bit more complex, as we are required to compute the gradients for the classical optimization. For this, we simply use the parameter-shift rule. This requires some more shots, with different parameter values, but is entirely feasible.}. This process [run quantum circuit, estimate cost, update parameters] is repeated iteratively until the optimizer converges to a minimum, at which point the optimal parameters, $\boldsymbol{\theta}^{\star}$, are obtained. These can then be used to prepare the quantum state that solves the problem at hand, in the sense that the problem's solution can be extracted from it. This is a very high-level overview of the \acrshort{vqa} workflow, but it should give a good idea of how the previously mentioned concepts come together to form a working algorithm.
+
+% Kind of a subsubsubsection.
 \subsubsection*{\small Applications \& Examples}
-In what follows, I will merely outline some of the most promising applications of \acrshort{vqa}\textcolor{gray}{s} for solving real world problems. These are: (Specific algorithms for these tasks are indicated in parenthesis.)
+In what follows, I will merely outline some of the most promising applications of \acrshort{vqa}\textcolor{gray}{s} for solving real world problems. These are (cf. Figure \ref{fig:VQAs_Applications}): (Specific algorithms for these tasks are indicated in parenthesis.)
 \begin{enumerate}
     \item \textbf{Finding ground states and excited states} (Variational Quantum Eigensolver \cite{Peruzzo_2014}, \acrshort{vqe}, and variations thereof);
     \item  \textbf{Dynamical quantum simulations} - Based on iterative variational algorithms, they allow, e.g., for the simulation of open quantum systems \cite{Cerezo_2021};
@@ -484,38 +488,128 @@ In what follows, I will merely outline some of the most promising applications o
     \item \textbf{Machine learning and data science} - Quantum Machine Learning (\acrshort{qml}) \cite{Cerezo2022_QML}, classifiers, generative models, \textit{et cetera}.
 \end{enumerate}
 
+We are, now, finally ready to tackle the two specific variational quantum algorithms, \acrshort{qaoa} and \acrshort{qemc}, which constitute the main focus of this work. Let us start with \acrshort{qaoa}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Quantum Approximate Optimization Algorithm (QAOA) Review}
 \label{subsubsection:QAOA}
 
 % Include/remove "Review"?
 
-Describe QAOA - Explain how it works, its advantages and disadvantages, and its potential applications.
+% Describe QAOA - Explain how it works, its advantages and disadvantages, and its potential applications.
 
-There's a mistake in eq. (5), in the PIC2 report, that I should correct, once I include it here. (It's the coefficients $\gamma$ and $\beta$!)
+% There's a mistake in eq. (5), in the PIC2 report, that I should correct, once I include it here. (It's the coefficients $\gamma$ and $\beta$!) Done!
 
-I should also change the labels of the problem and mixer Hamiltonians, so they always match the figures. (Sometimes, it's $H_P$ and $H_M$, sometimes it's $H_C$ and $H_B$.)
+% I should also change the labels of the problem and mixer Hamiltonians, so they always match the figures. (Sometimes, it's $H_P$ and $H_M$, sometimes it's $H_C$ and $H_B$.) Done!
 
-Also, mention that $\ket{\psi_0}$ is the uniform superposition state, and that it's the initial state entering the ansatz.
+% Also, mention that $\ket{\psi_0}$ is the uniform superposition state, and that it's the initial state entering the ansatz. Done!
 
-Specify that $U_{H_{P_l}} = \exp{-iH_P\gamma_l}$. Or something like that.
+% Specify that $U_{H_{P_l}} = \exp{-iH_P\gamma_l}$. Or something like that. Done!
 
-I also feel like I don't mention that we use a number of qubits equal to the number of nodes. I should do that. And, then, explain how to interpret the results. (0 - One partition; 1 - The other partition.)
+% I also feel like I don't mention that we use a number of qubits equal to the number of nodes. I should do that. And, then, explain how to interpret the results. (0 - One partition; 1 - The other partition.) Done!
 
-I should present an explicit (with the actual CNOTs) QAOA ansatz, maybe for the usual $8$-node graph. Or, for the smaller, trivial $4$-node graph. This elucidates the idea of the ansatz. This would also require me to explain how $\exp{-i\gamma Z_i Z_j}$ is transpiled/represented as a quantum circuit. (Look at Bence's TeX file: there's an example there, for $\exp{-i\gamma Z_i Z_j Z_k Z_l}$, I believe.)
+% I should present an explicit (with the actual CNOTs) QAOA ansatz, maybe for the usual $8$-node graph. Or, for the smaller, trivial $4$-node graph. This elucidates the idea of the ansatz. This would also require me to explain how $\exp{-i\gamma Z_i Z_j}$ is transpiled/represented as a quantum circuit. (Look at Bence's TeX file: there's an example there, for $\exp{-i\gamma Z_i Z_j Z_k Z_l}$, I believe.) I think I can present this in the "Implementation" part.
+
+Renowned as the most prominent \acrshort{vqa} in quantum-enhanced optimization, the \acrshort{qaoa} \cite{farhi2014quantum} was originally devised to approximate solutions for combinatorial optimization problems, including constraint-satisfaction, \acrshort{sat} \cite{lin2016performance}, and Max-Cut problems \cite{PhysRevA.97.022304}. In this section, we intend to explain in greater detail the inner workings of \acrshort{qaoa}, since it is closely related to the new hybrid algorithm proposed by the \acrshort{hqcc} project collaboration\footnote{More information about this collaboration is present in the \nameref{sec:acknowledgments} section.}. In a similar vein, the next section will delve into an equivalent level of detail, this time concentrating on the Qubit Efficient MaxCut Heuristic Algorithm, \acrshort{qemc}.
+
+Combinatorial optimization problems are formulated on binary strings, $s = (s_1,...,s_N)$, with the goal of minimizing/maximizing a designated classical objective function, $L(s)$. In \acrshort{qaoa}, however, the cost function is defined as the expectation value of a quantum Hamiltonian, $H_C$ (or $H_P$), termed the cost (or problem) Hamiltonian, and doesn't explictly depend on such bit-string $s$. This [cost] is constructed by mapping each classical variable, $s_j \in \{1, -1\}$, to a Pauli spin-$1/2$ operator, $\boldsymbol{Z}_j$. Thus, the usual MaxCut objective $L(s) = \frac{1}{2}\sum_{\mathrm{Edge}\;(\mathrm{j,k})}(1-s_{i}s_{j})$, denoting the cut of partition $s = (s_1,...,s_N)$, is transformed into the cost Hamiltonian
+\begin{equation}\label{eq:H_C}
+  H_C = \frac{1}{2}\sum_{\mathrm{Edge}\;(\mathrm{j,k})}(1-\boldsymbol{Z}_i\boldsymbol{Z}_j),
+\end{equation}
+from which one can extract the \acrshort{qaoa} objective function.
+
+Next up is the \acrshort{qaoa} ansatz. Drawing inspiration from the quantum adiabatic algorithm, \acrshort{qaoa} substitutes adiabatic evolution with $p$ cycles of alternating time evolution between the cost Hamiltonian, $H_C$, and a suitably chosen mixer (or bias) Hamiltonian, $H_M$ (or $H_B$). The role of this mixer Hamiltonian can be understood as introducing quantum fluctuations, or transitions, between different states, helping the algorithm explore the solution space more effectively, ideally preventing it from getting trapped in sub-optimal local minima/maxima. The entirety of this process forms the previously mentioned quantum alternating operator ansatz.
+
+In practice, defining $\boldsymbol{\theta} = \{\boldsymbol{\gamma}, \boldsymbol{\alpha}\}$, the cost function is $C(\boldsymbol{\gamma}, \boldsymbol{\alpha}) = \bra{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})}H_C\ket{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})}$, with
+\begin{equation}\label{eq:Psi_p}
+    \ket{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})} = e^{-i\alpha_pH_M}e^{-i\gamma_pH_C} ... e^{-i\alpha_1H_M}e^{-i\gamma_1H_C}\ket{\psi_0},
+\end{equation}
+where $\ket{\psi_0}$ is the initial state entering the ansatz. This ansatz is illustrated in Figure \ref{fig:QAOA_Trotterization}, below, for $n \in \mathbb{N}$ \acrshort{qaoa} layers.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = \linewidth]{Figures/Diagrams/QAOA_Trotterization.png}
+    \caption{Quantum alternating operator ansatz. Adapted from \cite{Intro_QAOA}.}
+    \label{fig:QAOA_Trotterization}
+\end{figure}
+\noindent Replacing adiabatic time evolution with a \textit{Trotterized} evolution works due to the famous Trotter-Suzuki formulas \cite{nielsen2010quantum}, which state that (for general non-commuting $H_j$):
+\begin{equation}
+    e^{-i\sum_{j=1}^{m}H_{j}t}=\prod_{j=1}^{m}e^{-i H_{j}t}+O(m^{2}t^{2}).
+\end{equation}
+If $t \ll 1$, then the error in this approximation becomes negligible. On the other hand, if $t$ is large, Trotter-Suzuki formulas can still be used to simulate the dynamics accurately by breaking things up into a sequence of short time-steps. Let $r$ be the number of steps taken in the time evolution, so each time-step runs for time $t/r$. Then, we have that
+\begin{equation}
+    e^{-i\sum_{j=1}^{m}H_{j}t}=\left(\prod_{j=1}^{m}e^{-i H_{j}t/r}\right)^{r}+O(m^{2}t^{2}/r),
+\end{equation}
+which implies that if $r$ scales as $m^2t^2/\epsilon$, then the error can be made at most $\epsilon$ for any $\epsilon > 0$. In the \acrshort{qaoa} case, we simply have $H = H_C + H_M$ and we treat each of the evolution time intervals as variational parameters that are optimized classically (can be seen as $t/r \equiv \gamma_l, \alpha_l$). This means we do not use this \textit{Trotterization} approach directly, but it heavily inspires the \acrshort{qaoa} ansatz nevertheless. 
+
+Let me now further detail the practical realization of the algorithm. Reiterating, the aim of MaxCut is to maximize the number of edges in a graph that are "cut" by a given partition of the vertices into two sets (cf. Figure \ref{fig:MaxCut}). One way of implementing \acrshort{qaoa} for MaxCut is to consider: $H_C$ as in Eq. \ref{eq:H_C}, where the sum is over all edges of the studied graph, connecting vertices $(j, k)$; and $H_M = \sum_{j=1}^{N} \boldsymbol{X_j}$, for $N$ qubits. In this scheme, the associated cost function, $\bra{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})}H_C\ket{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})}$, merely rewards cases where we have edges between nodes of different sets. Furthermore, we can, now, also write
+\begin{align}
+    U_{H_{C_l}} = e^{-i\gamma_l H_C} = \prod&_{\mathrm{Edge}\;(\mathrm{j,k})}e^{-i\gamma_l(1-\boldsymbol{Z}_{j}\boldsymbol{Z}_{k})/2} \\
+    U_{H_{M_l}} = e^{-i\alpha_l H_M} = \prod&_{j=1}^{n}e^{-i\alpha_l\boldsymbol{X}_{j}}
+\end{align}
+These give us the form of the unitaries that are applied in each layer of the \acrshort{qaoa} ansatz, representing the \textit{Trotterized} time evolution of Figure \ref{fig:QAOA_Trotterization} (red and blue boxes). They correspond to the complex exponentials of the cost and mixer Hamiltonians, respectively: $e^{-i\gamma_l H_C}$ and $e^{-i\alpha_l H_M}$. Notice how $U_{H_{M_l}}$ uses Pauli-$x$ operators, instead of the usual Pauli-$z$ in $U_{H_{C_l}}$. In practice, the mixer Hamiltonian terms $e^{-i\alpha_l H_M}$ correspond to $R_x(\alpha_l/2)$ and are easy to implement. The cost Hamiltonian terms, on the other hand, are a bit more tricky, requiring the use of $2$ CNOT gates. Each of the terms $e^{-i\gamma_l(1-\boldsymbol{Z}_{j}\boldsymbol{Z}_{k})/2}$ can be transpiled into a quantum circuit, as shown in Figure \ref{fig:Z_iZ_jDecomposition}, below. For each edge in the graph, we'll have one of these terms, in each of the $p$ layers of the \acrshort{qaoa} ansatz.
+\begin{figure}[H]
+  \centering
+  \begin{quantikz}
+  \lstick{Qubit $i$} & \ctrl{1} & \qw                & \ctrl{1}  & \qw & \\
+  \lstick{Qubit $j$} & \targ{}  & \gate{R_z(\gamma_l)} & \targ{}   & \qw & \\
+  \end{quantikz}
+  \caption{$e^{i\gamma_l \boldsymbol{Z}_{i} \boldsymbol{Z}_{j} /2}$ decomposition.}\label{fig:Z_iZ_jDecomposition}
+\end{figure}
+\noindent This allows us to re-write Eq. \ref{eq:Psi_p} as
+\begin{equation}
+     \ket{\psi_p(\boldsymbol{\gamma}, \boldsymbol{\alpha})} = U_{H_{M_p}}U_{H_{C_p}} ... U_{H_{M_1}}U_{H_{C_1}}\ket{\psi_0}
+\end{equation}
+In \acrshort{qaoa}, it is customary to start with a uniform superposition over the $n$ bit-string basis states, i.e., $\ket{\psi_0} = \ket{+_{n}}=\frac{1}{\sqrt{2^{n}}}\sum_{z\in\{0,1\}^{n}}\ket{z}$. This is achieved by applying a Hadamard gate to each of the qubits, at the start of the quantum circuit.
+
+Subsequently, a classical routine is employed to optimize the values of the parameters by minimizing the negative of the cost (analogous to the cut), therefore enabling the extraction of the MaxCut partition. Experimentally, for each step of the classical optimization, it is necessary to compute expectation values of Pauli-$z$ operators, which requires the quantum circuit to be sampled a certain number of times (shots). Additionally, in case it was not yet clear, note that in \acrshort{qaoa} we use one qubit for each node of the graph, with the qubits' values indicating which set they correspond to: $\ket{0}$: "Set 0"; $\ket{1}$: "Set 1". As such, for the graph in Figure \ref{fig:MaxCut}, we'd require $5$ qubits. Exemplifying, if the most sampled basis state at the end of the quantum circuit is $\ket{00011}$, then nodes $1$, $2$ and $3$ belong to "Set 0", while nodes $4$ and $5$ belong to "Set 1".
+
+% I think I should include the "sample simulations" in the "Implementations" section, not here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Variational Qubit-Efficient MaxCut Heuristic Algorithm (QEMC) Review}
 \label{subsubsection:QEMC}
 
+% Re-read all of this!
+
+The Qubit Efficient MaxCut Heuristic Algorithm (\acrshort{qemc}) \cite{tenecohen2023variational} is somewhat similar to \acrshort{qaoa}. After all, it was heavily inspired by it. However, it has a number of crucial differences. First, it only requires $n = \log_2(N)$ qubits, instead of $N$, where $N$ is the number of nodes in the graph. Additionally, the \acrshort{qemc} algorithm is based on a novel probability threshold encoding scheme, a suitable cost function, and a parameterized unconstrained quantum circuit. Going in order:
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Probability threshold encoding scheme}
+With $n$ qubits, each of the $N = 2^{n}$ basis states will represent one of the graph's nodes. Following the sampling of the quantum circuit, a probability distribution is generated. Nodes with probabilities exceeding a certain threshold, $p_{th} = \frac{1}{2B}$, belong to "Set 1", while probabilities below this value indicate inclusion in "Set 0". This strongly diverges from how we encode set inclusion in \acrshort{qaoa}.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Suitable cost function}
+The objective function utilized in QEMC is the following:
+\begin{equation}
+L(\{p(i)\}) = \sum_{\stackrel{j < k:}{\{j,k\}\in E}}\left[\left(d(j,k)-\frac{1}{B}\right)^{2}+\left(s(j,k)-\frac{1}{B}\right)^{2}\right],
+\end{equation}
+where $d(j,k) = |p(j) - p(k)|$ and $s(j, k) = p(j) + p(k)$ are the absolute difference and sum of the corresponding states' probabilities. The idea is that as both $d(j, k)$ and $s(j, k)$ tend towards $1/B$, the probability of one node approaches zero (distinctive "Set 0"), while the probability of the other node approaches $1/B$ (distinctive "Set 1"), without specifying which is which. Ultimately, just like for \acrshort{qaoa}, connections between nodes of different sets are favoured. Note, however, that this probability threshold encoding scheme assumes, \textit{a priori}, that one of the sets ("Set 1") has $B$ nodes. Nevertheless, this is not an issue, as we can efficiently iterate through all potential values of $B\,=\,1,...,\left\lfloor{\frac{N}{2}}\right\rfloor$. Frequently, it is reasonable to set $B = N/2$, and we shall use this as our starting point.
+
+% Kind of a subsubsubsection.
+\subsubsection*{\small Problem-agnostic quantum circuit}
+The \acrshort{qemc} circuit ansatz is agnostic to specific graph instances, a departure from \acrshort{qaoa} where the graph structure is explicitly encoded in the quantum circuit. Instead, the graph is implicitly encoded through the cost function. As a result, the \acrshort{qemc} quantum circuit is not bound to any particular form and only needs to be expressive enough to approximate the optimal states in the Hilbert space. Such problem-independent ansatz approach provides considerable flexibility in ansatz selection. Frequently, the circuit ansatz known as "Strongly Entangling Layers" is employed, as depicted below. % Insert figure from paper.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.85\linewidth]{Figures/Diagrams/Strongly_Entangling_Layers.png}
+    \caption{"Strongly Entangling Layers" circuit ansatz: case of $n = 3$ qubits and $p = 2$ layers. After a single layer of Hadamard gates, each subsequent layer consists of $3n$ single-qubit parameterized rotation gates and $n$ CNOT gates (entangling gates). Reproduced from \cite{tenecohen2023variational}.}
+    \label{fig:Strongly_Entangling_Layers}
+\end{figure}
+
+These constitute the main ingredients necessary to understand the \acrshort{qemc} algorithm. At this point, the same hybrid loop as before would be run, so as to optimize the "Strongly Entangling Layers" ansatz's parameters, to minimize the cost function. To read the MaxCut partition, generated by the \acrshort{qemc} algorithm, one would sample the circuit's output one more time, after the training, and build the basis states' probabilities distribution. The threshold $p_{th}$ would then be applied to determine each nodes' set inclusion, from each of their associated basis states' probabilities.
+
+One notable, and perhaps unfortunate, property of \acrshort{qemc} is that it is efficiently simulable classically. Due to the exponential compression of the number of qubits, the algorithm can be feasibly run on a classical computer, even for large graphs, hence defeating its purpose as a quantum algorithm. This is something the authors of the algorithm \cite{tenecohen2023variational} realized in hindsight. For this reason, it is now termed a quantum-inspired classical algorithm.
+
+% I'm missing the "Implementation" part, here. Also, re-read all of this!
+
 % Include/remove "Review"?
 
-Describe QEMC - Explain how it works, its advantages and disadvantages, and its potential applications.
+% Describe QEMC - Explain how it works, its advantages and disadvantages, and its potential applications.
 
-The reason why we can efficiently iterate through the values of $B$ is that we have a reduced number of qubits (exponential compression). [I think so, at least.] We always say the set with $B$ blue nodes is the smallest. Aka., $B \leq N/2$, where $N$ is the graph's number of nodes.
+% The reason why we can efficiently iterate through the values of $B$ is that we have a reduced number of qubits (exponential compression). [I think so, at least.] We always say the set with $B$ blue nodes is the smallest. Aka., $B \leq N/2$, where $N$ is the graph's number of nodes.
 
-Is there any reason for this, though? What would happen if we said $B > N/2$? (Aka., the blue set is the one with the most nodes.)
+% Is there any reason for this, though? What would happen if we said $B > N/2$? (Aka., the blue set is the one with the most nodes.)
 
-Mention that the problem-agnostic "Strongly-Entangling-Layers" ansatz might result in "too much entanglement", thus hindering the results.
+% Mention that the problem-agnostic "Strongly-Entangling-Layers" ansatz might result in "too much entanglement", thus hindering the results.
 
-Go over the last paragraph of the QEMC section again. Something about the discussion on "shot number" is bugging me.
+% Go over the last paragraph of the QEMC section again. Something about the discussion on "shot number" is bugging me.
