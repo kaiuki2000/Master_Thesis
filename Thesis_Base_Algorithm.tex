@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                      %
-%     File: Base_Algorithm.tex                                      %
+%     File: Thesis_Base_Algorithm.tex                                      %
 %     Tex Master: Thesis.tex                                           %
 %                                                                      %
 %     Author: Andre C. Marta                                           %
@@ -8,7 +8,7 @@
 %                                                                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Base iQAQE Algorithm}
+\chapter{iQAQE Algorithm Framework}
 \label{chapter:Base Algorithm}
 
 % Something, something, HQCC-project collaboration. I should probably mention this earlier than I do at the moment. (It's just some footnote, right now... I should change this, probably. Although, it is not too important, I guess.)
@@ -26,7 +26,7 @@ With a thorough grasp of these two algorithms, the \textit{HQCC}-project collabo
 
 % I'll keep the cardinality in [1, 2**(n-1)], for n qubits, under the argument that: 1 - QEMC, and 2**(n-1) - QAOA. Later, I might mention that we relax this constraint, allowing for 2**n - 1, as well. That is only towards the end, when I'm doing those bar plots with performance bins, etc. [Many colours, etc.]
 
-\subsection{Theoretical Framework}
+\subsection{Theoretical Model}
 \label{subsection:iQAQE Theoretical Framework}
 The proposed algorithm aspires to act as an interpolation between \acrshort{qaoa} and \acrshort{qemc}, aiming to amalgamate the strengths of both into a more robust approach, tentatively named \acrshort{iqaqe} (Interpolated QAOA/QEMC). In \acrshort{iqaqe}, we depart from the \acrshort{qemc} approach by associating each graph node with a list of basis states, in contrast to \acrshort{qemc}'s consideration of a single basis state for each node (cf. Figure \ref{fig:iQAQE_Encoding}). Each of these lists comprises somewhere between $\left[1, 2^{\texttt{n\_qubits}-1}\right]$ basis states, where \texttt{n\_qubits} represents the number of qubits. This design allows for potential overlap among states from different lists/nodes. Additionally, it is important to note that the encoding of these states will utilize a qubit range expected to fall between the \acrshort{qemc} and \acrshort{qaoa} requirements, specifically in $[\log_2{N}, N]$, for an $N$-node graph. With all that said, the main goal of my thesis is to ascertain the optimal mapping from basis states to lists, essentially determining which basis states should be included in specific lists/nodes. Naturally, this undertaking also involves the identification of a suitable cost function and ansatz to ensure the algorithm's effective operation. For most of our work, we consider \acrshort{iqaqe} to use the same ansatz and cost function as \acrshort{qemc}, adjusted for the appropriate number of qubits and with some modifications that we'll discuss below.
 
@@ -79,7 +79,7 @@ We employ the \acrshort{qemc} cost function, utilizing the probability threshold
 
 Given our approach to mapping basis states to node lists, it's logical for us to employ the \acrshort{qemc} cost function rather than \acrshort{qaoa}'s. The latter relies on a problem Hamiltonian defined on $N$ qubits, which may not align with our choice of $n$. Typically, $n < N$ as we aim to reduce the number of qubits, making $n = N$ impractical.
 
-Similarly, we opt for the "Strongly Entangling Layers" ansatz from the \acrshort{qemc} scheme for its versatility regarding qubit count. This ansatz, agnostic to specific problems, offers flexibility in our algorithm's implementation compared to \acrshort{qaoa}'s problem-inspired ansatz. However, there are plans to explore more tailored ansatz designs correlated with individual mappings, aiming to enhance algorithm performance by leveraging formulation-specific information. Note that this may necessitate an adjusted objective function developed with these considerations in mind. While we experiment with problem-inspired ansatzë in this work, our primary focus remains on the Strongly Entangling Layers ansatz.
+Similarly, we opt for the "Strongly Entangling Layers" ansatz from the \acrshort{qemc} scheme for its versatility regarding qubit count. This ansatz, agnostic to specific problems, offers flexibility in our algorithm's implementation compared to \acrshort{qaoa}'s problem-inspired ansatz. However, there are plans to explore more tailored ansatz designs correlated with individual mappings, aiming to enhance algorithm performance by leveraging formulation-specific information. Note that this may necessitate an adjusted objective function developed with these considerations in mind. While we experiment with problem-inspired Ansätze in this work, our primary focus remains on the Strongly Entangling Layers ansatz.
 
 % One of our goals should've been to reduce the number of shots required. However, as it stands, today, we didn't work through that. We've always been doing analytical simulations... At some point in the future, it'd be interesting to explore this further.
 

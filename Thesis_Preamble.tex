@@ -413,7 +413,7 @@ pdfdisplaydoctitle=true}
 %
 % > support for the manipulation and reference of subfigures
 %
-\usepackage{subfig}
+% \usepackage{subfig}
 
 
 % 'ar' package
@@ -599,7 +599,7 @@ pdfdisplaydoctitle=true}
 \usetikzlibrary{quantikz2} % Also added by me. For the quantum circuit diagrams.
 \usepackage{makecell} % Also added by me. For the \makecell command.
 
-% For adding Python code
+% For adding Python code.
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -626,3 +626,14 @@ pdfdisplaydoctitle=true}
     showtabs=false,                  
     tabsize=2
 }
+
+% Trying to get the subfigure environment to work.
+\usepackage{subcaption}
+% \captionsetup{compatibility=false}
+
+\usepackage{float} % Also added by me. For the [H] option in figures (?). To get captions to appear above the figure.
+
+\usepackage{silence}
+\WarningFilter*{latex}{Text page \thepage\space contains only floats}
+
+\usepackage{multicol} % Also added by me. For the \begin{multicols} command.

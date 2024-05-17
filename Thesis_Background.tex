@@ -201,7 +201,7 @@ In the same vein, one can compose (represented by the tensor product) $n$ qubits
 \begin{equation}\label{eq:n_qubit_state}
   \ket{\psi}=\bigotimes_{i=0}^{n-1}(\alpha_{i}\ket{0}\ +\beta_{i}\ket{1}).
 \end{equation}
-More generally, we can express an arbitrary pure state $\ket{\psi}$ by a normalized linear combination of the computational basis states $\ket{b_0 b_1 ... b_{n-1} b_n} \coloneq \ket{b_0} \otimes \ket{b_1} \otimes ... \otimes \ket{b_{n-1}} \otimes \ket{b_n}$:
+More generally, we can express an arbitrary pure state of $n$ qubits, $\ket{\psi}$, by a normalized linear combination of the computational basis states $\ket{b_0 b_1 ... b_{n-1} b_n} \coloneq \ket{b_0} \otimes \ket{b_1} \otimes ... \otimes \ket{b_{n-1}} \otimes \ket{b_n}$:
 \begin{equation}\label{eq:general_n_qubit_state}
   \ket{\psi} = \sum_{\boldsymbol{b} \in \{0, 1\}^{\otimes n}} \alpha_{\boldsymbol{b}} \ket{b_0 b_1 ... b_{n-1} b_n},
 \end{equation}
@@ -335,19 +335,19 @@ In addition to these simple one-qubit quantum gates, there are also gates design
 
 \begin{figure}[htbp]
   \centering
-  \begin{minipage}[t]{0.45\textwidth}
+  \begin{subfigure}[t]{0.45\textwidth}
       \centering
       \includegraphics[width=.75\textwidth]{Figures/Diagrams/CNOT_Gate.png}
       \caption{CNOT gate – Circuit representation. The black circle identifies the control qubit. The other qubit is the test qubit.}
       \label{fig:CNOT_Gate}
-  \end{minipage}
+  \end{subfigure}
   \hfill
-  \begin{minipage}[t]{0.45\textwidth}
+  \begin{subfigure}[t]{0.45\textwidth}
       \centering
       \includegraphics[width=.50\textwidth]{Figures/Diagrams/CNOT_Matrix.png}
       \caption{CNOT gate – Equivalent matrix form.}
       \label{fig:CNOT_Matrix}
-  \end{minipage}
+  \end{subfigure}
   \caption{Two-qubit gate example – The controlled-NOT gate.}
   \label{fig:CNOT}
 \end{figure}
@@ -419,9 +419,9 @@ Hybrid quantum-classical computing refers to a computational approach that combi
 
 % I've only just copied things from my PIC2 report. I still need to re-read everything and add more information, if I so deem important. Even this copy-paste'ing isn't done yet. Put this in a private GitHub repo., I think. [Good, for security reasons, in case somethings happens, I have a backup.] Done!
 
-% In describing ansatzë, I should mention that, in general, it is always better to use problem-inspired ansatzë. If they're well designed/implemented, they should always yield better results. Also, when presenting examples of ansatzë, I can show some images of those. Done!
+% In describing Ansätze, I should mention that, in general, it is always better to use problem-inspired Ansätze. If they're well designed/implemented, they should always yield better results. Also, when presenting examples of Ansätze, I can show some images of those. Done!
 
-% I should fact check some of what I say in the PIC2 report regarding problem-agnostic and -inspired ansatzë. I feel like I might have said something wrong there. [About parameter number and depth, mostly, and, thus trainability.]
+% I should fact check some of what I say in the PIC2 report regarding problem-agnostic and -inspired Ansätze. I feel like I might have said something wrong there. [About parameter number and depth, mostly, and, thus trainability.]
 
 The hallmark of \acrshort{hqcc} is what are called variational quantum algorithms (\acrshort{vqa}\textcolor{gray}{s}), which correspond to hybrid quantum-classical algorithms, typically realized through a parameterized quantum circuit (\acrshort{pqc}). Additionally, as part of their implementation, the parameters are subjected to training in order to achieve the desired outcomes, by minimizing the value of a cost function. As such, \acrshort{vqa}\textcolor{gray}{s} can be thought of as the quantum analogue of highly successful machine-learning methods, such as neural networks. Moreover, since they outsource the circuit parameters' optimization to a classical optimizer, exterior to the quantum processor, \acrshort{vqa}\textcolor{gray}{s} leverage the full toolbox of classical optimization. As a whole, this approach has the added advantage of keeping the quantum circuit depth shallow, which, ultimately, helps in mitigating the overall noise level. This is crucial, since it allows for these algorithms to be implemented in the current \acrshort{nisq} (Noisy Intermediate Scale Quantum) era, not requiring complete fault-tolerance to produce reasonable results. A wide array of possible applications has been examined for \acrshort{vqa}\textcolor{gray}{s}, essentially covering all the use cases envisioned by researchers for quantum computers (See Figure \ref{fig:VQAs_Applications}). Despite all this, it is important to note that \acrshort{vqa}\textcolor{gray}{s} are not without fault. There is still a lot of work to be done regarding their trainability, accuracy and efficiency. Either way, they are undoubtedly the most promising candidates for achieving useful quantum advantage in the near future, which is exactly why they have come under the spotlight, drawing the attention of numerous scientists over the past few years.
 
@@ -461,8 +461,8 @@ for some set of functions $\{f_k\}$, where $U(\boldsymbol{\theta})$ is a paramet
 Furthermore, when designing a cost function, we want it to be as faithful as possible, in the sense that its minimum should closely correspond to the desired solution. Likewise, it is imperative that we can efficiently estimate $C(\boldsymbol{\theta})$, as this is integral to the functionality of this method. So far, we have been taking this for granted. However, one must guarantee that this is indeed verified experimentally, otherwise we are not able to proceed.
 
 % Kind of a subsubsubsection.
-\subsubsection*{\small Ansatzë}
-Another crucial element of a \acrshort{vqa} is the ansatz. In broad terms, the ansatz's structure determines the nature of the parameters $\boldsymbol{\theta}$ and, consequently, how they can be optimized to minimize the cost. The design of an ansatz often relies on the specific requirements of the task, allowing for the creation of problem-inspired ansätze. However, certain ansatz architectures are generic and problem-agnostic, making them applicable even in scenarios where relevant information is lacking. As one might expect, problem-agnostic ansätze, being more general, will also, usually, require a greater number of parameters, which unsurprisingly hinders the optimization task. However, this also grants them more flexibility. On the other hand, problem-oriented ansätze are capable of assimilating problem-specific information into the structure of quantum circuits. This custom-fit approach can result in a reduction of the parameter space, making optimization more efficient, and lead to solutions that are more meaningful and interpretable. Furthermore, adopting such an approach might (at times, not always!) enable the use of shallower quantum circuits, thereby aiding in the reduction of overall noise levels. (Greater circuit depths require more quantum gates, which results in more noise.) When it all comes down to it, one should weigh the trade-off between accuracy and generality, and carefully assess resource utilization in the choice of ansatz. (Yet, for achieving optimal results tailored to a specific problem, it's always recommended to utilize problem-inspired ansätze. The challenge lies in their design. While it's tempting to opt for a problem-agnostic ansatz and consider the task done, problem-inspired designs consistently yield superior performance.) For illustration purposes, here are a few examples of commonly considered ansätze types: hardware-efficient ansätze (aimed at reducing circuit depth), unitary coupled clustered ansätze (for quantum chemistry simulations), quantum alternating operator ansätze (used in \acrshort{qaoa}), \textit{et cetera}.
+\subsubsection*{\small Ansätze}
+Another crucial element of a \acrshort{vqa} is the ansatz. In broad terms, the ansatz's structure determines the nature of the parameters $\boldsymbol{\theta}$ and, consequently, how they can be optimized to minimize the cost. The design of an ansatz often relies on the specific requirements of the task, allowing for the creation of problem-inspired Ansätze. However, certain ansatz architectures are generic and problem-agnostic, making them applicable even in scenarios where relevant information is lacking. As one might expect, problem-agnostic Ansätze, being more general, will also, usually, require a greater number of parameters, which unsurprisingly hinders the optimization task. However, this also grants them more flexibility. On the other hand, problem-oriented Ansätze are capable of assimilating problem-specific information into the structure of quantum circuits. This custom-fit approach can result in a reduction of the parameter space, making optimization more efficient, and lead to solutions that are more meaningful and interpretable. Furthermore, adopting such an approach might (at times, not always!) enable the use of shallower quantum circuits, thereby aiding in the reduction of overall noise levels. (Greater circuit depths require more quantum gates, which results in more noise.) When it all comes down to it, one should weigh the trade-off between accuracy and generality, and carefully assess resource utilization in the choice of ansatz. (Yet, for achieving optimal results tailored to a specific problem, it's always recommended to utilize problem-inspired Ansätze. The challenge lies in their design. While it's tempting to opt for a problem-agnostic ansatz and consider the task done, problem-inspired designs consistently yield superior performance.) For illustration purposes, here are a few examples of commonly considered ansatz types: hardware-efficient Ansätze (aimed at reducing circuit depth), unitary coupled clustered Ansätze (for quantum chemistry simulations), quantum alternating operator Ansätze (used in \acrshort{qaoa}), \textit{et cetera}.
 
 % Kind of a subsubsubsection.
 \subsubsection*{\small Gradients}
@@ -491,7 +491,7 @@ In what follows, I will merely outline some of the most promising applications o
 We are, now, finally ready to tackle the two specific variational quantum algorithms, \acrshort{qaoa} and \acrshort{qemc}, which constitute the main focus of this work. Let us start with \acrshort{qaoa}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Quantum Approximate Optimization Algorithm (QAOA) Review}
+\subsubsection{Quantum Approximate Optimization Algorithm (QAOA)}
 \label{subsubsection:QAOA}
 
 % Include/remove "Review"?
@@ -566,7 +566,7 @@ Subsequently, a classical routine is employed to optimize the values of the para
 % I think I should include the "sample simulations" in the "Implementations" section, not here.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Variational Qubit-Efficient MaxCut Heuristic Algorithm (QEMC) Review}
+\subsubsection{Variational Qubit-Efficient MaxCut Heuristic Algorithm (QEMC)}
 \label{subsubsection:QEMC}
 
 % Re-read all of this!
