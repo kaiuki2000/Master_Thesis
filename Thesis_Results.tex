@@ -417,36 +417,58 @@ The previously identified trends are also apparent here. However, the performanc
 \section{Extended-QEMC}
 \label{section:Extended_QEMC}
 
-Extended-QEMC scheme and variations thereof, and their results.
+% Extended-QEMC scheme and variations thereof, and their results.
 
-
-
-
+Amid the various schemes we've attempted, I've devised an extension to the standard \acrshort{qemc} scheme. This new approach enhances \acrshort{qemc} by incorporating $m$ additional qubits beyond the usual $\lceil\log_2(n)\rceil$ qubits required for $n$ graph nodes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unmodified Extended-QEMC}
 \label{subsection:Vanilla_Extended_QEMC}
 
-Vanilla Extended-QEMC scheme and variations thereof, and their results.
+Rather than associating a single basis state with each graph node, it assigns $2^m$ basis states per node. Importantly, similar to \acrshort{qemc}, the sets of basis states associated with different nodes do not overlap. This non-overlapping property is crucial, as we suspect that significant overlap between nodes' lists might contribute to the subpar performance observed in the correlation-based and fixed-parity \acrshort{iqaqe}\textcolor{gray}{s}.
 
+This extended scheme can be implemented within the \acrshort{iqaqe} formalism by using appropriate sub-lists of basis states. The assignment of states to each list is currently arbitrary; for simplicity, we use a straightforward partition: the first $2^m$ basis states go to the first list, the next $2^m$ to the second list, and so on (referred to as Unmodified Extended-\acrshort{qemc}). However, there may be a more optimal method for distributing these states that we have not explored here.
 
+Additionally, it is important to note that Extended-\acrshort{qemc} requires more qubits than regular \acrshort{qemc}. This increase in qubits prevents the scheme from being easily classically simulable and allows for more basis states to be associated with each graph node. Consequently, this should provide more variables to manipulate, potentially improving our chances of finding a good solution.
 
+Now, I present the results of applying this scheme to the usual $8$-node graph (Figure \ref{fig:Vanilla_Extended-QEMC}).
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/Chapter_5/Extended-QEMC/8-node(n_layers=3, step_size=0.95, m=All).png}
+    \caption{Implementation of the Unmodified Extended-\acrshort{qemc} scheme for the usual $8$-node graph: comparison with \acrshort{qaoa} and regular \acrshort{qemc} for various values of $m$. Note that $m$ is not extended beyond $5$, as this would exceed the number of qubits used in \acrshort{qaoa}}
+    \label{fig:Vanilla_Extended-QEMC}
+\end{figure}
 
+As shown in the previous figure, the performance of the unmodified Extended-QEMC scheme is qualitatively very similar to that of regular QEMC. For some values of $m$, we achieve slightly better results, but these improvements are not particularly significant. After conducting several tests, I found no clear pattern to predict which values of $m$ would yield the best results, supporting the earlier conclusion. Therefore, this presents another heuristic for mapping the basis states, with performance comparable to the standard QEMC scheme. While this is a satisfactory outcome, it is not particularly remarkable.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\protect\subsection{Cardinality \texorpdfstring{$= k$}{= k} Extended-QEMC}
-\label{subsection:Card._eq_k_Extended_QEMC}
+\protect\subsection{Cardinality \texorpdfstring{$= 1$}{= 1} Extended-QEMC}
+\label{subsection:Card._eq_1_Extended_QEMC}
 
-Cardinality $= k$ Extended-QEMC scheme and variations thereof, and their results.
-
-
-
+Motivated by the results in Figure \ref{fig:seed=13}\footnote{The trajectory of this study was far from linear. The results presented here are not in the chronological order of our research, hence this reference to later work, which was actually conducted before devising the Extended-QEMC scheme.}, I decided to make a slight change to the Unmodified Extended-\acrshort{qemc} scheme: instead of assigning $2^m$ basis states to each node, we assign only one basis state to each node (Cardinality $= 1$ Extended-\acrshort{qemc}). Although this adjustment occasionally yielded marginally better results than regular \acrshort{qemc}, we do not consider these improvements significant (see Figure \ref{fig:Card.=1_Extended-QEMC} for reference).
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/Chapter_5/Extended-QEMC/8-node[Card.=1](n_layers=3, step_size=0.95, m=All).png}
+    \caption{Implementation of the Cardinality $= 1$ Extended-\acrshort{qemc} scheme for the standard $8$-node graph: comparison with \acrshort{qaoa} and regular \acrshort{qemc} for various values of $m$.}
+    \label{fig:Card.=1_Extended-QEMC}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Alternative Ansätze}
 \label{section:Alternative_ansätze}
 
-Alternative Ansätze and their results: More specifically, Non-deterministic CNOTs. Could also feature some discussion on problem-inspired \textit{vs.} problem-agnostic Ansätze. Mention how we've been using problem-agnostic Ansätze, in iQAQE, and how this hinders the results. Explain how/why problem-inspired is better, and how we could use it in the future. (Could refer to the QML review paper, here.)
+After some reflection, I began to question whether the performance of \acrshort{qemc} and \acrshort{iqaqe} could be hindered by the use of a problem-agnostic ansatz. It's generally advantageous to incorporate problem-specific information into the ansatz, as exemplified by problem-inspired ansätze. Additionally, I pondered whether excessive entanglement or correlations among the system's basis states might be affecting the ansatz's performance. Such phenomena could make it challenging for the model to adjust the amplitude of a specific basis state without significantly impacting others. To address this potential issue, the concept of implementing non-deterministic CNOT gates (\acrshort{ndcnot}\textcolor{gray}{s}) occurred to me. This approach would allow the model to dynamically adjust the degree of entanglement. The most rudimentary way to implement this is by employing parameterized $R_x$ gates before each CNOT's control qubit, which is precisely what we did. The $R_x$ gate allows the control qubit to rotate in and out of the $\ket{1}$ state, thus adjusting the degree of entanglement introduced by the CNOT gate. The results for the standard $8$-node graph are presented below (Figure \ref{fig:ND-CNOTs}), for both \acrshort{qemc} and Cardinality $= 1$ Extended-\acrshort{qemc}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=1.0\textwidth]{Figures/Chapter_5/Extended-QEMC/8-node[ND-CNOTs; Card.=1](n_layers=2, step_size=0.5).png}
+  \caption{Comparison of \acrshort{qemc} and Extended-\acrshort{qemc} implementations utilizing both \acrshort{dcnot}\textcolor{gray}{s} and \acrshort{ndcnot}\textcolor{gray}{s} for the usual $8$-node graph, alongside \acrshort{qaoa}.}
+  \label{fig:ND-CNOTs}
+\end{figure}
+
+Several noteworthy observations can be made here. Firstly, it's apparent that \acrshort{ndcnot}-based schemes exhibit significantly more stable performance with fewer fluctuations compared to \acrshort{dcnot}-based schemes. This discrepancy arises from differences in their implementations: \acrshort{dcnot} circuits employ \texttt{n\_layers = 3} and a \texttt{step\_size = 0.95} (Adam's learning rate), whereas \acrshort{ndcnot} circuits use \texttt{n\_layers = 2} and \texttt{step\_size = 0.5}. The latter, \texttt{step\_size = 0.5}, accounts for the smoother curves observed in Figure \ref{fig:ND-CNOTs}, as expected, and may also contribute to faster convergence. Secondly, the performance appears noticeably enhanced when utilizing \acrshort{ndcnot}\textcolor{gray}{s}, particularly evident in the case of regular \acrshort{qemc}: a distinct improvement is evident when comparing the yellow and purple lines. Despite introducing added complexity to the optimization landscape, this approach appears to yield significant performance gains, at least for this small $8$-node graph. Thus, we've proposed a novel scheme that builds upon \acrshort{qemc}, showing great potential to outperform it.
+
+Moreover, this analysis serves to validate the notion that deviating from purely problem-agnostic Ansätze is generally beneficial. This insight will inform our approach in developing future schemes in subsequent research endeavors. Encouraged by the promising outcomes from this study, we opted to expand the testing of this scheme to larger graphs to assess its scalability. Additionally, this paves the way for comparisons with the Goemans-Williamson scheme.
+
 
 
 
@@ -455,7 +477,63 @@ Alternative Ansätze and their results: More specifically, Non-deterministic CNO
 \section{Goemans-Williamson and Bigger Graphs}
 \label{section:GW_Bigger_Graphs}
 
-Goemans-Williamson scheme and its results on bigger graphs.
+At one point, I began to question whether it was appropriate to directly compare our results to \acrshort{qaoa}, which stands out as the best-performing \acrshort{vqa} among those tested. After thorough deliberation, we concluded that, indeed, it makes sense to do so for smaller graphs. However, as graphs increase in size, the availability of quantum machines with a necessary number of qubits to support such \acrshort{qaoa}\textcolor{gray}{s} becomes limited. This circumstance has led to the emergence of schemes like \acrshort{qemc} \cite{tenecohen2023variational} and others \cite{sciorilli2024largescale}, which aim to address the limitation imposed by the number of qubits.
+
+In light of this, I proceeded to evaluate the performance of our proposed schemes on significantly larger graphs. Two such graphs were considered:
+\begin{enumerate}
+    \item $32$-node Erdős–Rényi graph, constructed using NetworkX's {\hypersetup{urlcolor=black}\url{nx.erdos\_renyi\_graph(n = 32, p = 0.2, seed=0, directed=False)}}, where each edge is included in the graph with a probability of $p = 0.2$;
+    \item $100$-node Erdős–Rényi graph, defined similarly to the previous graph, utilizing {\hypersetup{urlcolor=black}\url{nx.erdos\_renyi\_graph(n = 100, p = 0.2, seed=0, directed=False)}}.
+\end{enumerate}
+The results obtained from these evaluations are presented below\footnote{Please note that we have included only the most promising schemes.} (Figures \ref{fig:32-node_Graph(2-Subfigures)} and \ref{fig:100-node_Graph(2-Subfigures)}).
+
+\begin{figure*}[hb!]
+    \centering
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph(QEMC&G-W).png}
+        \caption{$32$-node graph – \acrshort{qemc} and \acrshort{gw} exclusively.}
+        \label{fig:32-node_Graph(QEMC&G-W)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph.png}
+        \caption{$32$-node graph – other schemes.}
+        \label{fig:32-node_Graph}
+    \end{subfigure}
+    \caption{Comparison of performance (average cut values) among various \acrshort{vqa} schemes for the specified $32$-node graph. \texttt{n\_layers = 3} was employed for both \acrshort{qemc}\textcolor{gray}{s}, with \texttt{step\_size = 0.95} for \acrshort{dcnot}-\acrshort{qemc} and \texttt{step\_size = 0.5} for \acrshort{ndcnot}-\acrshort{qemc}. For all Extended-\acrshort{qemc} schemes, a \texttt{step\_size = 0.95} was utilized, with the number of layers specified in the legend.}
+    \label{fig:32-node_Graph(2-Subfigures)}
+\end{figure*}
+
+\clearpage
+
+\begin{figure*}[hb!]
+    \centering
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph(QEMC&G-W).png}
+        \caption{$100$-node graph – \acrshort{qemc} and \acrshort{gw} exclusively.}
+        \label{fig:100-node_Graph(QEMC&G-W)}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.495\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph.png}
+        \caption{$100$-node graph – other schemes.}
+        \label{fig:100-node_Graph}
+    \end{subfigure}
+    \caption{Comparison of performance (average cut values) among various \acrshort{vqa} schemes for the specified $100$-node graph. This time, all considered VQAs utilized \texttt{n\_layers = 3} and \texttt{step\_size = 0.95}, except for Extended-\acrshort{qemc} with $m=3$, which used \texttt{n\_layers = 4}.}
+    \label{fig:100-node_Graph(2-Subfigures)}
+\end{figure*}
+% Notice how I added Fixed-parity iQAQE to Fig. 5.16 (b). Say this in the text, somewhere.
+
+% Re-read this part!
+In Figure \ref{fig:100-node_Graph(2-Subfigures)}, note that \acrshort{qemc}, fixed-parity \acrshort{iqaqe}, and \acrshort{gw} employ $10$ runs for averaging, while all other schemes (including Cardinality $= 1$ Extended-\acrshort{qemc}) use only $5$ runs. This decision was made to expedite the process while ensuring reasonable averaging of statistical fluctuations in the results. Likewise, in Figure \ref{fig:32-node_Graph(2-Subfigures)}, only $3$ runs were utilized for all schemes. Additionally, in Figure \ref{fig:100-node_Graph(2-Subfigures)}, I chose to include the fixed-parity \acrshort{iqaqe} scheme to evaluate its performance on a larger graph.
+
+Now, concerning the results, several interesting observations emerge. For the $32$-node graph, Extended-\acrshort{qemc}'s performance varies considerably with different values of $m$ and \texttt{n\_layers}, as previously observed, making it inconsistent and challenging to optimize for other graphs. Once again, we observe the benefits of using \acrshort{ndcnot}\textcolor{gray}{s} in \acrshort{qemc} compared to the usual \acrshort{dcnot}\textcolor{gray}{s}. Although the average performances have not yet reached the level of the Goemans-Williamson algorithm, indicated by the white dashed line in Figure \ref{fig:32-node_Graph}, the maximum performances achieved by the \acrshort{ndcnot}-based scheme surpass the best performance attained by \acrshort{gw}, as evident from the comparison of the shaded pink and white regions. This marks the first instance in this study where one of our heuristics surpasses classical state-of-the-art algorithms, representing a significant milestone and underscoring the potential for further exploration of the proposed \acrshort{iqaqe} Framework.
+
+Turning to the $100$-node graph, similar trends are observed across the board. Additionally, we observed that the previously mentioned fixed-parity \acrshort{iqaqe} performs exceptionally poorly, indicating its inability to generalize for larger graphs. Nevertheless, as with the $32$-node graph, reaching the performance level of the Goemans-Williamson algorithm on average remains elusive, indicating ample room for improvement. However, once again, promising results are seen in the maximum cuts (shaded regions).
+
 
 
 
@@ -465,11 +543,13 @@ Goemans-Williamson scheme and its results on bigger graphs.
 \section{Average Best-so-Far correction}
 \label{section:Avg_BSF_correction}
 
-Average Best-so-Far correction and its results. Mention how it was "wrong", initially, and how it was "fixed". I'm not sure where to include this, though.
+% Average Best-so-Far correction and its results. Mention how it was "wrong", initially, and how it was "fixed". I'm not sure where to include this, though.
 
 % I think I should send these plots to an Appendix, so I can save some space.
 
+As previously noted, there exists a distinction between implementing the \acrshort{bsf} transformation before and after the averaging process. We assert that the former (prior to averaging) provides the most accurate representation of the algorithm's optimal performance. Therefore, in alignment with the average \acrshort{ar} plots previously showcased, we opted to rerun several earlier schemes with the \acrshort{bsf} transformation applied before averaging. Given the substantial number of resulting graphs, they will be included in Appendix \ref{appendix:BSF_correction}.
 
+% Maybe, include only the $100$-node graph's results here, and send the rest to the Appendix. I've re-run this! It's in 'Avg._BSF_Correction.ipynb', near the end of the notebook. (In case I decide to include this here.)
 
 
 
@@ -479,7 +559,168 @@ Average Best-so-Far correction and its results. Mention how it was "wrong", init
 \section{Randomized iQAQE benchmarking}
 \label{section:Randomized_iQAQE_benchmarking}
 
-Talk about the randomized benchmarking that we've been doing, and how it's been helping us to understand the performance of the different schemes. Type $1$ and $2$ variables, etc. This could have many subsections.
+In this section, our aim is to adopt a more systematic approach to identify ways to enhance the mapping of basis states. While heuristics have served us thus far, we sought to determine whether there are additional patterns that we may have overlooked by relying solely on these heuristics.
+
+% Talk about the randomized benchmarking that we've been doing, and how it's been helping us to understand the performance of the different schemes. Type $1$ and $2$ variables, etc. This could have many subsections.
+
+\subsection*{Initial proposition}
+Continuing from the earlier discussion, we ran numerous \acrshort{iqaqe} instances, each with random qubit number, list cardinalities and assignments\footnote{We always employed \texttt{n\_layers = 3} and \texttt{step\_size = 0.99}. This time, the final selected cut is derived from the \acrshort{bsf} average curve (not the average \acrshort{bsf}), constructed from $10$ repetitions. Although not optimal, this does not alter our interpretation of the results.}. The underlying idea was to identify optimal combinations of qubit number, list cardinalities and mapping by running multiple instances of \acrshort{iqaqe}. Subsequently, we aimed to discern meaningful patterns that could inform the development of a strategy for more refined basis state selection. However, our analysis did not yield a clear indication of how the partitioning should proceed. As demonstrated below, there existed a plethora of vastly different combinations of partitioning and list cardinality that performed similarly well. Consequently, it proved humanly impossible to extract any coherent insights from this dataset. The results supporting this claim are presented in Figure \ref{fig:Random_iQAQE(Seeds)} for the usual $8$-node graph.
+\begin{figure*}[hb!]
+  \centering
+  \begin{subfigure}[t]{0.495\textwidth}
+      \centering
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=13).png}
+      \caption{Seed = $13$.}
+      \label{fig:seed=13}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.495\textwidth}
+      \centering
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=23).png}
+      \caption{Seed = $23$.}
+      \label{fig:seed=23}
+  \end{subfigure}
+\end{figure*}
+
+% \bigskip
+
+\clearpage
+
+\begin{figure*}[ht!]
+  \addtocounter{figure}{-1} % Added <<
+  \centering
+  \begin{subfigure}[t]{0.325\textwidth}
+      \addtocounter{subfigure}{2} % Added <<
+      \centering
+      \includegraphics[width=1\textwidth,height=4.25cm]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=26).png}
+      \caption{Seed = $26$.}
+      \label{fig:seed=26}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.325\textwidth}
+      \centering
+      \includegraphics[width=1\textwidth,height=4.25cm]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=38).png}
+      \caption{Seed = $38$.}
+      \label{fig:seed=38}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.325\textwidth}
+      \centering
+      \includegraphics[width=1\textwidth,height=4.25cm]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=39).png}
+      \caption{Seed = $39$.}
+      \label{fig:seed=39}
+  \end{subfigure}
+  \caption{Basis states' distributions over the $8$ nodes of the usual graph, for many different \texttt{np.random.seed} seeds. Only those for which the average best-so-far approximation ratio [after $100$ iQAQE iterations] was found to be $\geq 0.975$ were selected. (These were the best performing seeds out of the $50$ tested, for \texttt{seed} $\in \left[0, 49\right] \cap \mathbb{Z}$.)}
+  \label{fig:Random_iQAQE(Seeds)}
+\end{figure*}
+
+As can be seen, not much can be directly inferred from this. When confronted with seemingly unstructured data, a natural progression is to employ machine learning schemes to discern patterns. Indeed, this aligns with the forte of such models. Various options were considered, spanning from neural networks to regression and clustering models. Initially, we opted to implement a basic regression model for its simplicity. Establishing such a model necessitates identifying a set of statistical properties of the input data (lists of basis states) that can serve as inputs for the regression model. This discussion follows in the subsequent section.
+
+\subsection*{Machine learning-based approach}
+Following the prior discussion regarding the \acrshort{iqaqe} formalism (refer to Figure \ref{fig:Random_iQAQE(Seeds)}), our objective was to construct a small machine learning (\acrshort{ml}) model aimed at comprehending the patterns in basis states' partitioning that contribute to the algorithm's performance variations. Naturally, such a model necessitates defining input (independent variables - \acrshort{iv}) and output (dependent variable - \acrshort{dv}). As previously mentioned, our \acrshort{iv}\textcolor{gray}{s} will encompass statistically significant properties extracted from each specific sub-list encoding. Alternatively, including the basis states' partitioning directly as the model's input presents challenges concerning memory-efficient encoding. Traditional one-hot encoding methods are inadequate due to the vast number of potential basis states available (which scales exponentially with the number of qubits). Thus, we opted for the following statistical properties:
+\begin{itemize}
+  \item {\large\textbf{Type $1$ variables}} - these are input variables that are defined for each of the sub-lists of basis states. They are:
+  \begin{itemize}
+      \item \textbf{Number of basis states} in each sub-list, the so-called cardinality of the sub-list;
+      \item \textbf{Average Hamming weight} in each sub-list;
+      \item \textbf{Standard deviation/variance of the Hamming weights} in each sub-list;
+      \item \textbf{Average pair-wise Hamming distance} between the basis states in each sub-list;
+      \item \textbf{Standard deviation/variance of the pair-wise Hamming distances} between the basis states in each sub-list;
+      \item \textbf{Parity score} of each sub-list: this is obtained by: \#(Even basis states) $-$ \#(Odd basis states), for each sub-list.
+  \end{itemize}
+  \item {\large\textbf{Type $2$ variables}} - these are input variables that are defined for the entire set of basis states. They are:
+  \begin{itemize}
+      \item \textbf{Average Hamming weight} of the entire set of basis states;
+      \item \textbf{Standard deviation/variance of the Hamming weights} of the entire set of basis states;
+      \item \textbf{Average pair-wise Hamming distance} between the basis states in the entire set;
+      \item \textbf{Standard deviation/variance of the pair-wise Hamming distances} between the basis states in the entire set;
+      \item \textbf{Parity score} of the entire set of basis states. (Given by the sum of the parity scores of the sub-lists);
+      \item \textbf{Global basis-states' entropy} [of the entire set of basis states]: this is given by the Shannon entropy of the basis states' distribution in the entire set. It is calculated as: $-\frac{1}{\log_2(N)}\sum_{i=1}^{N} p_i \log_2(p_i)$, where $p_i$ is the probability of the $i^{th}$ basis state in the entire set. Note that it is normalized by the maximum entropy value, which is $\log_2(N)$, where $N$ is the total number of basis states in the entire set. (This entropy's maximum is achieved when we have a uniform distribution of the basis states.) Also, this is a measure of the randomness of the basis states' distribution in the entire set.
+  \end{itemize}
+\end{itemize}
+The dataset was constructed in a similar manner to that of Figure \ref{fig:Random_iQAQE(Seeds)}, but expanded to encompass $1000$ seeds. For each seed, we computed the \textbf{median} \acrshort{bsf} vector (\acrshort{dv}) and the associated independent variables (\acrshort{iv}\textcolor{gray}{s}) related to the partitioning of basis states. (It's worth noting that we employed \texttt{n\_layers = 3}, \texttt{step\_size = 0.99}, \texttt{max\_iter = 50}, and \texttt{repeat = 5}.)
+
+With the \acrshort{iv}\textcolor{gray}{s} and \acrshort{dv} finally chosen, and the data set fully constructed, we now need to define our model. We decided to start simple, with a basic multiple linear regression model. Here, the \acrshort{dv} is computed as a linear combination of the \acrshort{iv}\textcolor{gray}{s}, as below:
+\begin{equation}
+    y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_n x_n + \epsilon,
+\end{equation}
+where $x_i$ are the input variables (\acrshort{iv}\textcolor{gray}{s}), $y$ is the dependent variable (\acrshort{dv}), $\beta_i$ are the coefficients, and $\epsilon$ is the error term. The coefficients will be estimated using the Ordinary Least Squares (OLS) method. The model's goodness-of-fit will be evaluated using the $R^2$ value. Additionally, it's worth noting that the independent variables were initially scaled using the \texttt{StandardScaler} from the \texttt{sklearn.preprocessing} module, a common practice in machine learning. This process standardizes the features by removing their mean and scaling them to unit variance, ensuring they have equal weight in the model. This standardization provides a stable foundation for both multiple linear regression and Principal Component Analysis (\acrshort{pca}).
+
+% Re-read from here, downwards.
+After implementing the model, we obtained an $R^2$ of $0.1023$, which is far from the ideal value of $1$, and a $5$-fold cross-validation loss of $0.0061$ (average mean square error) with a standard deviation of $0.0004$. To improve the model, I analyzed the independent variables (\acrshort{iv}\textcolor{gray}{s}) by examining their correlation matrix and Variance Inflation Factor (\acrshort{vif}). The correlation matrix revealed that some \acrshort{iv}\textcolor{gray}{s} were highly correlated, which was expected in hindsight. High correlation among \acrshort{iv}\textcolor{gray}{s} is problematic because it makes it difficult to isolate the effects of each \acrshort{iv} on the dependent variable (\acrshort{dv}), as altering one \acrshort{iv} affects others.
+
+To quantify this issue, we calculated the \acrshort{vif} for each \acrshort{iv}. The \acrshort{vif} measures the increase in the variance of parameter estimates if an additional variable is added to the linear regression, indicating the level of multicollinearity among the \acrshort{iv}\textcolor{gray}{s}. If the \acrshort{vif} is greater than $5$ or $10$ (depending on the user's tolerance), it suggests high multicollinearity, and the variable should probably be removed from the model. Our analysis showed that many input variables were perfectly multicollinear, meaning some were essentially redundant. I experimented with removing these redundant variables one by one to improve model performance. While this approach did lead to some improvement, it was never significant. I tried various combinations, such as removing only Type $2$ variables, only Type $1$ variables, or a mix of both, but none resulted in substantial performance enhancements. The predictive power of the model was also unsatisfactory. Although it could estimate the order of magnitude correctly, it was often off by more than $0.1$ in approximation ratio (\acrshort{ar}), which is unacceptable. If we could develop a model that accurately predicts the (\acrshort{ar}) based on certain \acrshort{iv}\textcolor{gray}{s}, we could reverse-engineer the sub-lists that lead to the best-performing median \acrshort{bsf} approximation ratios. This would be a significant step towards our ultimate goal of identifying effective partitioning schemes for the basis states.
+
+% Re-write from here on-wards.
+In any case, this poor performance could indicate two things: either the model is inadequate (i.e., the underlying relationship is not actually linear), or the chosen \acrshort{iv}\textcolor{gray}{s} are not the most suitable. We suspect the latter might be true, although we're unsure which other variables to use. This circles back to the initial challenge of encoding the sub-lists' information in a memory-efficient and representative manner. Regarding the potential non-linearity of the model, we've considered using non-linear models, such as Support Vector Machine Regression (SVR), which exploits the kernel trick to fit non-linear data. However, we have set this idea aside for now\footnote{This would be an interesting direction for future work.}, as our current goal is to identify which \acrshort{iv}\textcolor{gray}{s} most influence the \acrshort{dv}'s value.
+
+One alternative approach that came to mind is to perform Principal Component Analysis (\acrshort{pca}) followed by regression (PCR). While \acrshort{pca} assumes a linear relationship, it could help us achieve a better model. By computing the Principal Components (\acrshort{pc}\textcolor{gray}{s}), we can indirectly understand which \acrshort{iv}\textcolor{gray}{s} have the greatest influence in explaining the variance of the input data. These influential \acrshort{iv}\textcolor{gray}{s} might be the ones we should focus on when choosing our basis states' partitioning. By examining the loadings of the \acrshort{pc}\textcolor{gray}{s}, we can determine which \acrshort{iv}\textcolor{gray}{s} constitute each \acrshort{pc}. Another advantage of \acrshort{pca} is that the obtained \acrshort{pc}\textcolor{gray}{s} are orthogonal (uncorrelated), thus eliminating the multicollinearity problem among the input variables. We can then attempt linear fitting on the \acrshort{pc}\textcolor{gray}{s} against the \acrshort{dv} (PCR). The main drawback is that we lose some interpretability of the input variables, as accurately interpreting the \acrshort{pc}\textcolor{gray}{s} can be challenging due to their nature as linear combinations of the original \acrshort{iv}\textcolor{gray}{s}.
+
+Anyways, PCR using the $5$ most significant principal components also yielded subpar results. An $R^2$ of $0.0287$ was reported, with a $5$-fold cross-validation loss of $0.0059$ and a standard deviation of $0.0004$. As one could already predict from the $R^2$ value, this model's predictive powers were also unsatisfactory. Nevertheless, we can still try to extract some information from the principal components to understand which independent variables are most influential in determining the dependent variable. Notably, the first $5$ principal components (out of $47$) account for $65.3\%$ of the variance in the data:
+\begin{lstlisting}[caption={Explained variance ratio, for the first 5 PCs ($8$-node graph).}, captionpos=b, style=DOS]
+  Explained variance ratio:
+  [0.46558461 0.07637042 0.04557191 0.03879498 0.02634421]
+\end{lstlisting}
+Now, if we examine the loadings of the first and most significant principal component, we notice they are quite evenly distributed across the independent variables. This makes interpretation challenging, as we cannot easily identify one \acrshort{iv} as being more important than the others. For instance, here are the loadings of the first principal component for the $8$-node graph:
+\begin{lstlisting}[caption={Loadings of the first PC, for the 8-node graph.}, captionpos=b, style=DOS]
+  PCA_1 = [-1.75323157e-01 -9.26451207e-02 -8.98377538e-02 -8.77605361e-02 -9.18316965e-02
+           -8.58000439e-02 -1.03221966e-01 -9.24948614e-02 -1.11659776e-01 -1.75791034e-01
+           -1.73978061e-01 -1.70204027e-01 -1.70707746e-01 -1.73770114e-01 -1.72400120e-01
+           -1.73386482e-01 -1.71136657e-01 -1.88767128e-01 -1.82462202e-01 -1.81233077e-01
+           -1.81277591e-01 -1.83509589e-01 -1.80911686e-01 -1.83449672e-01 -1.85536765e-01
+           -1.87937749e-01 -1.85009049e-01 -1.87993729e-01 -1.86774034e-01 -1.87581036e-01
+           -1.85531361e-01 -1.86124394e-01 -1.86528612e-01 -2.09742228e-03 -3.66652955e-03
+            9.18121507e-04 -9.31248048e-03 -4.63173882e-03 -1.18673071e-03  1.43514268e-02
+           -1.14790537e-02 -1.48687943e-01 -1.33654722e-01 -1.54547996e-01 -1.55191025e-01
+           -5.69361380e-03 -1.50033651e-01]
+  \end{lstlisting}
+As can be seen, there are no \acrshort{iv}\textcolor{gray}{s} whose impact can be neglected, making the interpretation of this principal component nearly impossible, which doesn't help our case much. Ideally, we would discover that a small number of independent variables have a significantly larger impact than the others. This would enable us to concentrate on those variables when selecting our basis states' partitioning. Unfortunately, this is not the situation here. For the sake of completeness and organization, I present the obtained results in the following table (Table \ref{tab:Scaled_Median_BSF_Table_8-node}).
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|cc|c|}
+  \hline
+  \rowcolor[HTML]{FFFFFF} 
+  \cellcolor[HTML]{FFFFFF}                               & \multicolumn{2}{c|}{\cellcolor[HTML]{FFFFFF}$5$-fold cross-validation loss} & \cellcolor[HTML]{FFFFFF} \\ \cline{2-3}
+  \rowcolor[HTML]{FFFFFF} 
+  \multirow{-2}{*}{\cellcolor[HTML]{FFFFFF}Model ($8$-node graph)} &
+    \multicolumn{1}{c|}{\cellcolor[HTML]{FFFFFF}Average ($\overline{x}$)} &
+    Std. dev. ($\sigma$) &
+    \multirow{-2}{*}{\cellcolor[HTML]{FFFFFF}$R^2$} \\ \hline
+  \rowcolor[HTML]{EFEFEF} 
+  \cellcolor[HTML]{FFFFFF}Multiple Linear Regression     & \multicolumn{1}{c|}{\cellcolor[HTML]{EFEFEF}0.0061}         & 0.0004        & 0.1023                   \\ \hline
+  \rowcolor[HTML]{EFEFEF} 
+  \cellcolor[HTML]{FFFFFF}PCR ($5$ Principal Components) & \multicolumn{1}{c|}{\cellcolor[HTML]{EFEFEF}0.0059}         & 0.0004        & 0.0287                   \\ \hline
+  \end{tabular}
+  \caption{Cross-validation loss (average mean square error) and $R^2$ values for the two fitted models, Multiple Linear Regression and PCR, in the context of the usual $8$-node graph.}
+  \label{tab:Scaled_Median_BSF_Table_8-node}
+\end{table}
+
+% Re-read this part! Last thing for today (18/05/2024)!
+Furthermore, after revisiting the regression analyses' coefficients, we noticed something curious: when not performing \acrshort{pca} before fitting, we observed significantly higher coefficients for four specific input variables (on the order of magnitude \(10^9\) or \(10^{10}\), compared to \([10^{-4}, 10^{-2}]\) for all other variables). These \acrshort{iv}\textcolor{gray}{s} are (for the $8$-node graph dataset):
+\begin{enumerate}
+    \item Avg. Hamming weight (Type $1$);
+    \item Parity Score (Type $1$);
+    \item Avg. Hamming weight (Type $2$);
+    \item Parity Score (Type $2$).
+\end{enumerate}
+Initially, it appeared that these variables contributed the most to the dependent variable's value (median best-so-far approximation ratio). However, we no longer believe that to be the case. Instead, we attribute this observation to high multicollinearity among the independent variables (\acrshort{iv}{s}), which renders the model unstable.
+
+We also tested Ridge regression ($L2$ regularization) as an alternative to PCR. Ridge regression is useful when the input data has obvious multicollinearity, as it adds a penalty to the regression coefficients, reducing their variance and stabilizing the model. Using \texttt{alpha = 1.0} in \texttt{sklearn.linear\_model.Ridge}, we obtained an \(R^2\) value of $0.1023$ and an average cross-validation loss of $0.0061$, with a standard deviation of $0.0004$. These results were identical to those from multiple linear regression (for the $8$-node graph). However, with Ridge regression, no \acrshort{iv}\textcolor{gray}{s} had disproportionately large coefficients; they all ranged between \(10^{-4}\) and \(10^{-2}\). This regularization added stability to the model by preventing coefficient divergence. Moreover, its predictive power appeared to be slightly better than that of regular linear regression for our current dataset, often resulting in errors smaller than $0.1$ in approximation ratio (\acrshort{ar}).
+
+This analysis reinforced our belief that the previous \(10^{10}\)-valued coefficients were due to model instabilities from high multicollinearity. Thus, Ridge regression offers a better model with more meaningful and interpretable coefficients. However, the uniform spread of coefficients makes it difficult to pinpoint a few \acrshort{iv}\textcolor{gray}{s} as the most impactful, which we had hoped to identify.
+
+We have explored several techniques to find patterns or strategies for better mapping. However, the task is more complex than initially anticipated. Capturing all intricate patterns might require a more complex model, such as a neural network or another non-linear approach. We have decided to leave this direction for future work. Another concern is that \acrshort{iqaqe}'s performance may depend heavily on the specific graph instance, complicating the generalization of a model for predicting optimal mapping strategies. Despite this, we believe it is still worth pursuing.
+
+% Ridge regression? Is there anything else I should add here, from the logbook? Maybe, re-read both this and the logbook, to see if there's anything I should add here.
+
+% Actually, I think I should just include the 'scaled' results. Re-read this and change some things: like, e.g., in the 'scaled' version, we use the median best-so-far!
+
+% Mention multi-collinearities, VIF;
+% Introduce PCA as a means to combat that. This took our analysis in a different direction, as we began to explore the use of PCA to reduce the multi-collinearity, and extract the most important features. (No need to present all the results that I've obtained, though.)
+
+% Explain that the idea is that we should be able to re-construct the sub-lists, from good-performing IVs. This is the ultimate goal of this analysis.
+
+% Still, I think we should include the PCA results showing that there doesn't appear to be 'one' more important PC. This gives us some lights: probably, the intricate patterns that we're hoping to find are much more graph dependent than we initially thought. This is a good insight, and it's worth mentioning. Although, it definitely makes our job of finding good partitioning schemes much harder.
 
 % % ----------------------------------------------------------------------
 % \subsection{Figures}

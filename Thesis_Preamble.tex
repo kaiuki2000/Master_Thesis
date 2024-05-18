@@ -601,7 +601,7 @@ pdfdisplaydoctitle=true}
 
 % For adding Python code.
 \usepackage{listings}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -637,3 +637,14 @@ pdfdisplaydoctitle=true}
 \WarningFilter*{latex}{Text page \thepage\space contains only floats}
 
 \usepackage{multicol} % Also added by me. For the \begin{multicols} command.
+
+\usepackage{url} % Also added by me. For the \url command.
+
+% For adding code to the document.
+\usepackage{listings}
+% Terminal-like style
+\lstdefinestyle{DOS}
+{
+    backgroundcolor=\color{black},
+    basicstyle=\scriptsize\color{white}\ttfamily
+}
