@@ -569,14 +569,14 @@ Continuing from the earlier discussion, we ran numerous \acrshort{iqaqe} instanc
   \centering
   \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=13).png}
+      \includegraphics[width=1\textwidth,height=0.75\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=13).png}
       \caption{Seed = $13$.}
       \label{fig:seed=13}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=23).png}
+      \includegraphics[width=1\textwidth,height=0.75\textwidth]{Figures/Chapter_5/Random iQAQE (Coloured plots)/8-node(seed=23).png}
       \caption{Seed = $23$.}
       \label{fig:seed=23}
   \end{subfigure}
@@ -710,6 +710,8 @@ We also tested Ridge regression ($L2$ regularization) as an alternative to PCR. 
 This analysis reinforced our belief that the previous \(10^{10}\)-valued coefficients were due to model instabilities from high multicollinearity. Thus, Ridge regression offers a better model with more meaningful and interpretable coefficients. However, the uniform spread of coefficients makes it difficult to pinpoint a few \acrshort{iv}\textcolor{gray}{s} as the most impactful, which we had hoped to identify.
 
 We have explored several techniques to find patterns or strategies for better mapping. However, the task is more complex than initially anticipated. Capturing all intricate patterns might require a more complex model, such as a neural network or another non-linear approach. We have decided to leave this direction for future work. Another concern is that \acrshort{iqaqe}'s performance may depend heavily on the specific graph instance, complicating the generalization of a model for predicting optimal mapping strategies. Despite this, we believe it is still worth pursuing.
+
+% I don't actually include here the last analysis that we performed: scores histogram. To assess their performance. For $1000$ seeds. Should I include this? I don't think it is absolutely necessary, but w/e.
 
 % Ridge regression? Is there anything else I should add here, from the logbook? Maybe, re-read both this and the logbook, to see if there's anything I should add here.
 
