@@ -25,9 +25,9 @@ For numerical implementation of the previously described algorithms, we employ P
 
 In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C++ backend. Recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices: the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for numerical simulations of larger quantum circuits, especially when multiple shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they may lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
 
-Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valuable tool for creating, manipulating, and analyzing complex networks. NetworkX aids in generating the graphs utilized in the MaxCut problem, offering useful visualization tools for graph representation and partitioning visualization, essential for interpreting algorithm results.
+Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valuable tool for creating, manipulating, and analyzing complex networks. NetworkX aids in generating the graphs utilized in the \acrshort{maxcut} problem, offering useful visualization tools for graph representation and partitioning visualization, essential for interpreting algorithm results.
 
-Additionally, we utilize the CVXPY \cite{cvxpy} Python library, specifically designed for convex optimization tasks. CVXPY facilitates solving the semidefinite programming (\acrshort{sdp}) relaxation of the MaxCut problem within the \acrshort{gw} algorithm framework, which inherently constitutes a convex optimization problem.
+Additionally, we utilize the CVXPY \cite{cvxpy} Python library, specifically designed for convex optimization tasks. CVXPY facilitates solving the semidefinite programming (\acrshort{sdp}) relaxation of the \acrshort{maxcut} problem within the \acrshort{gw} algorithm framework, which inherently constitutes a convex optimization problem.
 
 Regrettably, we lack access to a genuine quantum computer, which would have been invaluable for assessing the performance of these algorithms on real hardware. Furthermore, the lack of access to a High-Performance Computing (\acrshort{hpc}) cluster significantly limited our capacity to perform large-scale simulations and grid-searches necessary for hyperparameter tuning. These limitations occasionally posed a bottleneck in our research, particularly concerning our inability to evaluate the algorithms on larger graphs, which would have been crucial for comprehensive testing. All simulations presented herein were conducted using my personal computer – a system equipped with an 8-core AMD Ryzen 7 5800H CPU, integrated Radeon graphics\footnote{No GPU-assisted computations were conducted.}, and 16GB of RAM.
 
@@ -96,11 +96,11 @@ All of the developed code has been compiled in a GitHub repository, available at
 
 % Description of the numerical implementation of the QEMC model.
 
-Here, we provide the pseudo-code representation of the implementation of the Qubit-Efficient MaxCut Heuristic (\acrshort{qemc}), as detailed in subsubsection \ref{subsubsection:QEMC}.
+Here, we provide the pseudo-code representation of the implementation of the Qubit-Efficient \acrshort{maxcut} Heuristic (\acrshort{qemc}), as detailed in subsubsection \ref{subsubsection:QEMC}.
 
 \begin{algorithm}[H]
    \small
-   \caption{Qubit Efficient MaxCut Heuristic Algorithm (\acrshort{qemc})}\label{alg:QEMC}
+   \caption{Qubit Efficient \acrshort{maxcut} Heuristic Algorithm (\acrshort{qemc})}\label{alg:QEMC}
    \begin{algorithmic}
    \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, \texttt{B} \Comment{\texttt{B} is a parameter of the cost function}
    \Ensure \texttt{n\_qubits = graph.n\_nodes}
@@ -171,7 +171,7 @@ Here, we present the numerical implementation of the Goemans-Williamson model, i
 
 \begin{algorithm}[H]
    \small
-   \caption{Goemans-Williamson Algorithm for MaxCut}\label{alg:GW}
+   \caption{Goemans-Williamson Algorithm for \acrshort{maxcut}}\label{alg:GW}
    \begin{algorithmic}
    
    \State \textbf{Input:} \texttt{graph}, Optional \texttt{MaxCut} value
