@@ -29,7 +29,7 @@ Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valu
 
 Additionally, we utilize the CVXPY \cite{cvxpy} Python library, specifically designed for convex optimization tasks. CVXPY facilitates solving the semidefinite programming (\acrshort{sdp}) relaxation of the \acrshort{maxcut} problem within the \acrshort{gw} algorithm framework, which inherently constitutes a convex optimization problem.
 
-Regrettably, we lack access to a genuine quantum computer, which would have been invaluable for assessing the performance of these algorithms on real hardware. Furthermore, the lack of access to a High-Performance Computing (\acrshort{hpc}) cluster significantly limited our capacity to perform large-scale simulations and grid-searches necessary for hyperparameter tuning. These limitations occasionally posed a bottleneck in our research, particularly concerning our inability to evaluate the algorithms on larger graphs, which would have been crucial for comprehensive testing. All simulations presented herein were conducted using my personal computer – a system equipped with an 8-core AMD Ryzen 7 5800H CPU, integrated Radeon graphics\footnote{No GPU-assisted computations were conducted.}, and 16GB of RAM.
+Regrettably, we lack access to a genuine quantum computer, which would have been invaluable for assessing the performance of these algorithms on real hardware. Furthermore, the lack of access to a High-Performance Computing (\acrshort{hpc}) cluster significantly limited our capacity to perform large-scale simulations and grid-searches necessary for hyperparameter tuning. These limitations occasionally posed a bottleneck in our research, particularly concerning our inability to evaluate the algorithms on larger graphs, which would have been crucial for comprehensive testing. All simulations presented herein were conducted using my personal computer – a system equipped with an 8-core AMD Ryzen 7 5800H CPU, integrated Radeon graphics\footnote{No GPU-assisted computations were conducted.}, and $16$ GB of RAM.
 
 Lastly, all simulations were performed using the Adam classical optimizer \cite{kingma2017adam}, with default parameters except for the learning rate, which was treated as a hyperparameter and fine-tuned accordingly. The Adam optimizer is a popular optimization algorithm for variational quantum algorithms, utilizing stochastic gradient descent with adaptive learning rates and momentum.
 
@@ -100,7 +100,7 @@ Here, we provide the pseudo-code representation of the implementation of the Qub
 
 \begin{algorithm}[H]
    \small
-   \caption{Qubit Efficient \acrshort{maxcut} Heuristic Algorithm (\acrshort{qemc})}\label{alg:QEMC}
+   \caption{Qubit-Efficient \acrshort{maxcut} Heuristic Algorithm (\acrshort{qemc})}\label{alg:QEMC}
    \begin{algorithmic}
    \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, \texttt{B} \Comment{\texttt{B} is a parameter of the cost function}
    \Ensure \texttt{n\_qubits = graph.n\_nodes}

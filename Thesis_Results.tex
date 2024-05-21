@@ -473,6 +473,8 @@ Moreover, this analysis serves to validate the notion that deviating from purely
 \section{Goemans-Williamson and Bigger Graphs}
 \label{section:GW_Bigger_Graphs}
 
+% I have finally fixed the graphs! However, I might now need to sligthly adjust the text to better fit the new graphs. I can re-introduce the previous text here ("Better than G-W [...]").
+
 At one point, I began to question whether it was appropriate to directly compare our results to \acrshort{qaoa}, which stands out as the best-performing \acrshort{vqa} among those tested. After thorough deliberation, we concluded that, indeed, it makes sense to do so for smaller graphs. However, as graphs increase in size, the availability of quantum machines with a necessary number of qubits to support such \acrshort{qaoa}\textcolor{gray}{s} becomes limited. This circumstance has led to the emergence of schemes like \acrshort{qemc} \cite{tenecohen2023variational} and others \cite{sciorilli2024largescale}, which aim to address the limitation imposed by the number of qubits.
 
 In light of this, I proceeded to evaluate the performance of our proposed schemes on significantly larger graphs. Two such graphs were considered:
@@ -486,14 +488,14 @@ The results obtained from these evaluations are presented below\footnote{Please 
     \centering
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
-        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph(QEMC&G-W).png}
+        \includegraphics[width=1\textwidth, height=0.812\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph(QEMC&G-W)_seed=0.png}
         \caption{$32$-node graph – \acrshort{qemc} and \acrshort{gw} exclusively.}
         \label{fig:32-node_Graph(QEMC&G-W)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
-        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph.png}
+        \includegraphics[width=1\textwidth, height=0.812\textwidth]{Figures/Chapter_5/Large graphs/32-node_Graph_seed=0.png}
         \caption{$32$-node graph – other schemes.}
         \label{fig:32-node_Graph}
     \end{subfigure}
@@ -507,14 +509,14 @@ The results obtained from these evaluations are presented below\footnote{Please 
     \centering
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
-        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph(QEMC&G-W).png}
+        \includegraphics[width=1\textwidth, height=0.812\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph(QEMC&G-W)_seed=0.png}
         \caption{$100$-node graph – \acrshort{qemc} and \acrshort{gw} exclusively.}
         \label{fig:100-node_Graph(QEMC&G-W)}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.495\textwidth}
         \centering
-        \includegraphics[width=1\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph.png}
+        \includegraphics[width=1\textwidth, height=0.812\textwidth]{Figures/Chapter_5/Large graphs/100-node_Graph_seed=0.png}
         \caption{$100$-node graph – other schemes.}
         \label{fig:100-node_Graph}
     \end{subfigure}
@@ -523,27 +525,44 @@ The results obtained from these evaluations are presented below\footnote{Please 
 \end{figure*}
 % Notice how I added Fixed-parity iQAQE to Fig. 5.16 (b). Say this in the text, somewhere.
 
+% I need to re-read this part, and change things to match the new results.
+
 % Re-read this part!
-In Figure \ref{fig:100-node_Graph(2-Subfigures)}, note that \acrshort{qemc}, fixed-parity \acrshort{iqaqe}, and \acrshort{gw} employ $10$ runs for averaging, while all other schemes (including Cardinality $= 1$ Extended-\acrshort{qemc}) use only $5$ runs. This decision was made to expedite the process while ensuring reasonable averaging of statistical fluctuations in the results. Likewise, in Figure \ref{fig:32-node_Graph(2-Subfigures)}, only $3$ runs were utilized for all schemes. Additionally, in Figure \ref{fig:100-node_Graph}, I chose to include the fixed-parity \acrshort{iqaqe} scheme to evaluate its performance on a larger graph.
+% Old.
+% In Figure \ref{fig:100-node_Graph(2-Subfigures)}, note that \acrshort{qemc}, fixed-parity \acrshort{iqaqe}, and \acrshort{gw} employ $10$ runs for averaging, while all other schemes (including Cardinality $= 1$ Extended-\acrshort{qemc}) use only $5$ runs. This decision was made to expedite the process while ensuring reasonable averaging of statistical fluctuations in the results. Likewise, in Figure \ref{fig:32-node_Graph(2-Subfigures)}, only $3$ runs were utilized for all schemes. Additionally, in Figure \ref{fig:100-node_Graph}, I chose to include the fixed-parity \acrshort{iqaqe} scheme to evaluate its performance on a larger graph.
 
-Now, concerning the results, several interesting observations emerge. For the $32$-node graph, Extended-\acrshort{qemc}'s performance varies considerably with different values of $m$ and \texttt{n\_layers}, as previously observed, making it inconsistent and challenging to optimize for other graphs. Once again, we observe the benefits of using \acrshort{ndcnot}\textcolor{gray}{s} in \acrshort{qemc} compared to the usual \acrshort{dcnot}\textcolor{gray}{s}. Although the average performances have not yet reached the level of the Goemans-Williamson algorithm, indicated by the white dashed line in Figure \ref{fig:32-node_Graph}, the maximum performances achieved by the \acrshort{ndcnot}-based scheme surpass the best performance attained by \acrshort{gw}, as evident from the comparison of the shaded pink and white regions. This marks the first instance in this study where one of our heuristics surpasses classical state-of-the-art algorithms, representing a significant milestone and underscoring the potential for further exploration of the proposed \acrshort{iqaqe} Framework.
+% New.
+Please note that we averaged the results over $5$ runs instead of the typical $10$. This adjustment was made to expedite the process while still achieving a reasonable averaging of statistical fluctuations. Additionally, in Figure \ref{fig:100-node_Graph}, I included the fixed-parity \acrshort{iqaqe} scheme to assess its performance on a larger graph.
 
-Turning to the $100$-node graph, similar trends are observed across the board. Additionally, we observed that the previously mentioned fixed-parity \acrshort{iqaqe} performs exceptionally poorly, indicating its inability to generalize for larger graphs. Nevertheless, as with the $32$-node graph, reaching the performance level of the Goemans-Williamson algorithm on average remains elusive, indicating ample room for improvement. However, once again, promising results are seen in the maximum cuts (shaded regions).
+% Re-read this part! Check if there's anything else that could be added to the analysis.
+Now, concerning the results, several interesting observations emerge. For the $32$-node graph, Extended-\acrshort{qemc}'s performance varies considerably with different values of $m$ and \texttt{n\_layers}, as previously observed, making it inconsistent and challenging to optimize for other graphs. Once again, we observe the benefits of using \acrshort{ndcnot}\textcolor{gray}{s} in \acrshort{qemc} compared to the usual \acrshort{dcnot}\textcolor{gray}{s}. One might also observe that the average performance of the \acrshort{ndcnot}-based \acrshort{qemc} is highly competitive with \acrshort{gw}, occasionally even outperforming it. Furthermore, the maximum performance achieved by the \acrshort{ndcnot}-based scheme surpasses that of \acrshort{gw}, as evident from the comparison of the shaded pink and white regions (Figure \ref{fig:32-node_Graph(QEMC&G-W)}). This marks the first instance in this study where one of our heuristics surpasses classical state-of-the-art algorithms, representing a significant milestone and underscoring the potential for further exploration of the proposed \acrshort{iqaqe} Framework.
 
+% This demonstrates that our heuristics can rival the state-of-the-art, marking a significant milestone and highlighting the potential for further exploration of the proposed \acrshort{iqaqe} Framework.
 
+% I need to re-read/change this! Mention that ND-QEMC is no longer king! And, its performance becomes very similar to regular QEMC's.
 
+% New.
+Turning to the $100$-node graph, the situation differs somewhat. This time, the Extended-\acrshort{qemc} scheme stands out, delivering remarkable performance competitive with \acrshort{gw}. Additionally, we found that the previously mentioned fixed-parity \acrshort{iqaqe} performs exceptionally poorly, demonstrating its inability to generalize to larger graphs. Moreover, there is no longer a significant performance gap between the \acrshort{ndcnot}-based and regular \acrshort{qemc} schemes, suggesting that the former doesn't scale well to larger graphs. Nevertheless, for this $100$-node graph, reaching the average performance level of the Goemans-Williamson algorithm remains elusive, indicating ample room for improvement. However, once again, promising results are evident in the maximum cuts (shaded regions).
 
+% % Old.
+% Turning to the $100$-node graph, we see similar trends overall. This time, however, the Extended-\acrshort{qemc} scheme stands out, delivering remarkable performance competitive with \acrshort{gw}. Additionally, we found that the previously mentioned fixed-parity \acrshort{iqaqe} performs exceptionally poorly, demonstrating its inability to generalize to larger graphs. Nevertheless, for this $100$-node graph, reaching the performance level of the Goemans-Williamson algorithm on average remains elusive, indicating ample room for improvement. However, once again, promising results are seen in the maximum cuts (shaded regions).
+
+\clearpage % Can be removed, if more space is needed. I just had to change the analysis a bit, so I cut some parts and now we have more space.
+
+% Although the average performances have not yet reached the level of the Goemans-Williamson algorithm, indicated by the white dashed line in Figure \ref{fig:32-node_Graph}, the maximum performances achieved by the \acrshort{ndcnot}-based scheme surpass the best performance attained by \acrshort{gw}, as evident from the comparison of the shaded pink and white regions. This marks the first instance in this study where one of our heuristics surpasses classical state-of-the-art algorithms, representing a significant milestone and underscoring the potential for further exploration of the proposed \acrshort{iqaqe} Framework.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Average Best-so-Far correction}
-\label{section:Avg_BSF_correction}
+\section{Best-so-Far correction}
+\label{section:BSF_correction}
 
 % Average Best-so-Far correction and its results. Mention how it was "wrong", initially, and how it was "fixed". I'm not sure where to include this, though.
 
+% Also, re-read this one.
+
 % I think I should send these plots to an Appendix, so I can save some space.
 
-As previously noted, there exists a distinction between implementing the \acrshort{bsf} transformation before and after the averaging process. We assert that the former (prior to averaging) provides the most accurate representation of the algorithm's optimal performance. Therefore, in alignment with the average \acrshort{ar} plots previously showcased, we opted to rerun several earlier schemes with the \acrshort{bsf} transformation applied before averaging. Given the substantial number of resulting graphs, they will be included in Appendix \ref{Appendix:AvgBestSoFarCorrection}.
+As previously noted, there exists a distinction between implementing the \acrshort{bsf} transformation before and after the averaging process. We assert that the former (prior to averaging) provides the most accurate representation of the algorithm's optimal performance. Therefore, in alignment with the average \acrshort{ar} plots previously showcased, we opted to rerun several earlier schemes with the \acrshort{bsf} transformation applied before averaging/computing the median. Given the substantial number of resulting graphs, they will be included in Appendix \ref{Appendix:BestSoFarCorrection}. The plots shown there feature the median best-so-far cut.
 
 % Maybe, include only the $100$-node graph's results here, and send the rest to the Appendix. I've re-run this! It's in 'Avg._BSF_Correction.ipynb', near the end of the notebook. (In case I decide to include this here.)
 

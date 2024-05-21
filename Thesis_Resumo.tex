@@ -13,9 +13,17 @@
 % Add entry in the table of contents as section
 \addcontentsline{toc}{section}{Resumo}
 
-Inserir o resumo em Portugu\^{e}s aqui com um máximo de 250 palavras e acompanhado de 4 a 6 palavras-chave.
+% Inserir o resumo em Portugu\^{e}s aqui com um máximo de 250 palavras e acompanhado de 4 a 6 palavras-chave.
+
+Neste trabalho, apresentamos o \textit{Interpolated} \acrshort{qaoa}/\acrshort{qemc} (\acrshort{iqaqe}) \textit{Framework}, uma abordagem inovadora inspirada no \textit{Quantum Approximate Optimization Algorithm} (\acrshort{qaoa}) e no \textit{Qubit-Efficient MaxCut Heuristic Algorithm} (\acrshort{qemc}), para desenhar múltiplos Algoritmos Quânticos Variacionais (\acrshort{vqa}\textcolor{gray}{s}) distintos para resolver o problema do Corte Máximo (\acrshort{maxcut}). Este \textit{framework} baseia-se nos componentes centrais do \acrshort{qemc} enquanto integra conceitos do \acrshort{qaoa} para aproveitar os pontos fortes de ambos os algoritmos. O \textit{Framework} \acrshort{iqaqe} requer menos \textit{qubits} que o \acrshort{qaoa} e apresenta maior resiliência à incerteza estatística associada a um pequeno número de medições (\textit{shots}) em comparação com o \acrshort{qemc}.
+
+O \textit{framework} oferece uma gama de parâmetros ajustáveis, facilitando a criação de diversos \acrshort{vqa}\textcolor{gray}{s}. Introduzimos heurísticas para a seleção desses parâmetros, como o número de \textit{qubits}, a cardinalidade das listas e os mapeamentos, e avaliamos o seu desempenho. Os nossos resultados indicam que o \acrshort{iqaqe} frequentemente apresenta um desempenho comparável ao \acrshort{qemc} e pode até superar métodos clássicos de ponta, como Goemans-Williamson, em certos cenários.
+
+Além disso, propomos duas abordagens alternativas para resolver o problema do \acrshort{maxcut}, derivadas da nossa investigação sobre o \acrshort{iqaqe}. Embora esses métodos não se enquadrem diretamente no \textit{Framework} \acrshort{iqaqe}, oferecem \textit{insights} valiosos e potenciais caminhos para futuras pesquisas.
+
+Também apresentamos um pequeno modelo de aprendizagem automática, projetado para determinar o mapeamento óptimo para um grafo específico com base em propriedades estatísticas dos próprios mapeamentos. Em última análise, o \textit{Framework} \acrshort{iqaqe} serve como um banco de testes versátil para o desenvolvimento de novos \acrshort{vqa}\textcolor{gray}{s}, eventualmente abrindo caminho para resultados revolucionários no futuro.
 
 \vfill
 
-\textbf{\Large Palavras-chave:} palavra-chave1, palavra-chave2, palavra-chave3,...
+\textbf{\Large Palavras-chave:} Computação Híbrida Quântica-Clássica (\acrshort{hqcc}), Algoritmos Quânticos Variacionais (\acrshort{vqa}\textcolor{gray}{s}), Problema do Corte Máximo (\acrshort{maxcut}), \textit{Quantum Approximate Optimization Algorithm} (\acrshort{qaoa}), \textit{Qubit-Efficient MaxCut Heuristic Algorithm} (\acrshort{qemc}).
 

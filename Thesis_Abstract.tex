@@ -13,9 +13,16 @@
 % Add entry in the table of contents as section
 \addcontentsline{toc}{section}{Abstract}
 
-Insert your abstract here with a maximum of 250 words, followed by 4 to 6 keywords.
+% Insert your abstract here with a maximum of 250 words, followed by 4 to 6 keywords.
+
+In this work, we introduce the Interpolated \acrshort{qaoa}/\acrshort{qemc} (\acrshort{iqaqe}) Framework, a novel approach inspired by the Quantum Approximate Optimization Algorithm (\acrshort{qaoa}) and the Qubit-Efficient MaxCut Heuristic Algorithm (\acrshort{qemc}), for designing multiple distinct Variational Quantum Algorithms (\acrshort{vqa}\textcolor{gray}{s}) to solve the Maximum Cut (\acrshort{maxcut}) problem. This framework builds on the core components of \acrshort{qemc} while integrating concepts from \acrshort{qaoa} to harness the strengths of both algorithms. The \acrshort{iqaqe} Framework requires fewer qubits than \acrshort{qaoa} and exhibits greater resilience to statistical uncertainty associated with small shot numbers compared to \acrshort{qemc}.
+
+The framework offers a range of adjustable parameters, facilitating the creation of various \acrshort{vqa}\textcolor{gray}{s}. We introduce heuristics for selecting these parameters, such as the number of qubits, list cardinality, and mappings, and evaluate their performance. Our findings indicate that \acrshort{iqaqe} often performs on par with \acrshort{qemc} and can even surpass classical state-of-the-art algorithms like Goemans-Williamson in certain scenarios.
+
+Additionally, we propose two alternative approaches for solving the \acrshort{maxcut} problem, derived from our research on \acrshort{iqaqe}. While these methods do not fall directly within the \acrshort{iqaqe} Framework, they offer valuable insights and potential avenues for future research.
+
+We also present a small machine learning model designed to determine the optimal mapping for a specific graph based on statistical properties of the mappings themselves. Ultimately, the \acrshort{iqaqe} Framework serves as a versatile testbed for developing new \acrshort{vqa}\textcolor{gray}{s}, potentially paving the way for groundbreaking results in the future.
 
 \vfill
 
-\textbf{\Large Keywords:} keyword1, keyword2, keyword3,...
-
+\textbf{\Large Keywords:} \sloppy Hybrid Quantum-Classical Computing (\acrshort{hqcc}), Variational Quantum Algorithms (\acrshort{vqa}\textcolor{gray}{s}), Maximum Cut (\acrshort{maxcut}) Problem, Quantum Approximate Optimization Algorithm (\acrshort{qaoa}), Qubit-Efficient MaxCut Heuristic Algorithm (\acrshort{qemc}).
