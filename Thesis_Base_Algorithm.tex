@@ -11,6 +11,8 @@
 \chapter{iQAQE Algorithm Framework}
 \label{chapter:Base Algorithm}
 
+% I should probably re-write this a bit, such that it is obvious what we mean when we say 'iQAQE Framework'. I've said this before, but it needs to appear here, again.
+
 % Something, something, HQCC-project collaboration. I should probably mention this earlier than I do at the moment. (It's just some footnote, right now... I should change this, probably. Although, it is not too important, I guess.)
 
 In this chapter, we present the proposed algorithm, \acrshort{iqaqe}, which interpolates between \acrshort{qaoa} and \acrshort{qemc}. We begin with a comparison of the two algorithms, followed by a detailed description of \acrshort{iqaqe}, its theoretical framework, motivation, and workflow.
@@ -40,7 +42,7 @@ The proposed algorithm aspires to act as an interpolation between \acrshort{qaoa
 
 \subsection{Motivation \& Outlook}
 \label{subsection:iQAQE Motivation}
-At this point, it is important to mention that the development of this algorithm is entirely exploratory, although we do believe it should allow for a more practical algorithm implementation-wise. We can postulate that such an hybrid approach might have some potential advantages. Namely, it should allow for less shots than in \acrshort{qemc} and fewer qubit requirements than in \acrshort{qaoa}, in addition to, arguably, being better trainable. Another interesting characteristic of such an algorithm is its tunable "quantum-ness". As we interpolate between \acrshort{qaoa} (hybrid quantum-classical) and \acrshort{qemc} (classical, quantum-inspired), the ability to selectively adjust the degree of both could prove to be advantageous. As part of a more long-term perspective (not in this thesis), I may explore the possibility of generalizing this algorithm to tackle additional combinatorial problems, such as Max-$k$-Cut. Throughout my thesis, I will rigorously test the algorithm using classical simulations of quantum machines. The aim is to identify the most effective implementation strategies, taking into account both cost and ansatz considerations, as well as the distribution of basis states.
+At this point, it is important to mention that the development of this algorithm is entirely exploratory, although we do believe it should allow for a more practical algorithm implementation-wise. We can postulate that such a hybrid approach might have some potential advantages. Namely, it should allow for less shots than in \acrshort{qemc} and fewer qubit requirements than in \acrshort{qaoa}, in addition to, arguably, being better trainable. Another interesting characteristic of such an algorithm is its tunable "quantum-ness". As we interpolate between \acrshort{qaoa} (hybrid quantum-classical) and \acrshort{qemc} (classical, quantum-inspired), the ability to selectively adjust the degree of both could prove to be advantageous. As part of a more long-term perspective (not in this thesis), I may explore the possibility of generalizing this algorithm to tackle additional combinatorial problems, such as Max-$k$-Cut. Throughout my thesis, I will rigorously test the algorithm using classical simulations of quantum machines. The aim is to identify the most effective implementation strategies, taking into account both cost and ansatz considerations, as well as the distribution of basis states.
 
 \subsection{Algorithm Description \& Workflow}
 \label{subsection:iQAQE Description_Workflow}
