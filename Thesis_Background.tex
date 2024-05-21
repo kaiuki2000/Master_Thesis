@@ -100,21 +100,23 @@ In this subsubsection, we shall present the Goemans-Williamson Algorithm in grea
 
 Formally, the Goemans-Williamson Algorithm can be described as follows. (We will use the original formulation, from \cite{GW-Algorithm}, presenting a distilled version of the most important aspects of their description.) Given a graph, with vertex set $V = \{1,..., n\}$ and non-negative weights $w_{ij} = w_{ji}$ for each pair of vertices $i$ and $j$, the weight of the maximum cut $w(S_1, S_2)$ is given by the following integer quadratic program\footnote{Note that we use the general formulation here, contemplating the possibility of weighted graphs, i.e., we do not restrict ourselves to un-weighted graphs.}:
 
+\vspace{-5mm}
 \begin{equation}\label{eq:Graph_Cut}
   \begin{split}
-  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{i<j}w_{i j}(1-y_{i}y_{j}) \\
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{\stackrel{i < j:}{(i,j)\in E}}w_{i j}(1-y_{i}y_{j}) \\
   (Q)\qquad\qquad\qquad&\operatorname{Subject\;to:}y_{i}\in\{-1,1\}\qquad\qquad\forall i\in V.
   \end{split}
 \end{equation}
 
 \sloppy
-\noindent It is clear that the sets $S_1 = \{i|y_i=1\}$ and $S_2 = \{i|y_i=-1\}$ correspond to a cut of weight $w(S_1, S_2) = \frac{1}{2}\sum_{i<j}w_{ij}\left(1-y_{i}y_{j}\right)$. This  represents the same quantity as the aforementioned $\text{Cut}(S_1, S_2) = \sum_{(u, v) \in E} \chi(u, v)$ (Eq. \ref{eq:Cut}), in the un-weighted case. Explicitly, in words, the sum in Eq. \ref{eq:Graph_Cut} is to be taken over all the graph's edges $(i, j)$, with $y_{i}$ representing node-$i$'s associated set: $y_{i}=+1$, if node-$i$ $\in S_1$, or $y_{i}=-1$, when node-$i$ $\in S_2, \forall i \in V$.
+\noindent It is clear that the sets $S_1 = \{i|y_i=1\}$ and $S_2 = \{i|y_i=-1\}$ correspond to a cut of weight $w(S_1, S_2) = \frac{1}{2}\sum_{\stackrel{i < j:}{(i,j)\in E}}w_{ij}\left(1-y_{i}y_{j}\right)$. This  represents the same quantity as the aforementioned $\text{Cut}(S_1, S_2) = \sum_{(u, v) \in E} \chi(u, v)$ (Eq. \ref{eq:Cut}), in the un-weighted case. Explicitly, in words, the sum in Eq. \ref{eq:Graph_Cut} is to be taken over all the graph's edges $(i, j)$, with $y_{i}$ representing node-$i$'s associated set: $y_{i}=+1$, if node-$i$ $\in S_1$, or $y_{i}=-1$, when node-$i$ $\in S_2, \forall i \in V$.
 
 Given that solving this integer quadratic program is NP-complete \cite{GW-Algorithm}, we explore relaxations of $(Q)$. These are obtained by relaxing some of the constraints of $(Q)$, and extending the objective function to the larger space. Consequently, all solutions of $(Q)$ are feasible for the relaxation, and the optimal value of the relaxation serves as an upper bound for $(Q)$'s optimal value. We interpret $(Q)$ as constraining $y_i$ to be a $1$-dimensional unit vector. A number of possible relaxations involve allowing $y_i$ to be a multidimensional vector $v_i$ of unit Euclidean norm. As the linear space spaned by the vectors $v_i$ has dimension at most $n$ (number of graph nodes), we can assume that these vectors belong to $\mathbb{R}^{n}$. More precisely, they belong to the $n$-dimensional unit sphere, $S_n$. At this point, so as to make sure that the resulting optimization problem is, indeed, a relaxation, we must define the cost function such that it reduces to $\frac{1}{2}\sum_{i<j}w_{i j}(1-y_{i}y_{j})$ for vectors lying in a $1$-dimensional space. One way to do this is to replace $y_{i}y_{j}$ with the inner product $v_{i} \cdot v_{j}$ in the expression for $w(S_1, S_2)$. The resulting relaxation, $(P)$, reads:
 
+\vspace{-5mm}
 \begin{equation}
   \begin{split}
-  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{i<j}w_{i j}(1-v_{i} \cdot v_{j}) \\
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{\stackrel{i < j:}{(i,j)\in E}}w_{i j}(1-v_{i} \cdot v_{j}) \\
   (P)\qquad\qquad\qquad&\operatorname{Subject\;to:}v_{i}\in S_n \qquad\qquad\forall i\in V.
   \end{split}
 \end{equation}
@@ -135,7 +137,7 @@ A detailed proof elucidating the appearance of this $0.878$ value is present in 
 Computationally, one defines the positive semidefinite matrix $X \in \mathbb{R}^{n \times n}$, with $X_{ii} = 1$ and $X_{ij} = v_{i} \cdot v_{j} = v_{i}^{T} v_j$, $\forall i, j \in V$. Then, we can solve the following semidefinite program:
 \begin{equation}
   \begin{split}
-  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{i<j}w_{i j}(1-X_{ij}) \\
+  &\mathrm{Maximize}\;\;\frac{1}{2}\sum_{\stackrel{i < j:}{(i,j)\in E}}w_{i j}(1-X_{ij}) \\
   (N)\qquad\qquad\qquad&\operatorname{Subject\;to:}X_{ii} = 1, \forall i\in V, X \succeq 0.
   \end{split}
 \end{equation}
@@ -513,7 +515,7 @@ Renowned as the most prominent \acrshort{vqa} in quantum-enhanced optimization, 
 
 Combinatorial optimization problems are formulated on binary strings, $s = (s_1,...,s_N)$, with the goal of minimizing/maximizing a designated classical objective function, $L(s)$. In \acrshort{qaoa}, however, the cost function is defined as the expectation value of a quantum Hamiltonian, $H_C$ (or $H_P$), termed the cost (or problem) Hamiltonian, and doesn't explictly depend on such bit-string $s$. This [cost] is constructed by mapping each classical variable, $s_j \in \{1, -1\}$, to a Pauli spin-$1/2$ operator, $\boldsymbol{Z}_j$. Thus, the usual \acrshort{maxcut} objective $L(s) = \frac{1}{2}\sum_{\mathrm{Edge}\;(\mathrm{j,k})}(1-s_{i}s_{j})$, denoting the cut of partition $s = (s_1,...,s_N)$, is transformed into the cost Hamiltonian
 \begin{equation}\label{eq:H_C}
-  H_C = \frac{1}{2}\sum_{\mathrm{Edge}\;(\mathrm{j,k})}(1-\boldsymbol{Z}_i\boldsymbol{Z}_j),
+  H_C = \frac{1}{2}\sum_{\stackrel{i < j:}{(i,j)\in E}}(1-\boldsymbol{Z}_i\boldsymbol{Z}_j),
 \end{equation}
 from which one can extract the \acrshort{qaoa} objective function.
 
@@ -580,7 +582,7 @@ With $n$ qubits, each of the $N = 2^{n}$ basis states will represent one of the 
 \subsubsection*{\small Suitable cost function}
 The objective function utilized in QEMC is the following:
 \begin{equation}
-L(\{p(i)\}) = \sum_{\stackrel{j < k:}{\{j,k\}\in E}}\left[\left(d(j,k)-\frac{1}{B}\right)^{2}+\left(s(j,k)-\frac{1}{B}\right)^{2}\right],
+L(\{p(i)\}) = \sum_{\stackrel{j < k:}{(j,k)\in E}}\left[\left(d(j,k)-\frac{1}{B}\right)^{2}+\left(s(j,k)-\frac{1}{B}\right)^{2}\right],
 \end{equation}
 where $d(j,k) = |p(j) - p(k)|$ and $s(j, k) = p(j) + p(k)$ are the absolute difference and sum of the corresponding states' probabilities. The idea is that as both $d(j, k)$ and $s(j, k)$ tend towards $1/B$, the probability of one node approaches zero (distinctive "Set 0"), while the probability of the other node approaches $1/B$ (distinctive "Set 1"), without specifying which is which. Ultimately, just like for \acrshort{qaoa}, connections between nodes of different sets are favoured. Note, however, that this probability threshold encoding scheme assumes, \textit{a priori}, that one of the sets ("Set 1") has $B$ nodes. Nevertheless, this is not an issue, as we can efficiently iterate through all potential values of $B\,=\,1,...,\left\lfloor{\frac{N}{2}}\right\rfloor$. Frequently, it is reasonable to set $B = N/2$, and we shall use this as our starting point.
 
@@ -595,7 +597,7 @@ The \acrshort{qemc} circuit ansatz is agnostic to specific graph instances, a de
     \label{fig:Strongly_Entangling_Layers}
 \end{figure}
 
-These constitute the main ingredients necessary to understand the \acrshort{qemc} algorithm. At this point, the same hybrid loop as before would be run, so as to optimize the "Strongly Entangling Layers" ansatz's parameters, to minimize the cost function. To read the \acrshort{maxcut} partition, generated by the \acrshort{qemc} algorithm, one would sample the circuit's output one more time, after the training, and build the basis states' probabilities distribution. The threshold $p_{th}$ would then be applied to determine each nodes' set inclusion, from each of their associated basis states' probabilities.
+These constitute the main ingredients necessary to understand the \acrshort{qemc} algorithm. At this point, the same hybrid loop as before would be run, so as to optimize the "Strongly Entangling Layers" ansatz's parameters, to minimize the cost function. To read the \acrshort{maxcut} partition, generated by the \acrshort{qemc} algorithm, one would sample the circuit's output one more time, after the training, and build the basis states' probability distribution. The threshold $p_{th}$ would then be applied to determine each nodes' set inclusion, from each of their associated basis states' probabilities.
 
 One notable, and perhaps unfortunate, property of \acrshort{qemc} is that it is efficiently simulable classically. Due to the exponential compression of the number of qubits, the algorithm can be feasibly run on a classical computer, even for large graphs, hence defeating its purpose as a quantum algorithm. This is something the authors of the algorithm \cite{tenecohen2023variational} realized in hindsight. For this reason, it is now termed a quantum-inspired classical algorithm.
 
