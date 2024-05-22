@@ -17,7 +17,7 @@ In this chapter, we will present alternative schemes that, although not entirely
 \section{Parity-like QAOA}
 \label{section:Parity_QAOA}
 
-The next idea we will explore involves "reducing" \acrshort{qaoa}'s problem Hamiltonian to use fewer qubits than usual. To achieve this, we will use parity encodings, which allow us to compress the representation of \(N\) nodes into \(n < N\) qubits (with \(N = \mathcal{O}(n^k)\), for any \(k\), as long as \(\binom{n}{k} \geq N\)). In the context of \acrshort{qaoa}'s problem Hamiltonian, the usual
+The next idea we will explore involves "reducing" \acrshort{qaoa}'s problem Hamiltonian to use fewer qubits than usual. To achieve this, we will use parity encodings, which allow us to compress the representation of \(N\) nodes into \(n < N\) qubits (with \(N = \mathcal{O}(n^k)\), for any \(k\)\footnote{This $k$ is equivalent to the previously mentioned $k$ in polynomial compression-based schemes.}, as long as \(\binom{n}{k} \geq N\)). In the context of \acrshort{qaoa}'s problem Hamiltonian, the usual
 \begin{equation}\label{eq:H_P-QAOA}
     H_P = \frac{1}{2}\sum\limits_{i<j}(1-Z_iZ_j),
 \end{equation}
@@ -43,7 +43,7 @@ Suppose we are solving \acrshort{maxcut} on a $6$-node graph using this Parity-l
 \end{multicols}
 \end{adjustwidth}
 \end{center}
-With this problem Hamiltonian, the standard \acrshort{qaoa} Ansatz can be implemented, using the expectation value as the cost function. The corresponding $4$-qubit gates \( e^{-i\alpha Z_iZ_jZ_kZ_l/2} \) can be implemented as illustrated in Figure \ref{fig:decomposition}.
+With this problem Hamiltonian, the standard \acrshort{qaoa} Ansatz can be implemented, using the expectation value as the cost function. The corresponding $4$-qubit operators \( e^{-i\alpha Z_iZ_jZ_kZ_l/2} \) can be implemented as illustrated in Figure \ref{fig:decomposition}.
 \begin{figure}[H]
 \centering
 \begin{quantikz}
@@ -64,9 +64,9 @@ Now, I present the outcomes of the numerical simulation of Parity-like \acrshort
     \caption{Results from the numerical simulation of Parity-like \acrshort{qaoa} ($k=2$) applied to the \acrshort{maxcut} problem on the standard $8$-node graph.}
     \label{fig:parity_qaoa_results}
 \end{figure}
-It became apparent that, for $k = 2$, the specified encoding appeared incapable of generating the \acrshort{maxcut} partition (cf. Figure \ref{fig:parity_qaoa_results}). This sparked discussions regarding the generality of such an encoding. If the \acrshort{maxcut} partition cannot be constructed using this encoding, then achieving it through our ansatz becomes unattainable. This constitutes a significant flaw. Further insights arose from discussions with Prof. Zoltán and others, emphasizing the presence of "cycles" in our encoding. These cycles impede our ability to encode all desired states, effectively tying certain nodes to the parity of others and automatically excluding certain partitions from our operational domain. Initially, the goal was to completely avoid such cycles, but it has become apparent that eliminating them entirely is impossible. These cycles emerge as a result of confining the problem to a reduced subspace.
+It became apparent that, for $k = 2$, the specified encoding appeared incapable of generating the \acrshort{maxcut} partition (cf. Figure \ref{fig:parity_qaoa_results}). This sparked discussions regarding the generality of such an encoding. If the \acrshort{maxcut} partition cannot be constructed using this encoding, then achieving it through our ansatz becomes unattainable. This constitutes a significant flaw. Further insights arose from discussions with Prof. Zoltán Zimboras and others, emphasizing the presence of "cycles" in our encoding. These cycles impede our ability to encode all desired states, effectively tying certain nodes to the parity of others and automatically excluding certain partitions from our operational domain. Initially, the goal was to completely avoid such cycles. However, it has become clear that completely eliminating them is impossible. These cycles emerge as a result of confining the problem to a reduced subspace.
 
-For instance, in a $6$-node graph encoded in $4$ qubits, there are $2$ cycles: $0, 1, 3$ and $3, 4, 5$ (from the previous example encoding). The occurrence of these cycles is not incidental; reducing from $6$ qubits to $4$ imposes two constraints, represented by these cycles. Hence, it seems theoretically unfeasible to encode all potential $6$-node partitions in the given $4$ qubits. Unless the encoding ensures the inclusion of the \acrshort{maxcut} partition within this reduced space, the scheme appears destined to fail in theory. Achieving such a feat would be remarkable, as it would effectively diminish the problem size, thereby enhancing the search process. However, I am uncertain about its feasibility. Mastering this encoding would likely necessitate specific graph-instance knowledge. Given the variability in graph instances, devising a universal rule seems improbable.
+For instance, in a $6$-node graph encoded in $4$ qubits, there are $2$ cycles: $0, 1, 3$ and $3, 4, 5$ (from the previous example encoding). The occurrence of these cycles is not incidental; reducing from $6$ qubits to $4$ imposes two constraints, represented by these cycles. Hence, it seems theoretically unfeasible to encode all potential $6$-node partitions in the given $4$ qubits. Unless the encoding ensures the inclusion of the \acrshort{maxcut} partition within this reduced space, the scheme appears destined to fail in theory. Achieving such a feat would be remarkable, as it would effectively diminish the problem size, thereby enhancing the search process. However, I am uncertain about its feasibility. Mastering this encoding would likely necessitate specific graph instance knowledge. Given the variability in graph instances, devising a universal rule seems improbable.
 
 Additionally, it was observed that the symmetry property, previously confirmed for standard \acrshort{qaoa}\footnote{Wherein original and inverted bit-strings, e.g., $1001$ and $0110$, represent identical partitions (though with different labels) and are thus trained to achieve identical probabilities.}, was only upheld when $k$ was odd. In cases where $k$ was even, inverting the bit-string produced the exact same partition, indicating that one possible \acrshort{maxcut} partition was overlooked by the algorithm.
 
@@ -85,7 +85,7 @@ where:
 \begin{equation}
 \mathcal{L}_{\text{reg}} = \beta \nu \left[\frac{1}{N}\sum_{i\in[m]}\left<\Pi_i\right>^2\right]^2.
 \end{equation}
-Here, $\nu$ represents an estimate of the \acrshort{maxcut} value, $N$ denotes the total number of vertices in the graph, and $\beta$ serves as a hyper-parameter, adjusted on a case-by-case basis.
+Here, $\nu$ represents an estimate of the \acrshort{maxcut} value, $N$ denotes the total number of vertices in the graph, and $\beta$ serves as a hyper-parameter, adjusted on a case-by-case basis. Furthermore, \(\left<\Pi_i\right>\) represents the expectation value of the \(i\)-th correlator, where \(m\) denotes the total number of correlators, one for each graph node. These correlators correspond to the Pauli-\(z\) operators associated with each node. For instance, \(Z_i Z_j\) for \(k=2\) denotes the correlator pertaining to the node whose color is determined by the parity of qubits \(i\) and \(j\).
 
 This approach successfully circumvented the limitations posed by the cycles, enabling the generation of partitions previously hindered by these constraints. Experimental validation on an $8$-node graph demonstrated the efficacy of the method, yielding the \acrshort{maxcut} partition under certain parameter combinations\footnote{For this demonstration, we employed $3$ layers, set Adam's learning rate to $0.19$, and conducted $100$ iterations.} (Figure \ref{fig:Parity+Restriction}). Notably, while these results appear promising, they largely replicate the findings of \cite{sciorilli2024largescale}, thus falling short of originality. The key disparities lie in the choice of ansatz (\acrshort{qaoa} vs. "brickwork" circuit ansatz) and the formulation of the cost function (utilizing hyperbolic tangents for non-linearity in \cite{sciorilli2024largescale}). Nonetheless, this endeavor contributed to a deeper comprehension of the referenced work and confirmed its reproducibility and effectiveness.
 \begin{figure*}[ht!]
@@ -103,7 +103,7 @@ This approach successfully circumvented the limitations posed by the cycles, ena
         \caption{Plot displaying the expectation values of each node's associated correlator.}
         \label{fig:Parity+Restriction_Results}
     \end{subfigure}
-    \caption{Training and results plots for the Parity-like Quantum Approximate Optimization Algorithm (\acrshort{qaoa}), employing enforced regularization to mitigate frustration effects.}
+    \caption{Training and results plots for the Parity-like Quantum Approximate Optimization Algorithm (\acrshort{qaoa}), employing enforced regularization to mitigate frustration effects. The partition on the right ($11010001$) corresponds to the \acrshort{maxcut} partition of the usual $8$-node graph.}
     \label{fig:Parity+Restriction}
 \end{figure*}
 
