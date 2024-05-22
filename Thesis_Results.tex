@@ -453,7 +453,7 @@ Motivated by the results in Figure \ref{fig:seed=13}\footnote{The trajectory of 
 \section{Alternative Ansätze}
 \label{section:Alternative_ansätze}
 
-After some reflection, I began to question whether the performance of \acrshort{qemc} and \acrshort{iqaqe} could be hindered by the use of a problem-agnostic ansatz. It's generally advantageous to incorporate problem-specific information into the ansatz, as exemplified by problem-inspired ansätze. Additionally, I pondered whether excessive entanglement or correlations among the system's basis states might be affecting the ansatz's performance. Such phenomena could make it challenging for the model to adjust the amplitude of a specific basis state without significantly impacting others. To address this potential issue, the concept of implementing non-deterministic CNOT gates (\acrshort{ndcnot}\textcolor{gray}{s}) occurred to me. This approach would allow the model to dynamically adjust the degree of entanglement. The most rudimentary way to implement this is by employing parameterized $R_x$ gates before each CNOT's control qubit, which is precisely what we did. The $R_x$ gate allows the control qubit to rotate in and out of the $\ket{1}$ state, thus adjusting the degree of entanglement introduced by the CNOT gate. The results for the standard $8$-node graph are presented below (Figure \ref{fig:ND-CNOTs}), for both \acrshort{qemc} and Cardinality $= 1$ Extended-\acrshort{qemc}.
+After some reflection, I began to question whether the performance of \acrshort{qemc} and \acrshort{iqaqe} could be hindered by the use of a problem-agnostic ansatz. It's generally advantageous to incorporate problem-specific information into the ansatz, as exemplified by problem-inspired ansätze. Additionally, I pondered whether excessive entanglement or correlations among the system's basis states might be affecting the ansatz's performance. Such phenomena could make it challenging for the model to adjust the amplitude of a specific basis state without significantly impacting others. To address this potential issue, the concept of implementing non-deterministic CNOT gates (\acrshort{ndcnot}\textcolor{gray}{s}) occurred to me\footnote{We acknowledge that "non-deterministic CNOT gates" is used in linear optical quantum computing (KLM protocol), but we use it differently here.}. This approach would allow the model to dynamically adjust the degree of entanglement. The most rudimentary way to implement this is by employing parameterized $R_x$ gates before each CNOT's control qubit, which is precisely what we did. The $R_x$ gate allows the control qubit to rotate in and out of the $\ket{1}$ state, thus adjusting the degree of entanglement introduced by the CNOT gate. The results for the standard $8$-node graph are presented below (Figure \ref{fig:ND-CNOTs}), for both \acrshort{qemc} and Cardinality $= 1$ Extended-\acrshort{qemc}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=1.0\textwidth]{Figures/Chapter_5/Extended-QEMC/8-node[ND-CNOTs; Card.=1](n_layers=2, step_size=0.5).png}
@@ -470,6 +470,7 @@ Moreover, this analysis serves to validate the notion that deviating from purely
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-2.5mm}
 \section{Goemans-Williamson and Bigger Graphs}
 \label{section:GW_Bigger_Graphs}
 
@@ -553,7 +554,7 @@ Turning to the $100$-node graph, the situation differs somewhat. This time, the 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Best-so-Far correction}
+\section{Best-so-far correction}
 \label{section:BSF_correction}
 
 % Average Best-so-Far correction and its results. Mention how it was "wrong", initially, and how it was "fixed". I'm not sure where to include this, though.
@@ -562,7 +563,7 @@ Turning to the $100$-node graph, the situation differs somewhat. This time, the 
 
 % I think I should send these plots to an Appendix, so I can save some space.
 
-As previously noted, there exists a distinction between implementing the \acrshort{bsf} transformation before and after the averaging process. We assert that the former (prior to averaging) provides the most accurate representation of the algorithm's optimal performance. Therefore, in alignment with the average \acrshort{ar} plots previously showcased, we opted to rerun several earlier schemes with the \acrshort{bsf} transformation applied before averaging/computing the median. Given the substantial number of resulting graphs, they will be included in Appendix \ref{Appendix:BestSoFarCorrection}. The plots shown there feature the median best-so-far cut.
+As previously noted, there exists a distinction between implementing the \acrshort{bsf} transformation before and after the averaging process. We assert that the former (prior to averaging) provides the most accurate representation of the algorithm's optimal performance. Therefore, in alignment with the average \acrshort{ar} plots previously showcased, we opted to rerun several earlier schemes with the \acrshort{bsf} transformation applied before averaging/computing the median. Given the substantial number of resulting graphs, they will be included in Appendix \ref{Appendix:BestSoFarCorrection}. The plots shown there feature the median best-so-far cut and are intended to complement the previous analysis.
 
 % Maybe, include only the $100$-node graph's results here, and send the rest to the Appendix. I've re-run this! It's in 'Avg._BSF_Correction.ipynb', near the end of the notebook. (In case I decide to include this here.)
 
@@ -578,6 +579,7 @@ In this section, our aim is to adopt a more systematic approach to identify ways
 
 % Talk about the randomized benchmarking that we've been doing, and how it's been helping us to understand the performance of the different schemes. Type $1$ and $2$ variables, etc. This could have many subsections.
 
+\vspace{-2.5mm}
 \subsection*{Initial proposition}
 Continuing from the earlier discussion, we ran numerous \acrshort{iqaqe} instances, each with random qubit number, list cardinalities, and assignments\footnote{We always employed \texttt{n\_layers = 3} and \texttt{step\_size = 0.99}. This time, the final selected cut is derived from the \acrshort{bsf} average curve (not the average \acrshort{bsf}), constructed from $10$ repetitions. Although not optimal, this does not alter our interpretation of the results.}. The underlying idea was to identify optimal combinations of these by running multiple instances of \acrshort{iqaqe}. Subsequently, we aimed to discern meaningful patterns that could inform the development of a strategy for more refined basis state selection. However, our analysis did not yield a clear indication of how the partitioning should proceed. As demonstrated below, there existed a plethora of vastly different combinations of qubit number, list cardinality, and partitioning that performed similarly well. Consequently, it proved humanly impossible to extract any coherent insights from this dataset. The results supporting this claim are presented in Figure \ref{fig:Random_iQAQE(Seeds)} for the usual $8$-node graph.
 \begin{figure*}[hb!]
@@ -631,6 +633,7 @@ Continuing from the earlier discussion, we ran numerous \acrshort{iqaqe} instanc
 
 As can be seen, not much can be directly inferred from this. When confronted with seemingly unstructured data, a natural progression is to employ machine learning schemes to discern patterns. Indeed, this aligns with the forte of such models. Various options were considered, spanning from neural networks to regression and clustering models. Initially, we opted to implement a basic regression model for its simplicity. Establishing such a model necessitates identifying a set of statistical properties of the input data (lists of basis states) that can serve as inputs for the regression model. This discussion follows in the subsequent section.
 
+\vspace{-2.5mm}
 \subsection*{Machine learning-based approach}
 Following the prior discussion regarding the \acrshort{iqaqe} formalism (refer to Figure \ref{fig:Random_iQAQE(Seeds)}), our objective was to construct a small machine learning (\acrshort{ml}) model aimed at comprehending the patterns in basis states' partitioning that contribute to the algorithm's performance variations. Naturally, such a model necessitates defining input (independent variables - \acrshort{iv}) and output (dependent variable - \acrshort{dv}). As previously mentioned, our \acrshort{iv}\textcolor{gray}{s} will encompass statistically significant properties extracted from each specific sub-list encoding. Alternatively, including the basis states' partitioning directly as the model's input presents challenges concerning memory-efficient encoding. Traditional one-hot encoding methods are inadequate due to the vast number of potential basis states available (which scales exponentially with the number of qubits). Thus, we opted for the following statistical properties:
 \begin{itemize}
