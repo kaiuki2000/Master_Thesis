@@ -40,7 +40,7 @@ From here onwards, unless explicitly stated otherwise, all \acrshort{vqa}\textco
 
 % I think I'm going to be re-running many algorithms. This might take me some time, but I believe it is necessary.
 
-First and foremost, we aim to understand how \acrshort{iqaqe} compares with both \acrshort{qaoa} and \acrshort{qemc}. In terms of \acrshort{iqaqe}'s implementation for this comparison, the selection of the number of qubits ($n$) and the list cardinalities ($c$) was not carefully considered. They were randomly chosen using \texttt{np.random.randint}, resulting in $n = 4$ and $c = 4$. Currently, the allocation of basis states to lists is also done randomly, without ensuring that all basis states are utilized. The goal of this initial simulation is to take a preliminary look at \acrshort{iqaqe}'s performance and understand how much the results vary between finite shot number simulations and analytical ones. (This also serves as a comparison test between the two previously mentioned PennyLane devices.) The plots below display the best-so-far average approximation ratio, derived from $10$ \acrshort{iqaqe} runs, each with different random initial parameters. The results for all three algorithms are generated using a configuration of $4$ ansatz layers and an Adam learning rate of $0.99$.
+First and foremost, we aim to understand how \acrshort{iqaqe} compares with both \acrshort{qaoa} and \acrshort{qemc}. In terms of \acrshort{iqaqe}'s implementation for this comparison, the number of qubits ($n$) and the list cardinalities ($c$) were selected without careful consideration. They were randomly chosen using \texttt{np.random.randint}, resulting in $n = 4$ and $c = 4$. Currently, the allocation of basis states to lists is also done randomly, without ensuring that all basis states are utilized. The goal of this initial simulation is to take a preliminary look at \acrshort{iqaqe}'s performance and understand how much the results vary between finite shot number simulations and analytical ones. (This also serves as a comparison test between the two previously mentioned PennyLane devices.) The plots below display the best-so-far average approximation ratio, derived from $10$ \acrshort{iqaqe} runs, each with different random initial parameters. The results for all three algorithms are generated using a configuration of $4$ ansatz layers and an Adam learning rate of $0.99$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht!]
@@ -48,29 +48,29 @@ First and foremost, we aim to understand how \acrshort{iqaqe} compares with both
   \begin{subfigure}[H]{0.495\textwidth}
       \centering
       \caption*{(a) Shots = None (Infinite)}
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_shots=None.png}
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_None.png}
       \label{fig:3_Comparison_shots=None}
   \end{subfigure}
-  \hspace{-1.5em}
+  % \hspace{-1.5em}
   \begin{subfigure}[H]{0.495\textwidth}
       \centering
       \caption*{(b) Shots = 1024}
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_shots=1024.png}
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_1024.png}
       \label{fig:3_Comparison_shots=1024}
   \end{subfigure}
 
-  \vspace{-1.5em} % Adjust the space between the rows
+  % \vspace{-1.5em} % Adjust the space between the rows
 
   \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_shots=512.png}
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_512.png}
       \caption*{(c) Shots = 512}
       \label{fig:3_Comparison_shots=512}
   \end{subfigure}
-  \hspace{-1.5em}
+  % \hspace{-1.5em}
   \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_shots=256.png}
+      \includegraphics[width=1\textwidth]{Figures/Chapter_5/3_Comparison_256.png}
       \caption*{(d) Shots = 256}
       \label{fig:3_Comparison_shots=256}
   \end{subfigure}
@@ -102,15 +102,15 @@ This is the simplest type of polynomial compression-based \acrshort{iqaqe} schem
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.70\textwidth]{Figures/Chapter_5/Polynomial_Compression_Base_k2_k3_2.png}
-  \caption{\acrshort{bsf} Average Approximation Ratio \textit{vs.} iteration number for the tested \acrshort{vqa}\textcolor{gray}{s}: \acrshort{qaoa}, \acrshort{qemc}, and \acrshort{iqaqe}, using the aforementioned polynomial compression scheme. The number of layers considered were $4$ for $k = 2$ and $5$ for $k = 3$}
+  \includegraphics[width=0.675\textwidth]{Figures/Chapter_5/Polynomial_Compression_Base_k2_k3_2.png}
+  \caption{\acrshort{bsf} Average Approximation Ratio \textit{vs.} iteration number for the tested \acrshort{vqa}\textcolor{gray}{s}: \acrshort{qaoa}, \acrshort{qemc}, and \acrshort{iqaqe}, using the aforementioned polynomial compression scheme. The number of layers considered were $4$ for $k = 2$ and $5$ for $k = 3$.}
   \label{fig:Comparison_k2+k3_1}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.70\textwidth]{Figures/Chapter_5/Polynomial_Compression_Base_k2_k3_1.png}
-  \caption{Average \acrshort{bsf} Approximation Ratio \textit{vs.} iteration number for the tested \acrshort{vqa}\textcolor{gray}{s}: \acrshort{qaoa}, \acrshort{qemc}, and \acrshort{iqaqe}, using the aforementioned polynomial compression scheme. The number of layers considered were $4$ for $k = 2$ and $5$ for $k = 3$}
+  \includegraphics[width=0.675\textwidth]{Figures/Chapter_5/Polynomial_Compression_Base_k2_k3_1.png}
+  \caption{Average \acrshort{bsf} Approximation Ratio \textit{vs.} iteration number for the tested \acrshort{vqa}\textcolor{gray}{s}: \acrshort{qaoa}, \acrshort{qemc}, and \acrshort{iqaqe}, using the aforementioned polynomial compression scheme. The number of layers considered were $4$ for $k = 2$ and $5$ for $k = 3$.}
   \label{fig:Comparison_k2+k3_2}
 \end{figure}
 
@@ -206,22 +206,23 @@ The results of the grid searches conducted for $k=2$ and $k=3$ are present in Fi
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{-2.5mm}
 \subsubsection*{Recovering the QAOA limit ($k = 1$)}
 \label{subsubsection:QAOA-Limit_iQAQE}
 
-
-Next, we tested whether we could recover the \acrshort{qaoa} limit using the \acrshort{iqaqe} Framework with what we call the \acrshort{qaoa} mapping. This mapping involves using the same number of qubits as there are nodes (as in standard \acrshort{qaoa}) and assigning $2^{n-1}$ basis states to each graph node. For each graph node, a different qubit is fixed to $1$, while the remaining $n - 1$ qubits are free to vary, resulting in $2^{n-1}$ basis states per node. The rest of the algorithm remains unchanged, employing \acrshort{qemc}'s ansatz and cost function. The nodes' probabilities are derived from the normalized sum of the probabilities of their associated basis states. This approach was motivated by our desire to better understand \acrshort{iqaqe}'s properties and behavior. Previously, we observed (Figure \ref{fig:3_Comparison_shots}) that \acrshort{iqaqe}'s performance seemed to fall between that of \acrshort{qaoa} and \acrshort{qemc}, which is intuitive, as it is designed as an interpolation between the two. To further test this behavior, we used \acrshort{qaoa}'s mapping to see how closely we could approach \acrshort{qaoa}'s performance levels, which have been the best so far. The following results were obtained, focusing only on analytical simulations (i.e., infinite shots) – we employ the average curve obtained from $10$ runs, as we did in the previous grid search:
+\vspace{-2.5mm}
+Next, we tested whether we could recover the \acrshort{qaoa} limit using the \acrshort{iqaqe} Framework with what we call the \acrshort{qaoa} mapping. This mapping involves using the same number of qubits as there are nodes (as in standard \acrshort{qaoa}) and assigning $2^{n-1}$ basis states to each graph node. For each graph node, a different qubit is fixed to $1$, while the remaining $n - 1$ qubits are free to vary, resulting in the aforementioned $2^{n-1}$ basis states per node. The rest of the algorithm remains unchanged, employing \acrshort{qemc}'s ansatz and cost function. The nodes' probabilities are derived from the normalized sum of the probabilities of their associated basis states. This approach was motivated by our desire to better understand \acrshort{iqaqe}'s properties and behavior. Previously, we observed (Figure \ref{fig:3_Comparison_shots}) that \acrshort{iqaqe}'s performance seemed to fall between that of \acrshort{qaoa} and \acrshort{qemc}, which is intuitive, as it is designed as an interpolation between the two\footnote{We'll see later that this isn't entirely true.}. To further test this behavior, we used this \acrshort{qaoa} mapping to see how closely we could approach \acrshort{qaoa}'s performance levels, which have been the best so far. The following results were obtained, focusing only on analytical simulations (i.e., infinite shots) – we employ the average approximation ratio curve obtained from $10$ runs, as we did in the previous grid search:
 \vspace{-2.5mm}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.675\textwidth]{Figures/Chapter_5/iQAQE_QAOA.png}
+  \includegraphics[width=0.60\textwidth]{Figures/Chapter_5/iQAQE_QAOA.png}
   \caption{Average approximation ratio ($\pm$ Min./Max.) \textit{vs.} iteration number, for the three tested \acrshort{vqa}\textcolor{gray}{s}: \texttt{QAOA}, \texttt{iQAQE\_QAOA} (as described above) and \texttt{iQAQE\_BtIn}. The latter stands for \acrshort{iqaqe}, with better initialization. This corresponds to the same mapping as the one in Figure \ref{fig:3_Comparison_shots}.}
   \label{fig:iQAQE_QAOA}
 \end{figure}
 \vspace{-4.0mm}
-This realization led us to understand that we cannot expect to replicate \acrshort{qaoa}'s outstanding performance on this graph simply by using a \acrshort{qaoa}-type encoding. After all, we are still relying on \acrshort{qemc}'s cost function and ansatz, so this outcome is not entirely surprising. Moreover, to add to the challenge, we found that \texttt{iQAQE\_QAOA}'s performance can even be surpassed by another random, non-specific mapping, highlighting how far we are from achieving \acrshort{qaoa}-like results.
+This realization led us to understand that we cannot expect to replicate \acrshort{qaoa}'s outstanding performance on this graph simply by using a \acrshort{qaoa}-type mapping. After all, we are still relying on \acrshort{qemc}'s cost function and ansatz, so this outcome is not entirely surprising. Moreover, to add to the challenge, we found that \texttt{iQAQE\_QAOA}'s performance can even be surpassed by another random, non-specific mapping, highlighting how far we are from achieving \acrshort{qaoa}-like results.
 
-In an effort to bridge this gap, we attempted to integrate \acrshort{qaoa}'s ansatz into the scheme, alongside the \acrshort{qaoa}-type encoding. However, after extensive testing, we realized this approach is not feasible. Here's why: using both elements together with the node probability encoding (as a normalized sum of their associated basis states' probabilities) causes the \acrshort{qemc} cost function to become independent of the ansatz's parameters\footnote{To verify this, we performed analytical calculations for a simple toy model: a graph with two nodes connected by a single edge. The results generalize to larger graphs.}. This means we cannot proceed with training, rendering the scheme ineffective. Thus, implementing this approach in its current form is not possible. For it to be successful, other aspects would need to change, such as the cost function or the method of deriving node probabilities from basis states' probabilities, which is the main issue here.
+In an effort to bridge this gap, we attempted to integrate \acrshort{qaoa}'s ansatz into the scheme, alongside the \acrshort{qaoa}-type mapping. However, after extensive testing, we realized this approach is not feasible. Here's why: using both elements together with the node probability encoding (as a normalized sum of their associated basis states' probabilities) causes the \acrshort{qemc} cost function to become independent of the ansatz's parameters\footnote{To verify this, we performed analytical calculations for a simple toy model: a graph with two nodes connected by a single edge. The results generalize to larger graphs.}. This means we cannot proceed with training, rendering the scheme ineffective. Thus, implementing this approach in its current form is not possible. For it to be successful, other aspects would need to change, such as the cost function or the method of deriving node probabilities from basis states' probabilities, which is the main issue here.
 
 
 
@@ -244,26 +245,26 @@ In an effort to bridge this gap, we attempted to integrate \acrshort{qaoa}'s ans
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\vspace{-2.5mm}
+\vspace{-5mm}
 \subsection{Correlation-based iQAQE}
 \label{subsection:Correlation_iQAQE}
-
+\vspace{-2.5mm}
 This scheme closely resembles what was previously discussed in subsection \ref{subsection:Basic_Poly-Comp_iQAQE}. The key distinction lies in the inclusion of the possibility for both $0$'s and $1$'s to be fixed (e.g., $\{\ket{11\text{xxx}}, \ket{00\text{xxx}}\}$, for $k = 2$; recall, this encodes a single node). Consequently, the scheme aims to identify correlations among the different qubits, wherein "correlations" denote identical colors. In other words, the constructed lists regard the $k$ fixed qubits as positively correlated, meaning they are either all set to $1$ or all set to $0$. This approach was inspired by the notion that by identifying correlations between nodes, it becomes feasible to color the entire graph as long as one node is initially colored. Although seeking correlations between qubits, as done here, differs from seeking correlations between nodes, we anticipated that it might yield promising results to some extent. In this scenario, the color of each node is determined by the probability that its $k$ associated qubits are all positively correlated.
 
 To delve deeper into the properties and characteristics of this scheme, we conducted a thorough formal analysis, exploring its limits by considering scenarios where $k$ ranges from $1$ to $n$ qubits, covering the entire spectrum. Our primary objective was to ascertain if we could formulate this correlation-based \acrshort{iqaqe} scheme in a manner that truly interpolates between \acrshort{qaoa} and \acrshort{qemc}. We aimed to determine if we could retrieve both algorithms by adjusting the parameters accordingly. However, with this correlation-based scheme, we not only cannot recover \acrshort{qaoa}, but we also fail to retrieve \acrshort{qemc}. Thus, this does not represent an interpolation between the two algorithms. Likewise, earlier, we loosely referred to the \acrshort{iqaqe} Framework as an interpolation. However, upon closer scrutiny, this characterization seems inaccurate. While it is possible to recover the \acrshort{qemc} limit\footnote{Simply utilize the appropriate number of qubits and select one unique basis state for each node.}, the same cannot be said for \acrshort{qaoa}, as we have observed before. Additionally, we present the results of numerical simulations applied to the standard $8$-node graph using this correlation-based \acrshort{iqaqe} approach (Figure \ref{fig:Correlation-based}).
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}[t]{0.465\textwidth}
+  \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=0.95\textwidth]{Figures/Chapter_5/Correlation-based/k=2(Reg.+Ones).png}
+      \includegraphics[width=\textwidth]{Figures/Chapter_5/Correlation-based/k=2(Reg.+Ones).png}
       \caption{\raggedright Comparison of Correlation-based \acrshort{iqaqe} for $k=2$ with results from \acrshort{qaoa}, \acrshort{qemc}, and the previous Basic Polynomial Compression-type iQAQE\footnotemark{} (\texttt{iQAQE\_k=2\_ones}).}
       \label{fig:Correlation/k=2}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.465\textwidth}
+  \begin{subfigure}[t]{0.495\textwidth}
       \centering
-      \includegraphics[width=0.95\textwidth]{Figures/Chapter_5/Correlation-based/k=2_3_4.png}
+      \includegraphics[width=\textwidth]{Figures/Chapter_5/Correlation-based/k=2_3_4.png}
       \caption{Comparison of Correlation-based \acrshort{iqaqe} results for $k=2, 3$, and $4$ with outcomes from \acrshort{qaoa} and \acrshort{qemc}.}
       \label{fig:Correlation/k=2,3,4}
   \end{subfigure}
@@ -283,7 +284,7 @@ To delve deeper into the properties and characteristics of this scheme, we condu
   \label{fig:All_k's}
 \end{figure}
 
-Note that we once again compute the average approximation ratio from $10$ runs, each with different random initial parameters, and generate all curves with \texttt{n\_layers = 3} and \texttt{step\_size = 0.95}. Additionally, we plot the average, with the shaded region representing the maximum and minimum obtained approximation ratios. Performance-wise, this scheme does not fare well. It is significantly outperformed by \acrshort{qaoa}, \acrshort{qemc}, and the basic polynomial compression-type \acrshort{iqaqe}. We also compared the results for all possible values of $k$ (Figure \ref{fig:All_k's}). It turns out that the specific value of $k$ is not very meaningful, as performance is quite similar across all values.
+Note that we once again compute the average approximation ratio from $10$ runs, each with different random initial parameters, and generate all curves with \texttt{n\_layers = 3} and \texttt{step\_size = 0.95}. Additionally, we plot the average, with the shaded region representing the maximum and minimum obtained approximation ratios (out of the $10$ runs). Performance-wise, this scheme does not fare well. It is significantly outperformed by \acrshort{qaoa}, \acrshort{qemc}, and the basic polynomial compression-type \acrshort{iqaqe}. We also compared the results for all possible values of $k$ (Figure \ref{fig:All_k's}). It turns out that the specific value of $k$ is not very meaningful, as performance is quite similar across all values.
 
 The underperformance is likely due to our doubling the number of basis states in each sub-list. This encoding results in each pair of sub-lists having a $50\%$ overlap, similar to the Basic Polynomial Compression-type \acrshort{iqaqe}. However, with twice\footnote{Either $0$'s or $1$'s can be fixed.} the number of basis states this time, the number of overlapping basis states is significantly higher. This increase means that more states are shared by multiple nodes. When the overlap is too large, it becomes more challenging to adjust the color of one node without affecting the others. We believe this to be the main reason for the underperformance. We will be mindful of this in the design of future schemes.
 
@@ -301,7 +302,7 @@ The underperformance is likely due to our doubling the number of basis states in
 
 % Mention that this is a 'heuristic'. It's not a strict rule, but it's a good guideline.
 
-In this section, we present another heuristic method for mapping the basis states to the nodes. Although it is similar to the previous one, this time we \textbf{fixed the parity of the selected $k$ qubits to be even}. Parity is determined by the number of 1's: if the count is even, the parity is even; otherwise, it is odd. For instance, for $k=3$ (with \texttt{n\_qubits = 5}), the lists would take the form: (Keep in mind that we are using an $8$-node graph.)
+In this section, we present another heuristic method for mapping the basis states to the nodes. Although it is similar to the previous one, this time we \textbf{fixed the parity of the selected $k$ qubits to be even}. Parity is determined by the number of $1$'s: if the count is even, the parity is even; otherwise, it is odd. For instance, for $k=3$ (with \texttt{n\_qubits = 5}), the lists would take the form: (Keep in mind that we are using an $8$-node graph. \text{x} denotes a free qubit: either $0$ or $1$.)
 
 % Remeber that 'k=2' is the same as the previous correlation-based! Mention this in the text!
 
@@ -354,7 +355,7 @@ A keen observer might notice that this scheme's results also allow for generatin
   \label{fig:Fixed-parity}
 \end{figure}
 
-Furthermore, numerical simulations were carried out on a random $16$-node graph\footnote{This graph was generated using NetworkX's \texttt{nx.gnm\_random\_graph(n, m)} with \texttt{n = 16} nodes and \texttt{m = 32} edges, using \texttt{np.random.seed} set to \texttt{44}.}. Considering the satisfactory performance observed with the previous $8$-node graph, we were intrigued to assess the algorithm's performance on a larger scale. The results are now presented (Figure \ref{fig:Fixed-parity(16_node)}).
+Furthermore, numerical simulations were carried out on a random $16$-node graph\footnote{This graph was generated using NetworkX's \texttt{nx.gnm\_random\_graph(n, m)} with \texttt{n = 16} nodes and \texttt{m = 32} edges, using \texttt{np.random.seed} set to \texttt{44}.}. Considering the satisfactory performance observed with the previous $8$-node graph, we were interested in assessing the algorithm's performance on a larger scale. The results are now presented (Figure \ref{fig:Fixed-parity(16_node)}).
 
 \begin{figure*}[ht!]
   \centering
@@ -389,7 +390,7 @@ Furthermore, numerical simulations were carried out on a random $16$-node graph\
   \label{fig:Fixed-parity(16_node)}
 \end{figure*}
 
-The previously identified trends are also apparent here. However, the performance now seems insufficient to achieve the \acrshort{maxcut} partition (determined by brute-force), as illustrated by the shaded areas in Figure \ref{fig:All_k's(16_node)}: the average \acrshort{ar} never quite reaches $1$. Moreover, for this graph, varying the value of $k$ does not significantly impact performance. Hence, it is advisable to choose the value of $k$ that requires the fewest qubits. In this instance, $k=3$ is optimal, needing only \texttt{n\_qubits = 6}, since $\binom{6}{3} = 20 \geq 16$.
+The previously identified trends are also apparent here. However, the performance now seems insufficient to achieve the \acrshort{maxcut} partition (determined by brute-force), as illustrated by the shaded areas in Figure \ref{fig:All_k's(16_node)}: the maximum \acrshort{ar} never quite reaches $1$. Moreover, for this graph, varying the value of $k$ does not significantly impact performance. Hence, it is advisable to choose the value of $k$ that requires the fewest qubits. In this instance, $k=3$ is optimal, needing only \texttt{n\_qubits = 6}, since $\binom{6}{3} = 20 \geq 16$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Other Exploratory Ideas}
@@ -481,9 +482,9 @@ Moreover, this analysis serves to validate the notion that deviating from purely
 
 % I have finally fixed the graphs! However, I might now need to sligthly adjust the text to better fit the new graphs. I can re-introduce the previous text here ("Better than G-W [...]").
 
-At one point, I began to question whether it was appropriate to directly compare our results to \acrshort{qaoa}, which stands out as the best-performing \acrshort{vqa} among those tested. After thorough deliberation, we concluded that, indeed, it makes sense to do so for smaller graphs. However, as graphs increase in size, the availability of quantum machines with a necessary number of qubits to support such \acrshort{qaoa}\textcolor{gray}{s} becomes limited. This circumstance has led to the emergence of schemes like \acrshort{qemc} \cite{tenecohen2023variational} and others \cite{sciorilli2024largescale}, which aim to address the limitation imposed by the number of qubits.
+At one point, I began to question whether it was appropriate to directly compare our results to \acrshort{qaoa}, which stands out as the best-performing \acrshort{vqa} among those tested. After thorough deliberation, we concluded that, indeed, it makes sense to do so for smaller graphs. However, as graphs increase in size, the availability of quantum machines with a necessary number of qubits to support such \acrshort{qaoa}\textcolor{gray}{s} becomes limited. This circumstance has led to the emergence of schemes like \acrshort{qemc} \cite{tenecohen2023variational} and others \cite{sciorilli2024largescale}, which aim to address the limitations imposed by the number of qubits.
 
-In light of this, I proceeded to evaluate the performance of our proposed schemes on significantly larger graphs. Two such graphs were considered:
+In light of this, I proceeded to evaluate the performance of our proposed schemes on larger graphs. Two such graphs were considered:
 \begin{enumerate}
     \item $32$-node Erdős–Rényi graph, constructed using NetworkX's {\hypersetup{urlcolor=black}\url{nx.erdos\_renyi\_graph(n = 32, p = 0.2, seed=0, directed=False)}}, where each edge is included in the graph with a probability of $p = 0.2$;
     \item $100$-node Erdős–Rényi graph, defined similarly to the previous graph, utilizing {\hypersetup{urlcolor=black}\url{nx.erdos\_renyi\_graph(n = 100, p = 0.2, seed=0, directed=False)}}.
@@ -640,7 +641,7 @@ As can be seen, not much can be directly inferred from this. When confronted wit
 
 \vspace{-2.5mm}
 \subsection*{Machine learning-based approach}
-Following the prior discussion regarding the \acrshort{iqaqe} formalism (refer to Figure \ref{fig:Random_iQAQE(Seeds)}), our objective was to construct a small machine learning (\acrshort{ml}) model aimed at comprehending the patterns in basis states' partitioning that contribute to the algorithm's performance variations. Naturally, such a model necessitates defining input (independent variables - \acrshort{iv}) and output (dependent variable - \acrshort{dv}). As previously mentioned, our \acrshort{iv}\textcolor{gray}{s} will encompass statistically significant properties extracted from each specific sub-list. Alternatively, including the basis states' mapping directly as the model's input presents challenges concerning memory-efficient encoding. Traditional one-hot encoding methods are inadequate due to the vast number of potential basis states available (which scales exponentially with the number of qubits). Thus, we opted for the following statistical properties:
+Following the prior discussion regarding the \acrshort{iqaqe} formalism (refer to Figure \ref{fig:Random_iQAQE(Seeds)}), our objective was to construct a small machine learning (\acrshort{ml}) model aimed at comprehending the patterns in basis states' partitioning that contribute to the algorithm's performance variations. Naturally, such a model necessitates defining input (independent variables - \acrshort{iv}\textcolor{gray}{s}) and output (dependent variable - \acrshort{dv}). As previously mentioned, our \acrshort{iv}\textcolor{gray}{s} will encompass statistically significant properties extracted from each specific sub-list. Alternatively, including the basis states' mapping directly as the model's input presents challenges concerning memory-efficient encoding. Traditional one-hot encoding methods are inadequate due to the vast number of potential basis states available (which scales exponentially with the number of qubits). Thus, we opted for the following statistical properties:
 \begin{itemize}
   \item {\large\textbf{Type $1$ variables}} - these are input variables that are defined for each of the sub-lists of basis states. They are:
   \begin{itemize}
@@ -661,7 +662,7 @@ Following the prior discussion regarding the \acrshort{iqaqe} formalism (refer t
       \item \textbf{Global basis-states' entropy} [of the entire set of basis states]: this is given by the Shannon entropy of the basis states' distribution in the entire set. It is calculated as: $-\frac{1}{\log_2(N)}\sum_{i=1}^{N} p_i \log_2(p_i)$, where $p_i$ is the probability of the $i^{th}$ basis state in the entire set. Note that it is normalized by the maximum entropy value, which is $\log_2(N)$, where $N$ is the total number of basis states in the entire set. (This entropy's maximum is achieved when we have a uniform distribution of the basis states.) Also, this is a measure of the randomness of the basis states' distribution in the entire set.
   \end{itemize}
 \end{itemize}
-The dataset was constructed in a similar manner to that of Figure \ref{fig:Random_iQAQE(Seeds)}, but expanded to encompass $1000$ seeds. For each seed, we computed the \textbf{median} \acrshort{bsf} vector (\acrshort{dv}) and the associated independent variables (\acrshort{iv}\textcolor{gray}{s}) related to the partitioning of basis states. (It's worth noting that we employed \texttt{n\_layers = 3}, \texttt{step\_size = 0.99}, \texttt{B = 4}, \texttt{max\_iter = 50}, and \texttt{repeat = 5}, i.e., $5$ repetitions for each seed.)
+The dataset was constructed in a similar manner to that of Figure \ref{fig:Random_iQAQE(Seeds)}, but expanded to encompass $1000$ seeds. For each seed, we computed the \textbf{median} \acrshort{bsf} cut value after training (\acrshort{dv}) and the associated independent variables (\acrshort{iv}\textcolor{gray}{s}) related to the partitioning of basis states. (It's worth noting that we employed \texttt{n\_layers = 3}, \texttt{step\_size = 0.99}, \texttt{B = 4}, \texttt{max\_iter = 50}, and \texttt{repeat = 5}, i.e., $5$ repetitions for each seed.)
 
 With the \acrshort{iv}\textcolor{gray}{s} and \acrshort{dv} finally chosen, and the data set fully constructed, we now need to define our model. We decided to start simple, with a basic multiple linear regression model. Here, the \acrshort{dv} is computed as a linear combination of the \acrshort{iv}\textcolor{gray}{s}, as below:
 \begin{equation}
@@ -677,14 +678,14 @@ To quantify this issue, we calculated the \acrshort{vif} for each \acrshort{iv}.
 % Re-write from here on-wards.
 In any case, this poor performance could indicate two things: either the model is inadequate (i.e., the underlying relationship is not actually linear), or the chosen \acrshort{iv}\textcolor{gray}{s} are not the most suitable (or, we simply do not have enough data-points; we were limited by the available hardware, so we cannot do much more regarding this). We suspect the latter might be true, although we're unsure which other variables to use. This circles back to the initial challenge of encoding the sub-lists' information in a memory-efficient and representative manner. Regarding the potential non-linearity of the model, we've considered using non-linear models, such as Support Vector Machine Regression (SVR), which exploits the kernel trick to fit non-linear data. However, we have set this idea aside for now\footnote{This would be an interesting direction for future work.}, as our current goal is to identify which \acrshort{iv}\textcolor{gray}{s} most influence the \acrshort{dv}'s value.
 
-One alternative approach that came to mind is to perform Principal Component Analysis (\acrshort{pca}) followed by regression (PCR). While \acrshort{pca} assumes a linear relationship, it could help us achieve a better model. By computing the Principal Components (\acrshort{pc}\textcolor{gray}{s}), we can indirectly understand which \acrshort{iv}\textcolor{gray}{s} have the greatest influence in explaining the variance of the input data. These influential \acrshort{iv}\textcolor{gray}{s} might be the ones we should focus on when choosing our basis states' partitioning. By examining the loadings of the \acrshort{pc}\textcolor{gray}{s}, we can determine which \acrshort{iv}\textcolor{gray}{s} constitute each \acrshort{pc}. Another advantage of \acrshort{pca} is that the obtained \acrshort{pc}\textcolor{gray}{s} are orthogonal (uncorrelated), thus eliminating the multicollinearity problem among the input variables. We can then attempt linear fitting on the \acrshort{pc}\textcolor{gray}{s} against the \acrshort{dv} (PCR). The main drawback is that we lose some interpretability of the input variables, as accurately interpreting the \acrshort{pc}\textcolor{gray}{s} can be challenging due to their nature as linear combinations of the original \acrshort{iv}\textcolor{gray}{s}.
+One alternative approach that came to mind is to perform Principal Component Analysis (\acrshort{pca}) followed by regression (Principal Component Regression – PCR). While \acrshort{pca} assumes a linear relationship, it could help us achieve a better model. By computing the Principal Components (\acrshort{pc}\textcolor{gray}{s}), we can indirectly understand which \acrshort{iv}\textcolor{gray}{s} have the greatest influence in explaining the variance of the input data. These influential \acrshort{iv}\textcolor{gray}{s} would be the ones we should focus on when choosing our basis states' partitioning. By examining the loadings of the \acrshort{pc}\textcolor{gray}{s}, we can determine which \acrshort{iv}\textcolor{gray}{s} constitute each \acrshort{pc}. Another advantage of \acrshort{pca} is that the obtained \acrshort{pc}\textcolor{gray}{s} are orthogonal (uncorrelated), thus eliminating the multicollinearity problem among the input variables. We can then attempt linear fitting on the \acrshort{pc}\textcolor{gray}{s} against the \acrshort{dv} (PCR). The main drawback is that we lose some interpretability of the input variables, as accurately interpreting the \acrshort{pc}\textcolor{gray}{s} can be challenging due to their nature as linear combinations of the original \acrshort{iv}\textcolor{gray}{s}.
 
 Anyways, PCR using the $5$ most significant principal components also yielded subpar results. An $R^2$ of $0.0287$ was reported, with a $5$-fold cross-validation loss of $0.0059$ and a standard deviation of $0.0004$. As one could already predict from the $R^2$ value, this model's predictive powers were also unsatisfactory. Nevertheless, we can still try to extract some information from the principal components to understand which independent variables are most influential in determining the dependent variable. Notably, the first $5$ principal components (out of $47$) account for $65.3\%$ of the variance in the data:
 \begin{lstlisting}[caption={Explained variance ratio for the first $5$ \acrshort{pc}\textcolor{gray}{s} ($8$-node graph).}, captionpos=b, style=DOS]
   Explained variance ratio:
   [0.46558461 0.07637042 0.04557191 0.03879498 0.02634421]
 \end{lstlisting}
-Now, if we examine the loadings of the first and most significant principal component, we notice they are quite evenly distributed across the independent variables. This makes interpretation challenging, as we cannot easily identify one \acrshort{iv} as being more important than the others. Here are the loadings of the first principal component for the $8$-node graph:
+Now, if we examine the loadings of the first and most significant principal component, we notice they are quite evenly distributed across the independent variables. This makes interpretation challenging, as we cannot easily identify one \acrshort{iv} as being more important than the others. Here are the loadings of the first principal component for the $8$-node graph: (Identically uniform distributions were also verified for the other \acrshort{pc}\textcolor{gray}{s}.)
 \begin{lstlisting}[caption={Loadings of the first \acrshort{pc}, for the $8$-node graph.}, captionpos=b, style=DOS]
   PCA_1 = [-1.75323157e-01 -9.26451207e-02 -8.98377538e-02 -8.77605361e-02 -9.18316965e-02
            -8.58000439e-02 -1.03221966e-01 -9.24948614e-02 -1.11659776e-01 -1.75791034e-01
@@ -726,7 +727,7 @@ Furthermore, after revisiting the regression analyses' coefficients, we noticed 
     \item Average Hamming weight (Type $2$);
     \item Parity Score (Type $2$).
 \end{enumerate}
-Initially, it appeared that these variables contributed the most to the dependent variable's value (median best-so-far approximation ratio). However, we no longer believe that to be the case. Instead, we attribute this observation to high multicollinearity among the independent variables (\acrshort{iv}\textcolor{gray}{s}), which renders the model unstable.
+Initially, it appeared that these variables contributed the most to the dependent variable's value (median best-so-far approximation ratio after training). However, we no longer believe that to be the case. Instead, we attribute this observation to high multicollinearity among the independent variables (\acrshort{iv}\textcolor{gray}{s}), which renders the model unstable.
 
 We also tested Ridge regression ($L2$ regularization) as an alternative to PCR. Ridge regression is useful when the input data has obvious multicollinearity, as it adds a penalty to the regression coefficients, reducing their variance and stabilizing the model. Using \texttt{alpha = 1.0} in \texttt{sklearn.linear\_model.Ridge}, we obtained an \(R^2\) value of $0.1023$ and an average cross-validation loss of $0.0061$, with a standard deviation of $0.0004$. These results were identical to those from multiple linear regression (for the $8$-node graph). However, with Ridge regression, no \acrshort{iv}\textcolor{gray}{s} had disproportionately large coefficients; they all ranged between \(10^{-4}\) and \(10^{-2}\). This regularization added stability to the model by preventing coefficient divergence. Moreover, its predictive power appeared to be slightly better than that of regular linear regression for our current dataset, often resulting in errors smaller than $0.1$ in approximation ratio (\acrshort{ar}).
 

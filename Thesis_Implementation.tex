@@ -23,7 +23,7 @@ In this chapter, we outline the numerical implementation of the models discussed
 
 For numerical implementation of the previously described algorithms, we employ PennyLane \cite{Pennylane}, a versatile Python library designed for differentiable programming of quantum computers. PennyLane facilitates the execution of variational quantum circuits and their simultaneous training, akin to training a classical neural network, within the same Python environment, which is highly convenient. It offers numerous features, including automatic differentiation, crucial for optimizing variational quantum circuits.
 
-In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C++ backend. Recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices: the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for numerical simulations of larger quantum circuits, especially when many shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they may lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
+In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C++ backend. Recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices: the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for numerical simulations of larger quantum circuits, especially when many shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
 
 Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valuable tool for creating, manipulating, and analyzing complex networks. NetworkX aids in generating the graphs utilized in the \acrshort{maxcut} problem, offering useful visualization tools for graph representation and partitioning visualization, essential for interpreting algorithm results.
 
@@ -77,7 +77,7 @@ Below, we present the pseudo-code representation of the Quantum Approximate Opti
    \State 5. Start timer \& begin training:
    \While{True}
        \State 5.1 Update \texttt{parameters} using Adam
-       \State 5.2 Store cut value, cost function, and approximation ratio, for each iteration
+       \State 5.2 Store cut value, cost function, and approximation ratio (if \texttt{MaxCut} is provided), for each iteration
        \If{\texttt{max\_iter} \textbf{or} \texttt{abs\_tol} \textbf{or} \texttt{rel\_tol} reached}
            \State \textbf{break}
        \EndIf
@@ -104,7 +104,7 @@ Here, we provide the pseudo-code representation of the implementation of the Qub
    \begin{algorithmic}
    \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, \texttt{B}, Optional \texttt{MaxCut} value \Comment{\texttt{B} is a parameter of the cost function}
    \Ensure \texttt{n\_qubits = math.ceil(np.log2(graph.n\_nodes))}
-   \State 1. Define \acrshort{qemc} ansatz layer (Strongly Entangling Layers)
+   \State 1. Define \acrshort{qemc} ansatz layer (Strongly Entangling Layers ansatz)
    \State 2. Create variational circuit using \texttt{@qml.qnode} with \acrshort{qemc} ansatz
    \State \hskip1em \textbf{Note:} Start with \texttt{qml.Hadamard} on all qubits
    \State 3. Define objective function using probability threshold encoding scheme
@@ -112,7 +112,7 @@ Here, we provide the pseudo-code representation of the implementation of the Qub
    \State 5. Start timer \& begin training:
    \While{True}
        \State 5.1 Update \texttt{parameters} using Adam
-       \State 5.2 Store cut value, cost function, and approximation ratio, for each iteration
+       \State 5.2 Store cut value, cost function, and approximation ratio (if \texttt{MaxCut} is provided), for each iteration
        \If{\texttt{max\_iter} \textbf{or} \texttt{abs\_tol} \textbf{or} \texttt{rel\_tol} reached}
            \State \textbf{break}
        \EndIf
@@ -131,7 +131,7 @@ Here, we provide the pseudo-code representation of the implementation of the Qub
 
 This subsection presents the pseudo-code for a general \acrshort{iqaqe} algorithm (Algorithm \ref{alg:iQAQE}), as discussed in Chapter \ref{chapter:Base Algorithm} (\acrshort{iqaqe} Framework). It is important to note that point $3$ of the algorithm involves significant complexity. The method for mapping the states is flexible and can be chosen in various ways. We will explore several possible mappings in Chapter \ref{chapter:Schemes_and_Results}.
 
-Additionally, note the similarities between \acrshort{iqaqe} and \acrshort{qemc} in terms of pseudo-code, as \acrshort{iqaqe} is fundamentally built on the same framework.
+Additionally, note the similarities between \acrshort{iqaqe} and \acrshort{qemc} in terms of pseudo-code, as \acrshort{iqaqe} is fundamentally built on the same basis.
 
 \begin{algorithm}[H]
    \small
@@ -141,7 +141,7 @@ Additionally, note the similarities between \acrshort{iqaqe} and \acrshort{qemc}
    \State 1. Select number of qubits: \texttt{n\_qubits} = $n \in [\log_2{(N)}, N]$
    \State 2. Select list cardinality: \texttt{list\_cardinality} = $c \in [1, 2^{n - 1}]$
    \State 3. Assignment/mapping: Map $c$ basis states to each graph node
-   \State 4. Define \acrshort{iqaqe} ansatz layer (adapted Strongly Entangling Layers)
+   \State 4. Define \acrshort{iqaqe} ansatz layer (adapted Strongly Entangling Layers ansatz)
    \State 5. Create variational circuit using \texttt{@qml.qnode} with \acrshort{iqaqe} ansatz
    \State \hskip1em \textbf{Note:} Start with \texttt{qml.Hadamard} on all qubits
    \State 6. Define objective function using probability threshold encoding scheme
@@ -149,8 +149,8 @@ Additionally, note the similarities between \acrshort{iqaqe} and \acrshort{qemc}
    \State 8. Start timer \& begin training:
    \While{True}
        \State 8.1 Update \texttt{parameters} using Adam
-       \State \hskip1em \textbf{Note:} Calculate nodes' probabilities by summing the probabilities of the basis states in each list and normalizing
-       \State 8.2 Store cut value, cost function, and approximation ratio, for each iteration
+       \State \hskip1em \textbf{Note:} Calculate nodes' probabilities by summing the probabilities of the basis states in each list and normalizing the result
+       \State 8.2 Store cut value, cost function, and approximation ratio (if \texttt{MaxCut} is provided), for each iteration
        \If{\texttt{max\_iter} \textbf{or} \texttt{abs\_tol} \textbf{or} \texttt{rel\_tol} reached}
            \State \textbf{break}
        \EndIf
@@ -188,7 +188,7 @@ Here, we present the numerical implementation of the Goemans-Williamson algorith
    
    \State 5. Record the running time
    
-   \State 6. Retrieve \texttt{X} and extract the vectors \texttt{v} from the columns of \texttt{sqrtm(X)}.
+   \State 6. Retrieve \texttt{X} and extract the vectors \texttt{v} from the columns of \texttt{sqrtm(X)} (square root of matrix \texttt{X}).
    
    \State 7. Perform random-hyperplane "selection" utilizing the vectors \texttt{v} to derive the partition.
    
@@ -232,6 +232,6 @@ Additionally, we consider the median best-so-far cut value (cf. section \ref{sec
 
 Initially, we used the best-so-far of the average, but we found it less representative of the algorithms' best performances. We now prefer to first apply the \acrshort{bsf} transform to obtain the best possible performance from each curve and then compute the average or median. This approach ensures that we account for the best performance of each curve, rather than just the best average performance. However, we initially used the best-so-far of the average for most of our work and only later switched to the new metrics. While this doesn't alter the interpretation of the results, it does affect the metric values, providing a more accurate quantification of the algorithms' performances.
 
-Additionally, we conduct grid searches on the models' hyperparameters (such as Adam's learning rate, \texttt{n\_layers}, \texttt{n\_qubits}, etc.) to optimize their performance and understand how they behave under different conditions. Nevertheless, due to the unavailable access to an \acrshort{hpc} cluster, these grid searches are often limited in scope.
+Additionally, we conduct grid searches on the models' hyperparameters (such as Adam's learning rate, \texttt{n\_layers}, \texttt{list\_cardinality}, etc.) to optimize their performance and understand how they behave under different conditions. Nevertheless, due to the unavailable access to an \acrshort{hpc} cluster, these grid searches are often limited in scope.
 
-To compare the algorithms' performances, we also benchmark them against the Goemans-Williamson algorithm. This comparison helps us evaluate how well our algorithms perform relative to state-of-the-art solutions. Most of our plots will include comparisons with \acrshort{qaoa}\footnote{If not specified otherwise, we default to using $3$ \acrshort{qaoa} layers.}, \acrshort{qemc}, and the \acrshort{gw} algorithm for a comprehensive analysis of the algorithms' performances.
+To compare the algorithms' performances, we also benchmark them against the Goemans-Williamson algorithm. This comparison helps us evaluate how well our algorithms perform relative to state-of-the-art solutions. Often, our plots will include comparisons with \acrshort{qaoa}\footnote{If not specified otherwise, we default to using $3$ \acrshort{qaoa} layers.}, \acrshort{qemc}, and the \acrshort{gw} algorithm for a comprehensive analysis of the algorithms' performances.
