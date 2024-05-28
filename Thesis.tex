@@ -263,11 +263,17 @@
 % For ArXiv references, use the 'utphys' bibliography style
 % \bibliographystyle{utphys}
 
+\begingroup % Reduce the font size of the bibliography
+\small % Reduce the font size of the bibliography
+
 % Let's try that again, but with the 'hunsrtnat' bibliography style
 \bibliographystyle{hunsrtnat}
 
 % External bibliography database file in the BibTeX format
+
 \bibliography{Thesis_Bibliography_DB} % file "Thesis_Bibliography_DB.bib"
+
+\endgroup % Restore the font size of the bibliography
 
 \cleardoublepage
 
