@@ -23,7 +23,7 @@ In this chapter, we outline the numerical implementation of the models discussed
 
 For numerical implementation of the previously described algorithms, we employ PennyLane \cite{Pennylane}, a versatile Python library designed for differentiable programming of quantum computers. PennyLane facilitates the execution of variational quantum circuits and their simultaneous training, akin to training a classical neural network, within the same Python environment, which is highly convenient. It offers numerous features, including automatic differentiation, crucial for optimizing variational quantum circuits.
 
-In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C++ backend. Recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices: the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for numerical simulations of larger quantum circuits, especially when many shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
+In our implementation with PennyLane, we utilize one of two devices from its extensive selection. Firstly, we employ the \texttt{default.qubit} device, a straightforward state-vector qubit simulator implemented in Python, compatible with Autograd, JAX, TensorFlow, and Torch backends. This device is well-suited for optimizations involving a small to moderate number of qubits and parameters, offering exact expectation values. Secondly, we utilize the \texttt{lightning.qubit} device, a fast state-vector qubit simulator with a C\texttt{++} backend, recommended for scenarios involving moderate numbers of qubits and parameters or when utilizing stochastic expectation values. Our simulations utilize both devices: the former excels in analytical simulations of small quantum circuits, which predominates our work, while the latter is preferable for simulations of larger quantum circuits with a finite number of shots, especially when many shots are required. Although analytical simulations are favored due to their lower computational resource requirements, they lack the output sampling aspect of a true quantum computer simulation. Nonetheless, they suffice for our goal of optimizing variational quantum circuit parameters.
 
 Moreover, we heavily rely on the NetworkX \cite{NetworkX} Python library, a valuable tool for creating, manipulating, and analyzing complex networks. NetworkX aids in generating the graphs utilized in the \acrshort{maxcut} problem, offering useful visualization tools for graph representation and partitioning visualization, essential for interpreting algorithm results.
 
@@ -67,12 +67,12 @@ Below, we present the pseudo-code representation of the Quantum Approximate Opti
    \small
    \caption{Quantum Approximate Optimization Algorithm (\acrshort{qaoa})}\label{alg:QAOA}
    \begin{algorithmic}
-   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, Optional \texttt{MaxCut} value
+   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{parameters}, Optional \texttt{MaxCut} value
    \Ensure \texttt{n\_qubits = graph.n\_nodes}
    \State 1. Define $U_C$ and $U_M$
-   \State 2. Create variational circuit using \texttt{@qml.qnode} with $p$ layers of $U_C$ and $U_M$
+   \State 2. Create variational quantum circuit using \texttt{@qml.qnode} with \texttt{n\_layers} layers of $U_C$ and $U_M$
    \State \hskip1em \textbf{Note:} Start with \texttt{qml.Hadamard} on all qubits
-   \State 3. Define objective function: $\langle H_C \rangle$, obtained through \texttt{qml.expval(H\_C)}
+   \State 3. Define objective function to minimize: $-\langle H_C \rangle$, obtained through \texttt{-1 * qml.expval(H\_C)}
    \State 4. Initialize Adam optimizer with default parameters
    \State 5. Start timer \& begin training:
    \While{True}
@@ -88,7 +88,7 @@ Below, we present the pseudo-code representation of the Quantum Approximate Opti
    \end{algorithmic}
 \end{algorithm}
 
-All of the developed code has been compiled in a GitHub repository, available at \url{https://github.com/kaiuki2000/HQCC_Code_Implementations/tree/main}. For access to the code, please contact the author.
+All of the developed code has been compiled in a GitHub repository (Private), available at \url{https://github.com/kaiuki2000/HQCC_Code_Implementations/tree/main}. For access to the code, please contact the author.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Qubit-Efficient MaxCut Heuristic Algorithm (QEMC)}
@@ -102,10 +102,10 @@ Here, we provide the pseudo-code representation of the implementation of the Qub
    \small
    \caption{Qubit-Efficient \acrshort{maxcut} Heuristic Algorithm (\acrshort{qemc})}\label{alg:QEMC}
    \begin{algorithmic}
-   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, \texttt{B}, Optional \texttt{MaxCut} value \Comment{\texttt{B} is a parameter of the cost function}
+   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{parameters}, \texttt{B}, Optional \texttt{MaxCut} value \Comment{\texttt{B} is a parameter of the cost function}
    \Ensure \texttt{n\_qubits = math.ceil(np.log2(graph.n\_nodes))}
    \State 1. Define \acrshort{qemc} ansatz layer (Strongly Entangling Layers ansatz)
-   \State 2. Create variational circuit using \texttt{@qml.qnode} with \acrshort{qemc} ansatz
+   \State 2. Create variational quantum circuit using \texttt{@qml.qnode} with \texttt{n\_layers} layers of \acrshort{qemc} ansatz
    \State \hskip1em \textbf{Note:} Start with \texttt{qml.Hadamard} on all qubits
    \State 3. Define objective function using probability threshold encoding scheme
    \State 4. Initialize Adam optimizer with default parameters
@@ -137,12 +137,12 @@ Additionally, note the similarities between \acrshort{iqaqe} and \acrshort{qemc}
    \small
    \caption{Interpolated QAOA/QEMC Algorithm (\acrshort{iqaqe})}\label{alg:iQAQE}
    \begin{algorithmic}
-   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{init\_parameters}, \texttt{B}, Optional \texttt{MaxCut} value \Comment{\texttt{B} is a parameter of the cost function}
-   \State 1. Select number of qubits: \texttt{n\_qubits} = $n \in [\log_2{(N)}, N]$
+   \Require \texttt{graph}, \texttt{n\_layers}, \texttt{parameters}, \texttt{B}, Optional \texttt{MaxCut} value \Comment{\texttt{B} is a parameter of the cost function}
+   \State 1. Select number of qubits: \texttt{n\_qubits} = $n \in [\log_2{(N)}, N]$, with $N$ = \texttt{graph.n\_nodes}
    \State 2. Select list cardinality: \texttt{list\_cardinality} = $c \in [1, 2^{n - 1}]$
    \State 3. Assignment/mapping: Map $c$ basis states to each graph node
    \State 4. Define \acrshort{iqaqe} ansatz layer (adapted Strongly Entangling Layers ansatz)
-   \State 5. Create variational circuit using \texttt{@qml.qnode} with \acrshort{iqaqe} ansatz
+   \State 5. Create variational quantum circuit using \texttt{@qml.qnode} with \texttt{n\_layers} layers of \acrshort{iqaqe} ansatz
    \State \hskip1em \textbf{Note:} Start with \texttt{qml.Hadamard} on all qubits
    \State 6. Define objective function using probability threshold encoding scheme
    \State 7. Initialize Adam optimizer with default parameters
@@ -179,7 +179,7 @@ Here, we present the numerical implementation of the Goemans-Williamson algorith
    
    \State 1. Initialize: \texttt{n} (number of nodes), \texttt{edges} (\texttt{graph} edges)
    
-   \State 2. Define \acrshort{sdp} variable \texttt{X} and constraints \texttt{X >> 0} and \texttt{X[i, i] == 1 for i in range(n)}
+   \State 2. Define \acrshort{sdp} variable \texttt{X} and constraints \texttt{X >> 0} (\texttt{X} positive semidefinite) and \texttt{X[i, i] == 1 for i in range(n)}
    
    \State 3. Set up the objective function: 
    \State \hskip1em \texttt{objective = sum(0.5 * (1 - X[i, j]) for (i, j) in edges)}
@@ -209,11 +209,11 @@ Here, we present the numerical implementation of the Goemans-Williamson algorith
 
 % I should also introduce the utilized score metrics: Best-so-far average and median, etc. Maybe, mention the difference between the before and after of the "BSF Correction".
 
-Now that we have introduced all the algorithms and their numerical implementations, we must discuss the benchmarking and testing methods used to evaluate their performance. The primary metrics for evaluation are the cost plot (cost \textit{vs.} iterations) and the approximation ratio plot (approximation ratio \textit{vs.} iterations), both produced during training. These metrics help compare the algorithms' convergence rates and final cut values.
+Now that we have introduced all the algorithms and their numerical implementations, we must discuss the benchmarking and testing methods used to evaluate their performance. The primary metrics for evaluation are the cost plot (cost \textit{vs.} iterations) and the approximation ratio plot\footnote{We employ the \acrshort{ar} when the \acrshort{maxcut} is known. Otherwise, we simply compute the cut plot.} (approximation ratio \textit{vs.} iterations), both produced during training. These metrics help compare the algorithms' convergence rates and final cut values.
 
 Given that we initialize our algorithms with random parameters, we devised statistically meaningful metrics to compare their performances. A single run isn't sufficient to draw conclusions about an algorithm's performance, as initial parameters can significantly impact the results. Thus, the primary statistical metric used is the average cut value (or approximation ratio). This metric averages the cut values (or approximation ratios) derived at each iteration during optimization. It enables us to evaluate the algorithm's average performance for a single run after training. Essentially, it provides the likelihood of obtaining the correct result after training by executing the circuit once. 
 
-Another metric commonly used is the average best-so-far (\acrshort{bsf}) cut value. This metric computes the average of the best-so-far cut values obtained at each iteration during optimization. For a given training curve, with cut values \textit{vs.} iterations, the \acrshort{bsf} cut value is obtained by storing the highest cut value achieved so far. The code for this transformation is shown below:
+Another metric commonly used is the average best-so-far (\acrshort{bsf}) cut value. This metric computes the average of the best-so-far cut values obtained at each iteration during optimization. For a given training curve, with cut values \textit{vs.} iterations, the \acrshort{bsf} cut value is obtained by storing the highest cut value achieved so far. If a dip occurs in the graph, it is adjusted to match the previous graph value, ensuring that the final result is monotonically increasing. The code for this transformation is shown below:
 
 \begin{lstlisting}[language=Python, style=My_Python, caption={Auxiliary function: best-so-far transformation}, label={lst:bsf_transform}]
 def BSF_Transform(vec):
@@ -230,7 +230,7 @@ This transformation ensures that the \acrshort{bsf} cut value curve is monotone 
 
 Additionally, we consider the median best-so-far cut value (cf. section \ref{section:BSF_correction}), which helps eliminate outliers often present in our simulations. By using the median, we can mitigate the impact of particularly lucky or unlucky initializations and better reflect the true performance of the algorithm. Both the average \acrshort{bsf} and the median \acrshort{bsf} curves are usually computed using either $3$, $5$ or $10$ training curves\footnote{Unless explicitly stated otherwise, we always employ $10$ runs for computing averages/medians.}, to ensure statistical robustness. Each curve is generated with different random initial parameters, obtained through \texttt{2 * numpy.pi * numpy.random.rand}, producing values in the range $[0,2\pi]$.
 
-Initially, we used the best-so-far of the average, but we found it less representative of the algorithms' best performances. We now prefer to first apply the \acrshort{bsf} transform to obtain the best possible performance from each curve and then compute the average or median. This approach ensures that we account for the best performance of each curve, rather than just the best average performance. However, we initially used the best-so-far of the average for most of our work and only later switched to the new metrics. While this doesn't alter the interpretation of the results, it does affect the metric values, providing a more accurate quantification of the algorithms' performances.
+Initially, we used the best-so-far of the average, but we found it less representative of the algorithms' best performances. We now prefer to first apply the \acrshort{bsf} transform to obtain the best possible performance from each curve and then compute the average or median. This approach ensures that we account for the best performance of each curve, rather than just the best-so-far average performance. However, we initially used the best-so-far of the average for most of our work and only later switched to the new metrics. While this doesn't alter the interpretation of the results\footnote{In general, the interpretation remains consistent, but comparing both metrics offers additional insights, hence our decision to retain the best-so-far average rather than simply using the average best-so-far.}, it does affect the metric values, providing a more accurate quantification of the algorithms' performances.
 
 Additionally, we conduct grid searches on the models' hyperparameters (such as Adam's learning rate, \texttt{n\_layers}, \texttt{list\_cardinality}, etc.) to optimize their performance and understand how they behave under different conditions. Nevertheless, due to the unavailable access to an \acrshort{hpc} cluster, these grid searches are often limited in scope.
 
