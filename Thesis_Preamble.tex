@@ -633,6 +633,8 @@ pdfdisplaydoctitle=true}
 % \captionsetup{compatibility=false}
 
 \usepackage{float} % Also added by me. For the [H] option in figures (?). To get captions to appear above the figure.
+\floatstyle{plaintop} % Trying to get the Tables' captions to appear above the tables.
+\restylefloat{table}
 
 \usepackage{silence}
 \WarningFilter*{latex}{Text page \thepage\space contains only floats}
