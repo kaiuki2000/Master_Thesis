@@ -20,14 +20,17 @@ In this chapter, we present the \acrshort{iqaqe} Framework, which interpolates b
 % In this chapter, we present the proposed algorithm, \acrshort{iqaqe}, which interpolates between \acrshort{qaoa} and \acrshort{qemc}. We begin with a comparison of the two algorithms, followed by a detailed description of \acrshort{iqaqe}, its theoretical framework, motivation, and workflow.
 
 \section{Comparison of QAOA and QEMC}
-To motivate the development of our new algorithm(s), we summarize the merits and drawbacks of both \acrshort{qaoa} and \acrshort{qemc}. \acrshort{qemc} has several advantages over \acrshort{qaoa}, including significantly lower qubit requirements ($n = \log_2(N)$ vs. $N$) and the ability to support shallower circuit depths \cite{tenecohen2023variational}. The threshold probability encoding scheme allows \acrshort{qemc} to associate each graph partition with a volume of quantum states, potentially enhancing noise resilience. Moreover, \acrshort{qemc} might be better trainable \cite{tenecohen2023variational}. However, \acrshort{qemc} requires the entire probability distribution at each optimization step to compute the cost, increasing the number of needed shots compared to \acrshort{qaoa}, which only requires expectation values. Additionally, it has been shown that \acrshort{qemc} can be efficiently simulated classically, somewhat undermining its purpose as a quantum algorithm \cite{tenecohen2023variational}.
+To motivate the development of our new algorithm(s), we summarize the merits and drawbacks of both \acrshort{qaoa} and \acrshort{qemc}. \acrshort{qemc} has several advantages over \acrshort{qaoa}, including significantly lower qubit requirements ($n = \log_2(N)$ vs. $N$) and the ability to support shallower circuit depths \cite{tenecohen2023variational}. The threshold probability encoding scheme allows \acrshort{qemc} to associate each graph partition with a volume of quantum states, potentially enhancing noise resilience. Nevertheless, while \acrshort{qemc} might be better trainable \cite{tenecohen2023variational}, it requires the entire probability distribution at each optimization step to compute the cost, increasing the number of needed shots compared to \acrshort{qaoa}, which only requires expectation values. Additionally, it has been shown that \acrshort{qemc} can be efficiently simulated classically, somewhat undermining its purpose as a quantum algorithm \cite{tenecohen2023variational}.
+
+% Old text.
+% Moreover, \acrshort{qemc} might be better trainable \cite{tenecohen2023variational}. However, \acrshort{qemc} requires the entire probability distribution at each optimization step to compute the cost, increasing the number of needed shots compared to \acrshort{qaoa}, which only requires expectation values.
 
 Having thoroughly understood these two algorithms, the collaboration within the \acrshort{hqcc} project has introduced a novel framework for designing multiple distinct \acrshort{vqa}\textcolor{gray}{s}. This will be the focus of our next discussion.
 
 % With a thorough grasp of these two algorithms, the \textit{HQCC}-project collaboration has put forward a novel hybrid algorithm that integrates aspects from both, intending to capitalize on their individual strengths for a more substantial outcome. This is what we will be discussing next.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Interpolated QAOA/QEMC Hybrid Algorithm (iQAQE)}
+\section{Interpolated QAOA/QEMC Hybrid Algorithm(s) (iQAQE)}
 \label{section:iQAQE}
 
 % I'll keep the cardinality in [1, 2**(n-1)], for n qubits, under the argument that: 1 - QEMC, and 2**(n-1) - QAOA. Later, I might mention that we relax this constraint, allowing for 2**n - 1, as well. That is only towards the end, when I'm doing those bar plots with performance bins, etc. [Many colours, etc.]
@@ -40,7 +43,7 @@ Algorithms developed within the proposed framework aim to interpolate between \a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{Figures/Diagrams/QEMC_iQAQE_Encodings.png}
-    \caption{Sample schematic representation of the \acrshort{iqaqe} encoding scheme. Comparison between the \acrshort{qemc} and \acrshort{iqaqe} encoding schemes: example for a trivial $4$-node graph. In \acrshort{qemc}, each node is associated with a single basis state, while in \acrshort{iqaqe}, each node is associated with a list of basis states.}
+    \caption{Example schematic representation of the \acrshort{iqaqe} encoding scheme. Comparison between the \acrshort{qemc} and \acrshort{iqaqe} encoding schemes: example for a trivial $4$-node graph. In \acrshort{qemc}, each node is associated with a single basis state, while in \acrshort{iqaqe}, each node is associated with a list of basis states.}
 \label{fig:iQAQE_Encoding}
 \end{figure}
 
